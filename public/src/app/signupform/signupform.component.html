@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">{{title}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+    <form #signUpForm="ngForm" (submit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="name"
+          name="username" 
+          [(ngModel)]="postData.username"
+          #username="ngModel"
+          minlength="2" 
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input 
+          type="password" 
+          class="form-control" 
+          id="password"
+          name="password" 
+          #password="ngModel"
+          minlength="8" 
+          [(ngModel)]="postData.password"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="password">Confirm password:</label>
+        <input 
+          type="password" 
+          class="form-control" 
+          name="confirm" 
+          [(ngModel)]="postData.confirm"
+          id="confirm"
+          [ngClass]="{ 'bad-confirm': !confirmMatch(), 'good-confirm': confirmMatch()}"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-success" [disabled]="!signUpForm.form.valid">Submit</button>
+
+    </form>
+  </div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">{{closeBtnName}}</button>
+</div>

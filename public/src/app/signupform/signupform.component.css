@@ -1,0 +1,7 @@
+.ng-valid[required]:not(.ng-pristine), .ng-valid.required:not(.ng-pristine), .good-confirm:not(.ng-pristine)  {
+  border-left: 5px solid #42A948; 
+}
+
+.ng-invalid:not(form):not(.ng-pristine), .bad-confirm  {
+  border-left: 5px solid #a94442; 
+}
