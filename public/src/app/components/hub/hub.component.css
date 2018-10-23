@@ -1,0 +1,22 @@
+#mainContainer {
+  height:99.5vh;
+  width: 100vw;
+  
+}
+app-roomlist {
+  position: relative;
+  vertical-align: top;
+  display: inline-block;
+  height: 100%;
+  width: 300px;
+  overflow: scroll;
+}
+
+app-room {
+  vertical-align: top;
+  display: inline-block;
+  height:100%;
+  width: calc(100% - 300px);
+  margin-right: -10px;
+  overflow: scroll;
+}

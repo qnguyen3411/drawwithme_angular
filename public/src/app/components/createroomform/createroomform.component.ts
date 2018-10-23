@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { DrawchatService } from '../../services/drawchat.service';
 import { SessionService } from '../../services/session.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-createroomform',
@@ -9,7 +10,7 @@ import { SessionService } from '../../services/session.service';
   styleUrls: ['./createroomform.component.css']
 })
 export class CreateRoomFormComponent implements OnInit {
-
+  @Output() formDone = new EventEmitter();
   title: string;
   closeBtnName: string;
 
@@ -21,8 +22,9 @@ export class CreateRoomFormComponent implements OnInit {
   constructor(
     public bsModalRef: BsModalRef,
     private _drawChatService: DrawchatService,
-    private _sessionService: SessionService
-    ) {}
+    private _sessionService: SessionService,
+    private _router: Router
+  ){ }
 
   ngOnInit() {
     this.title = "Make a new room!"
@@ -34,6 +36,8 @@ export class CreateRoomFormComponent implements OnInit {
       .subscribe(response => {
         if (response['status'] === 'success') {
           this._sessionService.setRoomJoinToken(response['token']);
+          console.log(this._sessionService.getRoomJoinToken());
+          this.formDone.emit();
         }
      })
   }

@@ -1,0 +1,18 @@
+<nav class="navbar fixed-top navbar-dark bg-transparent">
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link active"  (click)="showLoginForm()">Log in</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active ml-2"  (click)="showSignupForm()">Sign up</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link active ml-2" (click)="showCreateRoomForm()">Create room</a>
+    </li>
+  </ul>
+</nav>
+<div id="mainContainer" class="bg-warning">
+  <app-room></app-room>
+  <app-roomlist></app-roomlist>
+</div>

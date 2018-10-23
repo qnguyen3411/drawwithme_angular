@@ -36,6 +36,7 @@ module.exports = {
 
   hashPassword: async (req, res, next) => {
     const password = req.body.password;
+    if (!password) { next() };
     try {
       // Generate a salt
       const salt = await bcrypt.genSalt(10);
