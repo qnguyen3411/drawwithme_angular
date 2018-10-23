@@ -14,19 +14,18 @@ passport.use(new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
   secretOrKey: JWT_SECRET
 }, async (payload, done) => {
-  // try {
+  try {
+    console.log("CHECKING PASSPORT")
     // Find the user specified in token
-  //   const id = payload.sub;
-  //   const user = await User.getById(id);
-  //   // If user dont exist, handle it
-  //   if (!user) {
-  //     return done(null, false);
-  //   }
-  //   // Otherwise, return the user
-  //   done(null, user);
-  // } catch (error) {
-  //   done(error, false);
-  // }
+    const id = payload.sub;
+    const result = await userModel.getById(id);
+    const user = Array.isArray(result) ? result[0] : result;
+    
+    // Otherwise, return the user
+    done(null, user);
+  } catch (error) {
+    done(error, false);
+  }
 }));
 
 

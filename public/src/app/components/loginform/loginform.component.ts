@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { UserService } from '../services/user.service';
+import { UserService } from '../../services/user.service';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-loginform',
@@ -17,7 +18,8 @@ export class LoginFormComponent implements OnInit {
 
   constructor(
     public bsModalRef: BsModalRef,
-    private _userService: UserService) {}
+    private _userService: UserService,
+    private _sessionService: SessionService) { }
 
   ngOnInit() {
     this.title = "Login"
@@ -29,6 +31,10 @@ export class LoginFormComponent implements OnInit {
       .signIn(this.postData)
       .subscribe(response => {
         console.log(response)
+        if (response['status'] === 'success') {
+          const token = response['token'];
+          this._sessionService.setUserToken(token);
+        }
       })
   }
 

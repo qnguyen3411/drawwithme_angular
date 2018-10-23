@@ -7,15 +7,16 @@ import { AppComponent } from './app.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { HttpClientModule } from '@angular/common/http';
 // COMPONENTS
-import { RoomComponent } from './room/room.component';
-import { RoomlistComponent } from './roomlist/roomlist.component';
-import { LoginFormComponent } from './loginform/loginform.component';
-import { SignupFormComponent } from './signupform/signupform.component';
-import { CreateRoomFormComponent } from './createroomform/createroomform.component';
+import { RoomComponent } from './components/room/room.component';
+import { RoomlistComponent } from './components/roomlist/roomlist.component';
+import { LoginFormComponent } from './components/loginform/loginform.component';
+import { SignupFormComponent } from './components/signupform/signupform.component';
+import { CreateRoomFormComponent } from './components/createroomform/createroomform.component';
 
 // SERVICES
-import { UserService } from './services/user.service'
-import { DrawchatService } from './services/drawchat.service'
+import { UserService } from './services/user.service';
+import { DrawchatService } from './services/drawchat.service';
+import { SessionService } from './services/session.service';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,11 @@ import { DrawchatService } from './services/drawchat.service'
     SignupFormComponent,
     CreateRoomFormComponent
   ],
-  providers: [UserService, DrawchatService],
+  providers: [
+    UserService,
+    DrawchatService,
+    SessionService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

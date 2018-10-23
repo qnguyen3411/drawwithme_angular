@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { DrawchatService } from '../services/drawchat.service';
+import { DrawchatService } from '../../services/drawchat.service';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-createroomform',
@@ -13,12 +14,14 @@ export class CreateRoomFormComponent implements OnInit {
   closeBtnName: string;
 
   postData = {
-
+    name: "",
+    tags: ["test", "uhh", "test"]
   }
 
   constructor(
     public bsModalRef: BsModalRef,
-    private _drawChatService: DrawchatService
+    private _drawChatService: DrawchatService,
+    private _sessionService: SessionService
     ) {}
 
   ngOnInit() {
@@ -26,6 +29,12 @@ export class CreateRoomFormComponent implements OnInit {
   }
 
   onSubmit(){
-    this._drawChatService.createRoom()
+    this._drawChatService
+      .createRoom(this.postData)
+      .subscribe(response => {
+        if (response['status'] === 'success') {
+          this._sessionService.setRoomJoinToken(response['token']);
+        }
+     })
   }
 }

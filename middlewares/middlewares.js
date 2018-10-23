@@ -25,6 +25,11 @@ module.exports = {
     authSchema: Joi.object().keys({
       username: Joi.string().alphanum().min(3).max(30).required(),
       password: Joi.string().min(8).required()
+    }),
+
+    roomSchema: Joi.object().keys({
+      name: Joi.string().min(3).max(30).required(),
+      tags: Joi.array().items(Joi.string().alphanum())
     })
   },
 

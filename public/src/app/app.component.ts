@@ -1,7 +1,7 @@
 import { Component, TemplateRef } from '@angular/core';
-import { LoginFormComponent } from './loginform/loginform.component';
-import { SignupFormComponent } from './signupform/signupform.component';
-import { CreateRoomFormComponent } from './createroomform/createroomform.component';
+import { LoginFormComponent } from './components/loginform/loginform.component';
+import { SignupFormComponent } from './components/signupform/signupform.component';
+import { CreateRoomFormComponent } from './components/createroomform/createroomform.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
