@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { SessionService } from '../../services/session.service';
 import { Inject, AfterViewInit, ElementRef } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
+
+import { KeepHtmlPipe } from '../../pipes/keep-html.pipe';
+import { SessionService } from '../../services/session.service';
+
 
 @Component({
   selector: 'app-drawchat',
@@ -10,38 +14,34 @@ import { DOCUMENT } from '@angular/common';
 })
 export class DrawchatComponent implements OnInit, AfterViewInit {
   token =  "";
+  roomId = "";
   constructor(
+    private _route: ActivatedRoute,
     private _sessionService: SessionService,
     @Inject(DOCUMENT) private document,
     private elementRef: ElementRef
   ) { }
 
   ngOnInit() {
-    this.token = this._sessionService.getRoomJoinToken();
+    this._route.params.subscribe((params: Params) => {
+      this.roomId = params['id'];
+  });
+    this.token = this._sessionService.getUserToken();
   }
 
   ngAfterViewInit() {
     const socketScript = this.document.createElement('script');
     socketScript.type = 'text/javascript';
     socketScript.src = 'http://localhost:5000/socket.io/socket.io.js';
-
     this.elementRef.nativeElement.appendChild(socketScript);
-
-    const drawScript = this.document.createElement('script');
-    drawScript.type = 'text/javascript';
-    drawScript.src = 'http://localhost:5000/drawchat.js';
-    this.elementRef.nativeElement.appendChild(drawScript);
-
-  }
-
-  afterScriptAdded() {
-    const params= {
-      width: '350px',
-      height: '420px',
-    };
-    if (typeof (window['functionFromExternalScript']) === 'function') {
-      window['functionFromExternalScript'](params);
+    
+    socketScript.onload = () => {
+      const drawScript = this.document.createElement('script');
+      drawScript.type = 'text/javascript';
+      drawScript.src = 'http://localhost:5000/drawchat.js';
+      this.elementRef.nativeElement.appendChild(drawScript);
     }
   }
+
 
 }

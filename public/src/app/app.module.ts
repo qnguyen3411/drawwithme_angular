@@ -19,6 +19,8 @@ import { HubComponent } from './components/hub/hub.component';
 import { UserService } from './services/user.service';
 import { DrawchatService } from './services/drawchat.service';
 import { SessionService } from './services/session.service';
+// PIPES
+// import { KeepHtmlPipe } from './pipes/keep-html.pipe';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { SessionService } from './services/session.service';
     SignupFormComponent,
     CreateRoomFormComponent,
     DrawchatComponent,
-    HubComponent
+    HubComponent,
+    // KeepHtmlPipe
   ],
   imports: [
     ModalModule.forRoot(),

@@ -4,7 +4,7 @@ import { DrawchatComponent } from './components/drawchat/drawchat.component';
 import { HubComponent } from './components/hub/hub.component';
 
 const routes: Routes = [
-  { path: 'draw', component: DrawchatComponent },
+  { path: 'draw/:id', component: DrawchatComponent },
   { path: 'hub', component: HubComponent },
   { path: '', pathMatch: 'full', redirectTo: '/hub' },
 

@@ -1,5 +1,4 @@
-<script src="http://localhost:5000/socket.io/socket.io.js"></script>
-<script src="http://localhost:5000/drawchat.js"></script>
+<div id="room" class="d-none">{{roomId}}</div>
 <div id="mainContainer">
 
     <div id="paintSection">
@@ -7,6 +6,10 @@
         <div id="canvasContainer">
         <canvas width="1820" height="1024" id="lower"></canvas>
         <canvas width="1820" height="1024" id="upper"></canvas>
+        
+        <svg id="cursorScreen" viewBox="0 0 1820 1025">
+          <circle id="selfCursor" cx="50" cy="50" r="30" stroke="black" stroke-width="1" fill-opacity="0" />
+        </svg>
         </div>
       </div>
 

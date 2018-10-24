@@ -34,11 +34,15 @@
       background-color: white;
     }
    
-    #canvasContainer canvas {
+    #canvasContainer canvas, #canvasContainer svg {
       position: absolute;
       top: 0px;
       zoom: 100%;
       left: 0px;
+    }
+
+    #canvasContainer svg {
+      z-index: 10;
     }
 
     #toolSection {

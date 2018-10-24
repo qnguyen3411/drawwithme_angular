@@ -7,7 +7,7 @@ const userModel = require('../models/user')
 signToken = user => {
   return JWT.sign({
     iss: 'dingleberry', // issuer
-    sub: user.id, // subject
+    sub: { id: user.id, username: user.username }, // subject
     iat: new Date().getTime(), // issued at
     exp: new Date().setDate(new Date().getDate() + 1) // expiration
   }, JWT_SECRET );
