@@ -12,8 +12,8 @@
     </div>
 
     <div class="form-group">
-      <label for="password">Tags:</label>
-      <input class="form-control" />
+      <label for="tags">Tags (space separated):</label>
+      <input class="form-control" name="tagStr" [(ngModel)]="tagStr" />
     </div>
 
     <button type="submit" class="btn btn-success">Submit</button>

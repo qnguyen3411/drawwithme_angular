@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { DrawchatService } from '../../services/drawchat.service';
 
 @Component({
@@ -7,6 +7,8 @@ import { DrawchatService } from '../../services/drawchat.service';
   styleUrls: ['./roomlist.component.css']
 })
 export class RoomlistComponent implements OnInit {
+  rooms = [];
+  @Output() roomClicked = new EventEmitter();
 
   constructor(
     private _drawChatService: DrawchatService
@@ -15,8 +17,14 @@ export class RoomlistComponent implements OnInit {
   ngOnInit() {
     this._drawChatService.fetchRooms()
       .subscribe(results => {
-        console.log(results);
+        if (results['status'] !== "success") { return; }
+        this.rooms = results['data'];
+        console.log(this.rooms);
       })
+  }
+
+  onRoomClicked(room) {
+    this.roomClicked.emit(room);
   }
 
 }

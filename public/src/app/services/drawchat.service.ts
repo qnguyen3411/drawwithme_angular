@@ -24,4 +24,12 @@ export class DrawchatService {
   fetchRoom(id) {
 
   }
+
+  fetchRoomsByJoiner(joinerId) {
+    return this._http.get('/rooms?user=' + joinerId);
+  }
+
+  fetchRoomsByTag(tag) {
+    return this._http.get('/rooms?tag=' + tag);
+  }
 }

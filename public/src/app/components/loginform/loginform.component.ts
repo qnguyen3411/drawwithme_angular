@@ -34,6 +34,7 @@ export class LoginFormComponent implements OnInit {
         if (response['status'] === 'success') {
           const token = response['token'];
           this._sessionService.setUserToken(token);
+          this.bsModalRef.hide();
         }
       })
   }

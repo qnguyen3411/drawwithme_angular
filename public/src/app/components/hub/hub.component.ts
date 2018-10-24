@@ -4,6 +4,7 @@ import { SignupFormComponent } from '../signupform/signupform.component';
 import { CreateRoomFormComponent } from '../createroomform/createroomform.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-hub',
@@ -11,10 +12,14 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
   styleUrls: ['./hub.component.css']
 })
 export class HubComponent implements OnInit {
-
+  isLoggedIn = this._sessionService.getUserToken() !== null;
   bsModalRef: BsModalRef;
-  constructor(private modalService: BsModalService) { }
-
+  constructor(
+    private modalService: BsModalService,
+    private _sessionService: SessionService
+    ) { }
+  roomToShow = {}
+  
 
   ngOnInit() {
   }
@@ -33,7 +38,17 @@ export class HubComponent implements OnInit {
     this.bsModalRef = this.modalService.show(CreateRoomFormComponent);
 
     this.bsModalRef.content.closeBtnName = 'Close';
-
   }
+
+  setRoomToShow(room) {
+    this.roomToShow = room;
+  }
+
+  logOutClicked() {
+    this._sessionService.removeUserToken();
+    this.isLoggedIn = false;
+  }
+
+
 
 }

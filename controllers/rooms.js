@@ -35,11 +35,20 @@ module.exports = {
 
   index: async (req, res, next) => {
     try {
-      const rooms = await roomModel.getAll();
+      let rooms;
+      if (req.query.user) {
+        rooms = await roomModel.getByJoinedUser(req.query.user);
+      } else if (req.query.tag) {
+        rooms = await roomModel.getByTag(req.query.tag)
+      } else {
+        rooms = await roomModel.getAll();
+      }
       let roomList = []
       for (let i = 0; i < rooms.length; i++) {
         let tags = await roomModel.getRoomTags(rooms[i].id);
+        let joiners = await roomModel.getRoomJoiners(rooms[i].id)
         rooms[i].tags = tags.map(tag => tag.text);
+        rooms[i].users = joiners
         roomList.push(rooms[i]);
       }
       res.json({ status: 'success', data: roomList });

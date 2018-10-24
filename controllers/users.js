@@ -15,8 +15,6 @@ signToken = user => {
 
 module.exports =  {
   signUp: async (req, res, next) => {
-    console.log("CALLED USER SIGNUP")
-    console.log(req.body);      
     try {
       const {insertId} = await userModel.insert(req.body);
       const user = await userModel.getById(insertId);
@@ -28,18 +26,9 @@ module.exports =  {
   },
 
   signIn: async (req, res, next) => {
-    console.log("CALLED USER SIGNIN")
     const token = signToken(req.user)
     res.json({status: "success", token: token});
   },
 
-  secret: async (req, res, next) => {
-  },
-
-  reset: async (req, res, next) => {
-  },
-
-  all: async (req, res, next) => {
-  }
 
 }

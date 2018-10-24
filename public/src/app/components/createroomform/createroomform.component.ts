@@ -19,18 +19,23 @@ export class CreateRoomFormComponent implements OnInit {
     tags: ["test", "uhh", "test"]
   }
 
+  tagStr = "";
+
   constructor(
     public bsModalRef: BsModalRef,
     private _drawChatService: DrawchatService,
     private _sessionService: SessionService,
     private _router: Router
-  ){ }
+  ) { }
 
   ngOnInit() {
     this.title = "Make a new room!"
   }
 
-  onSubmit(){
+
+  onSubmit() {
+    this.tagStr = this.tagStr.replace(/[^a-zA-Z0-9\ ]/g, "");
+    this.postData.tags = this.tagStr.split(" ");
     this._drawChatService
       .createRoom(this.postData)
       .subscribe(response => {
@@ -38,7 +43,8 @@ export class CreateRoomFormComponent implements OnInit {
           this._sessionService.setRoomJoinToken(response['token']);
           console.log(this._sessionService.getRoomJoinToken());
           this.formDone.emit();
+          this.bsModalRef.hide();
         }
-     })
+      })
   }
 }

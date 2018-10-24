@@ -1,3 +1,22 @@
-<p>
-  roomlist works!
-</p>
+<ul class="list-group mx-1">
+
+    <li *ngFor="let room of rooms" 
+      class="list-group-item p-0 m-2" 
+      (click)="onRoomClicked(room)"
+      [ngClass]="{'list-group-item-secondary': room.is_active===0 }"
+    >
+      <h6 class="small m-2">
+        {{room['name']}}
+        <span class="badge badge-pill" 
+        [ngClass]="{
+          'badge-success': room.is_active===1,
+          'badge-danger' : room.is_active===0
+        }">
+        {{ room.is_active ? 'Live!' : 'Done'}}
+        </span>
+      </h6>
+      <img class="card-img" src="https://webstyle.unicomm.fsu.edu/img/placeholders/ratio-pref-16-9.png" alt="">
+      <p class="small mx-2 my-1">Created on: {{room['created_at'] | date: 'dd/MM/yyyy'}}</p>
+    </li>
+
+  </ul>

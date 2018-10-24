@@ -16,11 +16,5 @@ router.route('/signup')
 router.route('/signin')
   .post(validateBody(schemas.authSchema), passportSignIn, UsersController.signIn);
   
-router.route('/secret')
-  .get(UsersController.secret);
-
-router.route('/reset')
-  .get(UsersController.reset)
-
 module.exports = router;
 

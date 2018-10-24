@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
-import { createTokenForExternalReference } from '@angular/compiler/src/identifiers';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +28,7 @@ export class SessionService {
     return { headers: new HttpHeaders().set('Authorization', token) };
   }
 
-  // setToken() {
-  //   createTokenForExternalReference
-  // }
+  removeUserToken() {
+    return localStorage.removeItem('drawwithme_user_token');
+  }
 }

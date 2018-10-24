@@ -1,3 +1,80 @@
-<p>
-  room works!
-</p>
+<h1 *ngIf="!currentlyShowingRoom()" class="mt-5">
+  Welcome to drawwith.me!
+</h1>
+<div *ngIf="currentlyShowingRoom()">
+<div  class="row ml-1 mr-3 mt-5 pt-3">
+  <div class="col-2 mt-3 small">
+    <p class="m-2 border-bottom border-light text-center">Users:</p>
+
+    <p class="mb-1 ml-2"><a href="#">Bobeeehh</a></p>
+    <p class="mb-1 ml-2"><a href="#">Jimmmmm</a></p>
+    <p class="mb-1 ml-2"><a href="#">aksjdh123</a></p>
+    <p class="mb-1 ml-2"><a href="#">Bobeeehh</a></p>
+    <p class="mb-1 ml-2"><a href="#">Bobeeehh</a></p>
+  </div>
+  <div id="canvasContainer" class=" col-10 ml-auto mt-2 bg-light">
+    <div id="test" class="test bg-dark"></div>
+  </div>
+</div>
+<div class="col-11 mx-auto">
+  <div class="mx-auto mt-2 border-bottom">
+    <h2>
+      {{ roomToShow.name }}
+      <button class="btn btn-dark" [routerLink]="['/draw', roomToShow.id ]">Join!</button>
+    </h2>
+    <p>
+      <span *ngFor="let tag of roomToShow.tags" class="badge badge-secondary">{{tag}}</span>
+    </p>
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <button type="button" class="btn btn-secondary">Description</button>
+      <button type="button" class="btn btn-secondary">Gallery</button>
+      <!-- <button type="button" class="btn btn-secondary">Stats</button> -->
+    </div>
+  </div>
+
+  <div class="row mx-auto mt-2">
+    <div class="card col-md-3 col-sm-6 mt-1 mx-md-1 p-0 bg-light">
+      <img class="card-img" src="https://webstyle.unicomm.fsu.edu/img/placeholders/ratio-pref-16-9.png" alt="">
+      <div class="card-img-overlay p-0">
+        <h6 class="card-title">1/1/2011</h6>
+      </div>
+    </div>
+    <div class="card col-md-3 col-sm-6 mt-1 mx-md-auto p-0 bg-light">
+      <img class="card-img" src="https://webstyle.unicomm.fsu.edu/img/placeholders/ratio-pref-16-9.png" alt="">
+      <div class="card-img-overlay p-0">
+        <h6 class="card-title">1/1/2011</h6>
+      </div>
+    </div>
+    <div class="card col-md-3 col-sm-6 mt-1 mx-md-1 p-0 bg-light">
+      <img class="card-img" src="https://webstyle.unicomm.fsu.edu/img/placeholders/ratio-pref-16-9.png" alt="">
+      <div class="card-img-overlay p-0">
+        <h6 class="card-title">1/1/2011</h6>
+      </div>
+    </div>
+    <div class="card col-md-3 col-sm-6 mt-1 mx-md-1 p-0 bg-light">
+      <img class="card-img" src="https://webstyle.unicomm.fsu.edu/img/placeholders/ratio-pref-16-9.png" alt="">
+      <div class="card-img-overlay p-0">
+        <h6 class="card-title">1/1/2011</h6>
+      </div>
+    </div>
+    <div class="card col-md-3 col-sm-6 mt-1 mx-md-auto p-0 bg-light">
+      <img class="card-img" src="https://webstyle.unicomm.fsu.edu/img/placeholders/ratio-pref-16-9.png" alt="">
+      <div class="card-img-overlay p-0">
+        <h6 class="card-title">1/1/2011</h6>
+      </div>
+    </div>
+    <div class="card col-md-3 col-sm-6 mt-1 mx-md-1 p-0 bg-light">
+      <img class="card-img" src="https://webstyle.unicomm.fsu.edu/img/placeholders/ratio-pref-16-9.png" alt="">
+      <div class="card-img-overlay p-0">
+        <h6 class="card-title">1/1/2011</h6>
+      </div>
+    </div>
+    <div class="card col-md-3 col-sm-6 mt-1 mx-md-1 p-0 bg-light">
+      <img class="card-img" src="https://webstyle.unicomm.fsu.edu/img/placeholders/ratio-pref-16-9.png" alt="">
+      <div class="card-img-overlay p-0">
+        <h6 class="card-title">1/1/2011</h6>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

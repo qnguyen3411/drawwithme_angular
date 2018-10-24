@@ -4,24 +4,26 @@ module.exports = {
 
   getAll: function () {
     const columns = [
-      'rooms.id', 
-      'users.username', 
+      'rooms.id',
+      'rooms.name',
+      'users.username',
       'rooms.creator_id',
       'rooms.created_at',
       'rooms.is_active'
     ]
     const sql =
-      "SELECT ??" 
+      "SELECT ??"
       + " FROM rooms"
       + " LEFT JOIN users"
-      + " ON rooms.creator_id = users.id" ;
+      + " ON rooms.creator_id = users.id";
     return db.query(sql, [columns]);
   },
 
   getById: function (id) {
     const columns = [
-      'rooms.id', 
-      'users.username', 
+      'rooms.id',
+      'rooms.name',
+      'users.username',
       'rooms.creator_id',
       'rooms.created_at',
       'rooms.is_active'
@@ -34,6 +36,47 @@ module.exports = {
     return db.query(sql, [columns, id]);
   },
 
+  getByTag: function (tagText) {
+    const columns = [
+      'rooms.id',
+      'rooms.name',
+      'users.username',
+      'rooms.creator_id',
+      'rooms.created_at',
+      'rooms.is_active'
+    ]
+    const sql =
+      'SELECT ?? '
+      + ' FROM rooms_tags'
+      + ' LEFT JOIN rooms'
+      + ' ON room_id = rooms.id'
+      + ' LEFT JOIN tags'
+      + ' ON tag_id = tags.id'
+      + ' LEFT JOIN users'
+      + ' ON rooms.creator_id = users.id'
+      + ' WHERE tags.text = ?';
+
+    return db.query(sql, [columns, tagText]);
+  },
+
+  getByJoinedUser: function (userId) {
+    const columns = [
+      'rooms.id',
+      'rooms.name',
+      'users.username',
+      'rooms.creator_id',
+      'rooms.created_at',
+      'rooms.is_active'
+    ]
+    const sql =
+      "SELECT ?? "
+      + " FROM users_rooms"
+      + " LEFT JOIN rooms ON rooms.id = room_id"
+      + " LEFT JOIN users ON users.id = user_id"
+      + " WHERE users.id = ?"
+    return db.query(sql, [columns, userId]);
+  },
+
   getRoomTags: function (roomId) {
     const sql =
       "SELECT tags.text FROM rooms_tags"
@@ -41,6 +84,15 @@ module.exports = {
       + " ON tags.id = rooms_tags.tag_id"
       + " WHERE rooms_tags.room_id = ?";
     return db.query(sql, [roomId])
+  },
+
+  getRoomJoiners: function (roomId) {
+    const sql =
+      "SELECT users.id, users.username"
+      + " FROM users_rooms"
+      + " LEFT JOIN users ON users.id = user_id"
+      + " WHERE room_id = ?"
+    return db.query(sql, [roomId]);
   },
 
 
