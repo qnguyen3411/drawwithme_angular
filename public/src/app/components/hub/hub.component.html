@@ -17,6 +17,13 @@
   </ul>
 </nav>
 <div id="mainContainer" class="bg-warning">
-  <app-room [roomToShow]="roomToShow"></app-room>
-  <app-roomlist (roomClicked)="setRoomToShow($event)"></app-roomlist>
+  <app-room 
+    [roomToShow]="roomToShow"
+    (queryEmitted)="queryRoomList($event)"
+  ></app-room>
+  <app-roomlist 
+    (roomClicked)="setRoomToShow($event)"
+    [query]="currQuery" 
+  >
+  </app-roomlist>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { LoginFormComponent } from '../loginform/loginform.component';
 import { SignupFormComponent } from '../signupform/signupform.component';
 import { CreateRoomFormComponent } from '../createroomform/createroomform.component';
@@ -12,6 +12,7 @@ import { SessionService } from '../../services/session.service';
   styleUrls: ['./hub.component.css']
 })
 export class HubComponent implements OnInit {
+  currQuery = {};
   isLoggedIn = this._sessionService.getUserToken() !== null;
   bsModalRef: BsModalRef;
   constructor(
@@ -49,6 +50,9 @@ export class HubComponent implements OnInit {
     this.isLoggedIn = false;
   }
 
+  queryRoomList(e) {
+    this.currQuery = e;
+  }
 
 
 }
