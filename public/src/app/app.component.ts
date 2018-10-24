@@ -1,4 +1,4 @@
-import { Component, TemplateRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { LoginFormComponent } from './components/loginform/loginform.component';
 import { SignupFormComponent } from './components/signupform/signupform.component';
 import { CreateRoomFormComponent } from './components/createroomform/createroomform.component';
@@ -27,6 +27,7 @@ export class AppComponent {
 
   showCreateRoomForm() {
     this.bsModalRef = this.modalService.show(CreateRoomFormComponent);
+    
     this.bsModalRef.content.closeBtnName = 'Close';
 
   }

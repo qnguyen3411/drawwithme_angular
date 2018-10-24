@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DrawchatService } from '../../services/drawchat.service';
 
 @Component({
   selector: 'app-roomlist',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RoomlistComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private _drawChatService: DrawchatService
+  ) { }
 
   ngOnInit() {
+    this._drawChatService.fetchRooms()
+      .subscribe(results => {
+        console.log(results);
+      })
   }
 
 }

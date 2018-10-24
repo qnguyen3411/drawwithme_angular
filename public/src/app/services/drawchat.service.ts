@@ -13,8 +13,15 @@ export class DrawchatService {
     ) { }
 
   createRoom(data) {
-    console.log("CALLED CREATE ROOM")
     const header = this._sessionService.getTokenHeader();
     return this._http.post('/rooms/create', data, header);
+  }
+
+  fetchRooms() {
+    return this._http.get('/rooms');
+  }
+
+  fetchRoom(id) {
+
   }
 }

@@ -25,6 +25,3 @@ app.listen(8000, () => {
   console.log("LISTENING AT PORT 8000")
 })
 
-process.on('exit', function() {
-  console.log("EXITTING")
-})

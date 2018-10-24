@@ -20,7 +20,6 @@ passport.use(new JwtStrategy({
     const result = await userModel.getById(id);
     const user = Array.isArray(result) ? result[0] : result;
     
-    // Otherwise, return the user
     done(null, user);
   } catch (error) {
     done(error, false);

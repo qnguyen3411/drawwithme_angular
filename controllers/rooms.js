@@ -1,20 +1,10 @@
-const JWT =  require('jsonwebtoken');
-const { JWT_SECRET } = require('../configurations')
 
 const roomModel = require('../models/room');
 
-signRoomToken = (roomId, userId) => {
-  return JWT.sign({
-    iss: 'dingleberry', // issuer
-    sub: {roomId, userId}, // subject
-    iat: new Date().getTime(), // issued at
-    exp: new Date().setDate(new Date().getDate() + 1) // expiration
-  }, JWT_SECRET );
-}
 
 module.exports = {
   create: async (req, res, next) => {
-    if (!req.user) { res.json({status: 'error', error: err}); }
+    if (!req.user) { res.json({ status: 'error', error: err }); }
     const { name, tags } = req.body;
     const { id: creatorId } = req.user;
     let roomId;
@@ -22,28 +12,43 @@ module.exports = {
       .then(result => {
         roomId = result.insertId;
         return Promise.all(tags.map(roomModel.addTag));
-      }).then(() => {
-        return Promise.all(
-          tags.map(tag => roomModel.addTagToRoom(roomId, tag)))
-      }).then(() => {
-        return roomModel.addJoiner(roomId, creatorId);
-      }).then(() => {
-        const token = signRoomToken(roomId, creatorId);
-        res.json({status: 'success', token: token});
+      }).then(() => Promise.all(
+        tags.map(tag => roomModel.addTagToRoom(roomId, tag)))
+      ).then(() => {
+        roomModel.addJoiner(roomId, creatorId);
+        res.json({ status: 'success', data: {} });
       }).catch(err => {
-        res.json({status: 'error', error: err});
+        res.json({ status: 'error', error: err });
       });
   },
 
   join: async (req, res, next) => {
-    const joinerId = (req.user) ? req.user.id : 0;
-    const {roomId} = req.body;
-    roomModel.addJoiner(roomId, joinerId)
-      .then(() => {
-        const token = signRoomToken(roomId, joinerId);
-        res.json({status: 'success', token: token});
-      }).catch(err => {
-        res.json({status: 'error', error: err});
-      });
+    if (!req.user) { return; }
+    const roomId = req.params.id;
+    try {
+      await roomModel.addJoiner(roomId, req.user.id)
+      res.json({ status: 'success', data: {} });
+    } catch (error) {
+      res.json({ status: 'error', error: err });
+    }
+  },
+
+  index: async (req, res, next) => {
+    try {
+      const rooms = await roomModel.getAll();
+      let roomList = []
+      for (let i = 0; i < rooms.length; i++) {
+        let tags = await roomModel.getRoomTags(rooms[i].id);
+        rooms[i].tags = tags.map(tag => tag.text);
+        roomList.push(rooms[i]);
+      }
+      res.json({ status: 'success', data: roomList });
+    } catch (err) {
+      res.json({ status: 'error', error: err });
+    }
+  },
+
+  getOne: async (req, res, next) => {
+    res.json({ status: 'error', error: err });
   }
 }
