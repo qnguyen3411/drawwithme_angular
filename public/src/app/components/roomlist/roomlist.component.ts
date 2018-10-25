@@ -1,7 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { DrawchatService } from '../../services/drawchat.service';
-import { query } from '@angular/core/src/render3/query';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-roomlist',
@@ -17,9 +15,7 @@ export class RoomlistComponent implements OnInit, OnChanges {
     private _drawChatService: DrawchatService
   ) { }
 
-  ngOnInit() {
-   
-  }
+  ngOnInit() { }
 
   ngOnChanges(changes: SimpleChanges) {
     let obs = this._drawChatService.fetchRooms()
@@ -38,7 +34,4 @@ export class RoomlistComponent implements OnInit, OnChanges {
     this.roomClicked.emit(room);
   }
 
-  handleQuery(e) {
-    console.log("DID IT BOY WE AT ROOM LIST")
-  }
 }

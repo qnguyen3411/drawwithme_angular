@@ -5,8 +5,6 @@ const bcrypt = require('bcryptjs');
 module.exports = {
   validateBody: (schema) => {
     return (req, res, next) => {
-      console.log("VALIDATING")
-      console.log(req.body)
       const result = Joi.validate(req.body, schema);
       if (result.error) {
         console.log("NOPE")
@@ -16,7 +14,6 @@ module.exports = {
       // validated info will be req.value.body
       if (!req.value ) { req.value = {}; }
       req.value['body'] = result.value;
-      console.log("YAY")
       next();
     }
   },
@@ -29,6 +26,7 @@ module.exports = {
 
     roomSchema: Joi.object().keys({
       name: Joi.string().min(3).max(30).required(),
+      description: Joi.string().max(1000),
       tags: Joi.array().items(Joi.string().alphanum())
     })
   },

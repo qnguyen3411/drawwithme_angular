@@ -97,12 +97,12 @@ module.exports = {
 
 
   insert: function (data) {
-    const { name, creatorId } = data;
+    const { name, description, creatorId } = data;
     const sql =
       "INSERT INTO rooms"
-      + " (name, creator_id, created_at, updated_at)"
-      + " VALUES (?, ?, NOW(), NOW())";
-    return db.query(sql, [name, creatorId]);
+      + " (name, description, creator_id, expires_at)"
+      + " VALUES (?, ?, ?, DATE_ADD(NOW(), INTERVAL 4 HOUR))";
+    return db.query(sql, [name, description, creatorId]);
   },
 
   addJoiner(roomId, joinerId) {

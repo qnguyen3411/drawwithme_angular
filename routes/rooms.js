@@ -21,3 +21,4 @@ router.route('/')
 router.route('/:id')
   .get(roomController.getOne);
 module.exports = router;
+

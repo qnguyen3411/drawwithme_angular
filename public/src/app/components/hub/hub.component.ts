@@ -1,10 +1,15 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+
+
 import { LoginFormComponent } from '../loginform/loginform.component';
 import { SignupFormComponent } from '../signupform/signupform.component';
 import { CreateRoomFormComponent } from '../createroomform/createroomform.component';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { SessionService } from '../../services/session.service';
+
 
 @Component({
   selector: 'app-hub',
@@ -13,11 +18,12 @@ import { SessionService } from '../../services/session.service';
 })
 export class HubComponent implements OnInit {
   currQuery = {};
-  isLoggedIn = this._sessionService.getUserToken() !== null;
+
   bsModalRef: BsModalRef;
   constructor(
     private modalService: BsModalService,
-    private _sessionService: SessionService
+    private _sessionService: SessionService,
+    private _router: Router,
     ) { }
   roomToShow = {}
   
@@ -37,7 +43,11 @@ export class HubComponent implements OnInit {
 
   showCreateRoomForm() {
     this.bsModalRef = this.modalService.show(CreateRoomFormComponent);
-
+    (this.bsModalRef.content as CreateRoomFormComponent).formDone
+    .subscribe(roomId => {
+      console.log("YAY")
+      this._router.navigate(['/draw/' + roomId]);
+    })
     this.bsModalRef.content.closeBtnName = 'Close';
   }
 
@@ -47,11 +57,14 @@ export class HubComponent implements OnInit {
 
   logOutClicked() {
     this._sessionService.removeUserToken();
-    this.isLoggedIn = false;
   }
 
   queryRoomList(e) {
     this.currQuery = e;
+  }
+
+  isLoggedIn() {
+    return this._sessionService.getUserToken() !== null;
   }
 
 

@@ -15,13 +15,17 @@ passport.use(new JwtStrategy({
   secretOrKey: JWT_SECRET
 }, async (payload, done) => {
   try {
+    console.log("GOT TOKEN")
+    console.log(payload)
     // Find the user specified in token
     const id = payload.sub.id;
     const result = await userModel.getById(id);
+    console.log(id, result)
     const user = Array.isArray(result) ? result[0] : result;
-    
+    console.log(user);
     done(null, user);
   } catch (error) {
+    console.log(error)
     done(error, false);
   }
 }));

@@ -5,10 +5,10 @@ const roomModel = require('../models/room');
 module.exports = {
   create: async (req, res, next) => {
     if (!req.user) { res.json({ status: 'error', error: err }); }
-    const { name, tags } = req.body;
+    const { name, description, tags } = req.body;
     const { id: creatorId } = req.user;
     let roomId;
-    roomModel.insert({ name, creatorId })
+    roomModel.insert({ name, description, creatorId })
       .then(result => {
         roomId = result.insertId;
         return Promise.all(tags.map(roomModel.addTag));
@@ -16,8 +16,9 @@ module.exports = {
         tags.map(tag => roomModel.addTagToRoom(roomId, tag)))
       ).then(() => {
         roomModel.addJoiner(roomId, creatorId);
-        res.json({ status: 'success', data: {} });
+        res.json({ status: 'success', data:  roomId  });
       }).catch(err => {
+        console.log(err)
         res.json({ status: 'error', error: err });
       });
   },

@@ -5,6 +5,7 @@ const userModel = require('../models/user')
 
 
 signToken = user => {
+
   return JWT.sign({
     iss: 'dingleberry', // issuer
     sub: { id: user.id, username: user.username }, // subject
@@ -18,7 +19,7 @@ module.exports =  {
     try {
       const {insertId} = await userModel.insert(req.body);
       const user = await userModel.getById(insertId);
-      const token = signToken(user);
+      const token = signToken(user[0]);
       res.json({status: "success", token: token});
     } catch (e) {
       res.json({status: "error", error: e});

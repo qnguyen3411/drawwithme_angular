@@ -16,6 +16,7 @@ export class CreateRoomFormComponent implements OnInit {
 
   postData = {
     name: "",
+    description: "",
     tags: ["test", "uhh", "test"]
   }
 
@@ -29,6 +30,7 @@ export class CreateRoomFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log("OK")
     this.title = "Make a new room!"
   }
 
@@ -39,10 +41,10 @@ export class CreateRoomFormComponent implements OnInit {
     this._drawChatService
       .createRoom(this.postData)
       .subscribe(response => {
+        console.log(response);
         if (response['status'] === 'success') {
-          this._sessionService.setRoomJoinToken(response['token']);
-          console.log(this._sessionService.getRoomJoinToken());
-          this.formDone.emit();
+          console.log("RECEIVED ROOM ID", response['data'])
+          this.formDone.emit(response['data']);
           this.bsModalRef.hide();
         }
       })
