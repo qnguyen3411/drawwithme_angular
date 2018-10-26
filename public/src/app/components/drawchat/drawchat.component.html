@@ -24,9 +24,6 @@
       </div>
 
       <div id="toolSection" class="bg-warning text-center ml-auto">
-        <div><button class="btn disabled"><i class="fas fa-pen"></i></button></div>
-        <div><button class="btn active"><i class="fas fa-eraser"></i></button></div>
-        <div><button class="btn disabled"><i class="fas fa-eye-dropper"></i></button></div>
       </div>
       
       <div id="paletteSection" class="bg-dark">
@@ -62,17 +59,21 @@
           </div>
         </div>
         <div id="palette">
-          <canvas width="600" height="114"></canvas>
+          <img class="d-none" src="assets/palette.png" alt="image" id="palImg">
+          <canvas width="600" height="114">
+          </canvas>
         </div>
       </div>
     </div>
 
 
     <div id="userSection" class="bg-success">
-      <div id="roomAction" class=" mx-2 mt-2 bg-info">
-          <button class="btn-dark"><i class="fas fa-sign-out-alt"></i></button>
+      <div id="roomAction" class=" mx-2 mt-2 bg-info row">
+        <div id="timer" class="col-7 small"></div>
+        <button [routerLink]="['/']" class="btn-dark col-4 small">Exit</button>
       </div>
       <div id="userList" class=" mx-2 my-2 bg-light p-2">
+        <!-- <p class="mb-0 font-weight-bold text">bobbey</p>
         <p class="mb-0 font-weight-bold text">bobbey</p>
         <p class="mb-0 font-weight-bold text">bobbey</p>
         <p class="mb-0 font-weight-bold text">bobbey</p>
@@ -83,8 +84,7 @@
         <p class="mb-0 font-weight-bold text">bobbey</p>
         <p class="mb-0 font-weight-bold text">bobbey</p>
         <p class="mb-0 font-weight-bold text">bobbey</p>
-        <p class="mb-0 font-weight-bold text">bobbey</p>
-        <p class="mb-0 font-weight-bold text">bobbey</p>
+        <p class="mb-0 font-weight-bold text">bobbey</p> -->
       </div>
       <div id="chatLog" class=" mx-2 p-2 bg-dark">
         <div id="messages">
