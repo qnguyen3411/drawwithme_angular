@@ -17,6 +17,7 @@ app.use(bodyParser.json());
 app.use('/users', require('./routes/users'));
 app.use('/rooms', require('./routes/rooms'));
 
+
 app.all("*", (req, res) => {
   res.sendFile(__dirname + "/./public/dist/public/index.html")
 });

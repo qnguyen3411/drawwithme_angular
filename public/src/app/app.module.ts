@@ -14,6 +14,7 @@ import { LoginFormComponent } from './components/loginform/loginform.component';
 import { SignupFormComponent } from './components/signupform/signupform.component';
 import { CreateRoomFormComponent } from './components/createroomform/createroomform.component';
 import { HubComponent } from './components/hub/hub.component';
+import { PlaybackComponent } from './components/playback/playback.component';
 
 // SERVICES
 import { UserService } from './services/user.service';
@@ -32,6 +33,7 @@ import { SessionService } from './services/session.service';
     CreateRoomFormComponent,
     DrawchatComponent,
     HubComponent,
+    PlaybackComponent,
     // KeepHtmlPipe
   ],
   imports: [

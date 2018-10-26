@@ -15,7 +15,8 @@ export class RoomlistComponent implements OnInit, OnChanges {
     private _drawChatService: DrawchatService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() { 
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     let obs = this._drawChatService.fetchRooms()

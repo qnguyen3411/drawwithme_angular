@@ -29,6 +29,7 @@ export class HubComponent implements OnInit {
   
 
   ngOnInit() {
+    
   }
 
   showLoginForm() {

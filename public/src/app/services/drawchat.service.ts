@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SessionService } from './session.service';
-
+import { map, last, tap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
@@ -31,5 +31,10 @@ export class DrawchatService {
 
   fetchRoomsByTag(tag) {
     return this._http.get('/rooms?tag=' + tag);
+  }
+
+  fetchLog(id) {
+    return this._http.get(`/rooms/${id}/log`, {responseType: "text"})
+    
   }
 }

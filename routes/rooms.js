@@ -1,5 +1,6 @@
 const express = require('express');
-
+const fs = require('fs')
+const es = require('event-stream');
 const router = require('express-promise-router')();
 const passport = require('passport');
 const passportConf = require('../passport');
@@ -20,5 +21,18 @@ router.route('/')
 
 router.route('/:id')
   .get(roomController.getOne);
+
+router.route('/:id/log').get((req, res) => {
+  const id = req.params.id;
+  let s = fs.createReadStream(__dirname + `/../../strokeLogs/${id}.txt`)
+    .pipe(es.split()) 
+    .pipe(res)
+    .on('error', function (err) {
+      console.log('Error while reading file.', err);
+    })
+    .on('end', function () {
+      console.log('Read entire file.')
+    });
+})
 module.exports = router;
 
