@@ -1,38 +1,39 @@
-<h1 *ngIf="!currentlyShowingRoom()" class="mt-5">
+<h1 *ngIf="!currentlyShowingRoom()" id="greeting">
   Welcome to drawwith.me!
 </h1>
 <div *ngIf="currentlyShowingRoom()">
   <div class="row ml-1 mr-3 mt-5 pt-3">
-    <div class="col-2 mt-3 small">
+    <div class="col-2 mt-3 small font-weight-bold text-dark">
       <p class="m-2 border-bottom border-light text-center">Users:</p>
 
       <p *ngFor="let user of roomToShow.users" class="mb-1 ml-2">
         <a (click)="userClicked(user.id)">{{user.username}}</a>
       </p>
     </div>
-    <div id="canvasContainer" class=" col-10 ml-auto mt-2 bg-light">
-      <app-playback [roomId]=roomToShow.id></app-playback>
+    <div id="playbackContainer" class=" col-10 ml-auto mt-2">
+      <div id="canvasContainer">
+        <app-playback [roomId]=roomToShow.id></app-playback>
+      </div>
     </div>
   </div>
-  <div class="col-11 mx-auto">
+  <div class="col-10 ml-auto mb-5">
     <div class="mx-auto mt-2 border-bottom">
       <h2>
         {{ roomToShow.name }}
-        <button class="btn btn-dark" [routerLink]="['/draw', roomToShow.id ]">Join!</button>
+        <button *ngIf="roomToShow.isActive" class="btn btn-dark" [routerLink]="['/draw', roomToShow.id ]">Join!</button>
       </h2>
       <p>
-        <span *ngFor="let tag of roomToShow.tags" class="badge badge-secondary" (click)="tagClicked(tag)">
+        <span *ngFor="let tag of roomToShow.tags" class="badge badge-secondary mx-1" (click)="tagClicked(tag)">
           {{tag}}
         </span>
       </p>
       <div class="btn-group" role="group" aria-label="Basic example">
         <button type="button" class="btn btn-secondary">Description</button>
-        <button type="button" class="btn btn-secondary">Gallery</button>
       </div>
     </div>
 
     <div class="row mx-auto mt-2">
-        {{ roomToShow.description }}
+      {{ roomToShow.description }}
     </div>
   </div>
 </div>

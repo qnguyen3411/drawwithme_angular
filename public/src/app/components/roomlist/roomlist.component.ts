@@ -26,8 +26,15 @@ export class RoomlistComponent implements OnInit, OnChanges {
       obs = this._drawChatService.fetchRoomsByTag(this.query['tag'])
     }
     obs.subscribe(results => {
+      console.log(results);
       if (results['status'] !== "success") { return; }
       this.rooms = results['data'];
+
+      const now = new Date();
+      for (let i = 0; i < this.rooms.length; i++) {
+        this.rooms[i]['isActive'] = new Date(this.rooms[i]['expires_at']) > now;
+      }
+      this.rooms.reverse()
     })
   }
 

@@ -2,10 +2,13 @@ const db = require('../db/wrapper');
 
 module.exports = {
 
+
   getAll: function () {
     const columns = [
       'rooms.id',
       'rooms.name',
+      'rooms.description',
+      'rooms.expires_at',
       'users.username',
       'rooms.creator_id',
       'rooms.created_at',
@@ -23,6 +26,8 @@ module.exports = {
     const columns = [
       'rooms.id',
       'rooms.name',
+      'rooms.description',
+      'rooms.expires_at',
       'users.username',
       'rooms.creator_id',
       'rooms.created_at',
@@ -40,6 +45,8 @@ module.exports = {
     const columns = [
       'rooms.id',
       'rooms.name',
+      'rooms.description',
+      'rooms.expires_at',
       'users.username',
       'rooms.creator_id',
       'rooms.created_at',
@@ -63,6 +70,8 @@ module.exports = {
     const columns = [
       'rooms.id',
       'rooms.name',
+      'rooms.description',
+      'rooms.expires_at',
       'users.username',
       'rooms.creator_id',
       'rooms.created_at',
@@ -114,7 +123,6 @@ module.exports = {
   },
 
   addTag: function (tag) {
-    console.log("INSERTING THIS TAG: ", tag)
     const sql =
       "INSERT INTO tags"
       + " (text, created_at, updated_at)"

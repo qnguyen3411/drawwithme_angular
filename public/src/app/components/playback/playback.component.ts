@@ -28,7 +28,7 @@ export class PlaybackComponent implements OnInit {
     this.upCtx = this.upperRef.nativeElement.getContext('2d');
   }
 
-  canvasClicked() {
+  playClicked() {
     if (this.playbackStarted) { return; }
     this.playbackStarted = true;
     this._drawChatService.fetchLog(this.roomId).subscribe(data => {
@@ -42,7 +42,7 @@ export class PlaybackComponent implements OnInit {
     let strokeIndex = 0;
     let pathIndex = 0;
 
-    let currStrokeObj: Stroke;
+    let currStrokeObj: tStroke;
     let currStroke = this.strokeLog[0]
     let x = currStroke['x'] as Array<number>
     let y = currStroke['y'] as Array<number>
@@ -50,7 +50,7 @@ export class PlaybackComponent implements OnInit {
     const playback = setInterval(() => {
       if (strokeIndex >= this.strokeLog.length) { clearInterval(playback) }
       if (pathIndex === 0) {
-        currStrokeObj = new Stroke(this.upCtx)
+        currStrokeObj = new tStroke(this.upCtx)
           .setColor(currStroke['rgba'])
           .setSize(currStroke['size'])
           .startAt(currStroke['x'][0], currStroke['y'][0])
@@ -78,7 +78,7 @@ export class PlaybackComponent implements OnInit {
 
 }
 
-class Stroke {
+class tStroke {
   ctx: CanvasRenderingContext2D;
   rgba: any[];
   size: number;

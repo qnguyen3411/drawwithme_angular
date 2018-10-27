@@ -3,24 +3,24 @@ const roomModel = require('../models/room');
 
 
 module.exports = {
+  // Expects: 
+  // User object
+  // Form data input
   create: async (req, res, next) => {
     if (!req.user) { res.json({ status: 'error', error: err }); }
     const { name, description, tags } = req.body;
     const { id: creatorId } = req.user;
-    let roomId;
-    roomModel.insert({ name, description, creatorId })
-      .then(result => {
-        roomId = result.insertId;
-        return Promise.all(tags.map(roomModel.addTag));
-      }).then(() => Promise.all(
-        tags.map(tag => roomModel.addTagToRoom(roomId, tag)))
-      ).then(() => {
-        roomModel.addJoiner(roomId, creatorId);
-        res.json({ status: 'success', data:  roomId  });
-      }).catch(err => {
-        console.log(err)
-        res.json({ status: 'error', error: err });
-      });
+    
+    try {
+      const result = await roomModel.insert({ name, description, creatorId });
+      const roomId = result.insertId;
+      await Promise.all(tags.map(roomModel.addTag));
+      await Promise.all(tags.map(tag => roomModel.addTagToRoom(roomId, tag)));
+      await roomModel.addJoiner(roomId, creatorId);
+      res.json({ status: 'success', data: roomId });
+    } catch (err) {
+      res.json({ status: 'error', error: err });
+    }
   },
 
   join: async (req, res, next) => {

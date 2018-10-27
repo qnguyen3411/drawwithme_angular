@@ -20,3 +20,7 @@ app-room {
   margin-right: -10px;
   overflow: scroll;
 }
+
+.bg-lightgrey {
+  background-color: rgb(214, 226, 230)
+}

@@ -1,2 +1,9 @@
-<canvas width="1820" height="1024" #lower id="lower"></canvas>
-<canvas (click)="canvasClicked()" width="1820" height="1024" #upper id="upper"></canvas>
+
+<div id="canvasContainer">
+  <canvas width="1820" height="1024" #lower id="lower"></canvas>
+  <canvas width="1820" height="1024" #upper id="upper"></canvas>
+</div>
+
+<div *ngIf="!playbackStarted" id="blackscreen" (click)="playClicked()">
+  <img id="playbutton" src="assets/playbutton.png">
+</div>

@@ -10,3 +10,30 @@
   top: 0px;
   left: 0px;
 }
+
+#blackscreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 96%;
+  margin-left: 2%; 
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9;
+}
+
+#playbutton {
+  position: relative;
+  width:20%;
+  height:auto;
+  top: 30%;
+  left: 40%
+}
+
+#canvasContainer {
+  position: relative;
+  top: 0;
+  left: 0;
+  padding-top: 56.25%;
+  overflow: scroll;
+}
