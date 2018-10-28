@@ -1,0 +1,19 @@
+#canvasFrame {
+  position: relative;
+  width: calc(100vw - 250px);
+  height: calc(100vh - 150px);
+}
+
+#brushSettings {
+  width: calc(100vw - 250px);
+  height: 150px;
+  background-color: aliceblue;
+}
+
+#spy {
+  position: fixed;
+  top:0px;
+  left:0px;
+  color: black;
+  z-index: 10;
+}

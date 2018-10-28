@@ -1,5 +1,4 @@
-import { Component, OnInit, Compiler, ViewChild, Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, OnInit, Input, Compiler, ViewChild } from '@angular/core';
 import { Brush } from '../../draw_modules/brush';
 import { MouseposService } from '../../services/mousepos.service';
 @Component({
@@ -13,6 +12,8 @@ export class DrawchatCanvasComponent implements OnInit {
   @ViewChild('base') baseCanvas;
   @ViewChild('self') selfCanvas;
 
+  @Input() brushSettings;
+
   baseCtx: CanvasRenderingContext2D;
   selfCtx: CanvasRenderingContext2D;
   myBrush: Brush;
@@ -21,7 +22,6 @@ export class DrawchatCanvasComponent implements OnInit {
   constructor(
     private compiler: Compiler,
     private mouse: MouseposService,
-    @Inject(DOCUMENT) private document,
     ) {}
 
   ngOnInit() {
@@ -34,8 +34,8 @@ export class DrawchatCanvasComponent implements OnInit {
     const {x, y} = this.mouse.getMousePos(e, this.baseCtx.canvas);
     if (e.buttons === 1) {
       this.myBrush
-        .setColor([23, 100, 0, 0.4])
-        .setSize(20)
+        .setColor(this.brushSettings['rgba'])
+        .setSize(this.brushSettings['size'])
         .startAt(x, y)
         .drawTo(x, y);
     }

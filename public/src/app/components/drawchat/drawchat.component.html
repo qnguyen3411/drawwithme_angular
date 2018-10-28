@@ -1,1 +1,7 @@
-<app-drawchat-canvas></app-drawchat-canvas>
+<p id="spy">{{brushSettings | json}}</p>
+<div id="canvasFrame">
+<app-drawchat-canvas [(brushSettings)]="brushSettings"></app-drawchat-canvas>
+</div>
+<div id="brushSettings">
+<app-drawchat-sliders [(brushSettings)]="brushSettings"></app-drawchat-sliders>
+</div>

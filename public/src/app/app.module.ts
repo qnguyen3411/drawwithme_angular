@@ -16,6 +16,7 @@ import { CreateRoomFormComponent } from './components/createroomform/createroomf
 import { HubComponent } from './components/hub/hub.component';
 import { PlaybackComponent } from './components/playback/playback.component';
 import { DrawchatCanvasComponent } from './components/drawchat-canvas/drawchat-canvas.component';
+import { DrawchatSlidersComponent } from './components/drawchat-sliders/drawchat-sliders.component';
 
 // SERVICES
 import { UserService } from './services/user.service';
@@ -36,6 +37,7 @@ import { SessionService } from './services/session.service';
     HubComponent,
     PlaybackComponent,
     DrawchatCanvasComponent,
+    DrawchatSlidersComponent,
     // KeepHtmlPipe
   ],
   imports: [

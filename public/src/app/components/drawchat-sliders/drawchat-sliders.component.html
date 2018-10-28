@@ -1,0 +1,63 @@
+<div id="color" class="sliderContainer">
+  <button (click)="changeMode('rgba')" [ngClass]="{'inactive': currMode === 'hsla' }">RGB</button>
+  <button (click)="changeMode('hsla')" [ngClass]="{'inactive': currMode === 'rgba' }">HSL</button>
+  <div class="slider">
+    <label class="sliderInitial">{{currMode == 'rgba' ? 'R' : 'H'}}</label>
+    <input 
+      type="range" 
+      name="colorSlider1Val" 
+      [(ngModel)]="colorSlider1Val" 
+      (change)="updateBrushSettings()"
+      min="1" max="{{currMode == 'rgba' ? 255 : 360}}">
+    <label class="sliderVal">{{colorSlider1Val}}</label>
+  </div>
+
+  <div class="slider">
+    <label class="sliderInitial">{{currMode == 'rgba' ? 'G' : 'S'}}</label>
+    <input 
+      type="range" 
+      name="colorSlider2Val"
+      [(ngModel)]="colorSlider2Val"
+      (change)="updateBrushSettings()"
+      min="1" max="{{currMode == 'rgba' ? 255 : 100}}">
+    <label class="sliderVal">{{colorSlider2Val}}</label>
+
+  </div>
+
+  <div class="slider">
+    <label class="sliderInitial">{{currMode == 'rgba' ? 'B' : 'L'}}</label>
+    <input 
+      type="range" 
+      name="colorSlider3Val"
+      [(ngModel)]="colorSlider3Val"
+      (change)="updateBrushSettings()"
+      min="1" max="{{currMode == 'rgba' ? 255 : 100}}">
+    <label class="sliderVal">{{colorSlider3Val}}</label>
+  </div>
+
+</div>
+
+<div id="brush" class="sliderContainer">
+
+  <div class="slider">
+    <label class="sliderInitial">Alpha</label>
+    <input 
+      type="range" 
+      name="alphaSliderVal"
+      [(ngModel)]="alphaSliderVal"
+      (change)="updateBrushSettings()"
+      min="0" max="1" step="0.1">
+    <label class="sliderVal">{{alphaSliderVal}}</label>
+  </div>
+
+  <div class="slider">
+    <label class="sliderInitial">Size</label>
+    <input 
+      type="range" 
+      name="sizeSliderVal"
+      [(ngModel)]="sizeSliderVal"
+      (change)="updateBrushSettings()"
+      min="0" max="100">
+    <label class="sliderVal">{{sizeSliderVal}}</label>
+  </div>
+</div>

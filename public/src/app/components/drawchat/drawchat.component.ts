@@ -4,6 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 
 import { SessionService } from '../../services/session.service';
+import { Brush } from 'src/app/draw_modules/brush';
 
 
 @Component({
@@ -12,8 +13,10 @@ import { SessionService } from '../../services/session.service';
   styleUrls: ['./drawchat.component.css']
 })
 export class DrawchatComponent implements OnInit, AfterViewInit {
-  
-  // container: HTMLElement;
+  brushSettings = {
+    rgba: Brush.default.rgba,
+    size: Brush.default.size,
+  }
 
   constructor(
     private _route: ActivatedRoute,
