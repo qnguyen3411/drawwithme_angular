@@ -1,10 +1,14 @@
 <div id="color" class="sliderContainer">
   <button (click)="changeMode('rgba')" [ngClass]="{'inactive': currMode === 'hsla' }">RGB</button>
   <button (click)="changeMode('hsla')" [ngClass]="{'inactive': currMode === 'rgba' }">HSL</button>
-  <div id="colorBox" 
+  
+  <div 
+    id="colorBox" 
     [ngStyle]="{
       'background-color': cssString() 
-    }"></div>
+    }">
+  </div>
+
   <div class="slider">
     <label class="sliderInitial">{{currMode == 'rgba' ? 'R' : 'H'}}</label>
     <input 

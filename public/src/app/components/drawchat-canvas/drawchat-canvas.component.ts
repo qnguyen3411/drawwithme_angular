@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Compiler, ViewChild } from '@angular/core';
 import { Brush } from '../../draw_modules/brush';
+import { Cursor } from '../../draw_modules/cursor';
 import { MouseposService } from '../../services/mousepos.service';
 @Component({
   selector: 'app-drawchat-canvas',
@@ -11,6 +12,7 @@ export class DrawchatCanvasComponent implements OnInit {
   @ViewChild('container') canvasContainerRef;
   @ViewChild('base') baseCanvasRef;
   @ViewChild('self') selfCanvasRef;
+  @ViewChild('selfCursor') selfCursorRef;
 
   @Input() brushSettings;
 
@@ -18,7 +20,9 @@ export class DrawchatCanvasComponent implements OnInit {
 
   baseCtx: CanvasRenderingContext2D;
   selfCtx: CanvasRenderingContext2D;
+  myCursor: Cursor;
   myBrush: Brush;
+
 
 
   constructor(
@@ -30,7 +34,12 @@ export class DrawchatCanvasComponent implements OnInit {
     this.baseCtx = (this.baseCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
     this.selfCtx = (this.selfCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
     this.myBrush = new Brush(this.selfCtx);
+    this.myCursor = new Cursor().hide();
+    console.log(this.selfCursorRef);
+  }
 
+  onMouseEnter() {
+    this.myCursor.show();
   }
 
   onMouseDown(e: MouseEvent) {
@@ -45,12 +54,22 @@ export class DrawchatCanvasComponent implements OnInit {
 
   onMouseMove(e: MouseEvent) {
     const {x, y} = this.mouse.getMousePos(e, this.baseCtx.canvas);
+    this.myCursor.moveTo(x, y);
     if (e.buttons === 1) {
       this.myBrush.drawTo(x, y);
     }
   }
 
-  onMouseUpOrLeave(e: MouseEvent) {
+  onMouseUp(e: MouseEvent) {
+    this.endCurrentStroke();
+  }
+  
+  onMouseLeave() {
+    this.endCurrentStroke();
+    this.myCursor.hide()
+  }
+
+  endCurrentStroke() {
     if (this.myBrush.isDrawing()) {
       this.myBrush
         .setOn(this.baseCtx)
