@@ -8,8 +8,10 @@ export class Brush {
   rgba: number[];
   size: number;
   ctx: CanvasRenderingContext2D;
+
   pathX: number[];
   pathY: number[];
+
   minX: number;
   minY: number;
   maxX: number;
@@ -19,91 +21,89 @@ export class Brush {
     this.ctx = ctx;
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
-    console.log(Brush.default)
     this.rgba = Brush.default.rgba;
     this.size = Brush.default.size;
   }
 
-  setColor(rgba: any[]) {
-    const r = parseInt(rgba[0]);
-    const g = parseInt(rgba[1]);
-    const b = parseInt(rgba[2]);
-    const a = parseFloat(rgba[3]);
-    this.rgba = [r, g, b, a];
-    const cssString = `rgba(${this.rgba.join(', ')})`;
-    this.ctx.strokeStyle = cssString;
-    this.ctx.fillStyle = cssString;
-    return this;
-  }
-
-  setSize(size: number) {
-    this.size = size;
-    this.ctx.lineWidth = size;
-    return this;
-  }
-
   startAt(x: number, y: number) {
+    this.setInitialPoint(x, y);
+    this.draw(this.ctx);
+    return this;
+  }
+
+  private setInitialPoint(x: number, y: number) {
     this.pathX = [x];
     this.pathY = [y];
     this.minX = x;
     this.minY = y;
     this.maxX = x;
     this.maxY = y;
-    return this;
   }
 
   drawTo(newX: number, newY: number) {
-    if (this.minX > newX) { this.minX = newX }
-    else if (this.maxX < newX) { this.maxX = newX };
-    if (this.minY > newY) { this.minY = newY }
-    else if (this.maxY < newY) { this.maxY = newY };
+    this.updateBoundingRectPoints(newX, newY);
 
     this.pathX.push(newX);
     this.pathY.push(newY);
-    const [minX, minY, maxX, maxY] = this.boundingRectPoints();
-    this.ctx.clearRect(minX, minY, maxX, maxY);
+
+    this.clearStroke();
     this.draw(this.ctx);
     return this;
   }
 
-  end() {
-    const [minX, minY, maxX, maxY] = this.boundingRectPoints();
-    this.ctx.clearRect(minX, minY, maxX, maxY);
-    return this;
-  }
-
   setOn(baseCtx: CanvasRenderingContext2D) {
-    const saved = {
-      lineWidth : baseCtx.lineWidth,
-      lineCap : baseCtx.lineCap,
-      lineJoin : baseCtx.lineJoin,
-      fillStyle : baseCtx.fillStyle,
-      strokeStyle: baseCtx.strokeStyle
-    }
+    this.clearStroke()
+
+    const saved = this.saveCtxSettings(baseCtx);
     const keys = Object.keys(saved);
     keys.forEach(key => {
       baseCtx[key] = this.ctx[key];
     });
     this.draw(baseCtx);
-    keys.forEach(key => {
-      baseCtx[key] = saved[key];
-    });
+    this.restoreCtxSettings(baseCtx, saved);
     return this;
   }
 
-  boundingRectPoints() {
+  private saveCtxSettings(ctx) {
+    return {
+      lineWidth : ctx.lineWidth,
+      lineCap : ctx.lineCap,
+      lineJoin : ctx.lineJoin,
+      fillStyle : ctx.fillStyle,
+      strokeStyle: ctx.strokeStyle
+    }
+  }
+
+  private restoreCtxSettings(ctx, saved) {
+    Object.keys(saved).forEach(key => {
+      ctx[key] = saved[key];
+    });
+  }
+
+  private clearStroke() {
+    const [minX, minY, maxX, maxY] = this.getBoundingRectPoints();
+    this.ctx.clearRect(minX, minY, maxX, maxY);
+  }
+
+  private updateBoundingRectPoints(newX: number, newY: number) {
+    if (this.minX > newX) { this.minX = newX }
+    else if (this.maxX < newX) { this.maxX = newX };
+    if (this.minY > newY) { this.minY = newY }
+    else if (this.maxY < newY) { this.maxY = newY };
+  }
+
+  private getBoundingRectPoints() {
     const { width, height } = this.ctx.canvas;
     const radius = this.size / 2;
     return [
       Math.max(this.minX - radius, 0),
-      Math.max(this.minY - radius - 5, 0), // Magic number alert
+      Math.max(this.minY - radius - 5, 0), // Magic number- box ceiling is slightly too low without it
       Math.min(this.maxX + radius, width),
       Math.min(this.maxY + radius, height),
     ]
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.beginPath();
     if (this.pathX.length === 1) {
       this.drawDot(ctx);
     } else {
@@ -112,7 +112,8 @@ export class Brush {
     return this;
   }
 
-  drawPath(ctx: CanvasRenderingContext2D) {
+  private drawPath(ctx: CanvasRenderingContext2D) {
+    ctx.beginPath();
     const len = this.pathX.length;
     ctx.moveTo(this.pathX[0], this.pathY[0]);
     for (let i = 1; i < len; i++) {
@@ -121,12 +122,42 @@ export class Brush {
     ctx.stroke();
   }
 
-  drawDot(ctx: CanvasRenderingContext2D) {
+  private drawDot(ctx: CanvasRenderingContext2D) {
+    ctx.beginPath();
     ctx.lineWidth = 1;
     ctx.arc(this.pathX[0], this.pathY[0], this.size / 2, 0, 2 * Math.PI);
     ctx.fill();
     ctx.lineWidth = this.size;
   }
+
+  asEraser() {
+    this.rgba = [255, 255, 255, 1];
+    this.setCtxStyle();
+    return this;
+  }
+
+  setColor(rgba: any[]) {
+    const r = parseInt(rgba[0]);
+    const g = parseInt(rgba[1]);
+    const b = parseInt(rgba[2]);
+    const a = parseFloat(rgba[3]);
+    this.rgba = [r, g, b, a];
+    this.setCtxStyle();
+    return this;
+  }
+
+  private setCtxStyle() {
+    const cssString = `rgba(${this.rgba.join(', ')})`;
+    this.ctx.strokeStyle = cssString;
+    this.ctx.fillStyle = cssString;
+  }
+
+  setSize(size: number) {
+    this.size = size;
+    this.ctx.lineWidth = size;
+    return this;
+  }
+
 
   reset() {
     this.rgba = Brush.default.rgba;
@@ -140,6 +171,7 @@ export class Brush {
   isDrawing() {
     return !!this.pathX;
   }
+
   getData() {
     return {
       rgba: this.rgba,

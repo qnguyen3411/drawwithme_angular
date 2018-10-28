@@ -1,19 +1,120 @@
-#canvasFrame {
-  position: relative;
+#mainContent {
+  vertical-align: top;
+  display: inline-block;
   width: calc(100vw - 250px);
-  height: calc(100vh - 150px);
+  height: 100vh;
 }
 
-#brushSettings {
-  width: calc(100vw - 250px);
-  height: 150px;
-  background-color: aliceblue;
+  #canvasFrame {
+    position: relative;
+    width: calc(100% - 80px );
+    height: calc(100% - 150px);
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  #toolbar {
+    vertical-align: top;
+    width: 80px;
+    display: inline-block;
+    background-color: rgb(53, 56, 58);
+    height: calc(100% - 150px);
+    padding: 15px;
+  }
+
+  #toolbar img {
+    width: 50px;
+    height: auto;
+    margin-bottom: 25px; 
+    border-radius: 5px; 
+  }
+
+  #toolbar img.selected {
+    border: 2px solid whitesmoke;
+  }
+
+  #zoomSlider {
+    vertical-align: top;
+    display: inline-block;
+    width: 70px;
+    padding-top: 10px;
+    height: 100%;
+    background-color: rgb(53, 56, 58);
+  }
+    #zoomSlider input {
+      position: relative;
+      top: 30%;
+      left: -30%;
+      transform: rotate(270deg);
+      -webkit-appearance: none;
+      background-color: #00000000;
+      width: 90px;
+    }
+
+    input[type=range]:focus {
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 5px;
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.575);
+      border-radius: 5px;
+      -webkit-appearance: none;
+      border: 1px solid #000000;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      border: 1px solid #000000;
+      height: 20px;
+      width: 13px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.842);
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -11px;
+    }
+
+    #zoomSlider img {
+      width:13px;
+      height:auto;
+    }
+
+    #zoomSlider {
+      font-weight: bold;
+      color: whitesmoke;
+      font-size: 13px;
+    }
+
+
+  app-drawchat-palette {
+    vertical-align: top;
+    display: inline-block;
+    width: calc(100% - 470px);
+    height:100%;
+    background-color: rgb(53, 56, 58);
+    border-left: 1px solid rgb(165, 159, 161);
+  }
+
+  #brushSettings {
+    width: 100%;
+    height: 150px;
+  }
+
+  #spy {
+    position: fixed;
+    top:0px;
+    left:0px;
+    color: black;
+    z-index: 10;
+  }
+
+#sideBar {
+  vertical-align: top;
+  display: inline-block;
+  background-color: blueviolet;
+  width: 230px;
+  height: 100vh;
 }
 
-#spy {
-  position: fixed;
-  top:0px;
-  left:0px;
-  color: black;
-  z-index: 10;
-}

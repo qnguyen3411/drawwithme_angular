@@ -12,14 +12,14 @@
     </li>
 
     <li *ngIf="isLoggedIn()" class="nav-item">
-        <a class="nav-link active ml-2" (click)="logOutClicked()">Log out</a>
+        <a class="nav-link active ml-2" (click)="logout()">Log out</a>
       </li>
   </ul>
 </nav>
 <div id="mainContainer" class="bg-lightgrey">
   <app-room 
     [roomToShow]="roomToShow"
-    (queryEmitted)="queryRoomList($event)"
+    (queryEmitted)="setRoomListQuery($event)"
   ></app-room>
   <app-roomlist 
     (roomClicked)="setRoomToShow($event)"

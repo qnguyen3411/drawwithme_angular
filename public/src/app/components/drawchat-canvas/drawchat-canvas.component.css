@@ -1,19 +1,17 @@
-::-webkit-scrollbar
-{
-  width: 5px;  /* for vertical scrollbars */
-  height: 5px; /* for horizontal scrollbars */
+::-webkit-scrollbar {
+  width: 15px;  /* for vertical scrollbars */
+  height: 15px; /* for horizontal scrollbars */
 }
 
-::-webkit-scrollbar-track
-{
+::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.1);
 }
 
-::-webkit-scrollbar-thumb
-{
-  background: rgba(0, 0, 0, 0.5);
+::-webkit-scrollbar-thumb {
+  border-bottom: 1px solid rgb(214, 210, 210);
+  border-right: 1px solid rgb(214, 210, 210);
+  background: rgba(0, 0, 0, 0.8);
 }
-
 
 #canvasContainer {
   position: relative;

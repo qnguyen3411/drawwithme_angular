@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { HttpClientModule } from '@angular/common/http';
 // COMPONENTS
-import { DrawchatComponent } from './components/drawchat/drawchat.component';
 import { RoomComponent } from './components/room/room.component';
 import { RoomlistComponent } from './components/roomlist/roomlist.component';
 import { LoginFormComponent } from './components/loginform/loginform.component';
@@ -15,8 +14,11 @@ import { SignupFormComponent } from './components/signupform/signupform.componen
 import { CreateRoomFormComponent } from './components/createroomform/createroomform.component';
 import { HubComponent } from './components/hub/hub.component';
 import { PlaybackComponent } from './components/playback/playback.component';
+
+import { DrawchatComponent } from './components/drawchat/drawchat.component';
 import { DrawchatCanvasComponent } from './components/drawchat-canvas/drawchat-canvas.component';
 import { DrawchatSlidersComponent } from './components/drawchat-sliders/drawchat-sliders.component';
+import { DrawchatPaletteComponent } from './components/drawchat-palette/drawchat-palette.component';
 
 // SERVICES
 import { UserService } from './services/user.service';
@@ -38,6 +40,7 @@ import { SessionService } from './services/session.service';
     PlaybackComponent,
     DrawchatCanvasComponent,
     DrawchatSlidersComponent,
+    DrawchatPaletteComponent,
     // KeepHtmlPipe
   ],
   imports: [

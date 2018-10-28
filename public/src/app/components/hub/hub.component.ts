@@ -18,16 +18,16 @@ import { SessionService } from '../../services/session.service';
 })
 export class HubComponent implements OnInit {
   currQuery = {};
+  roomToShow = {}
 
   bsModalRef: BsModalRef;
+
   constructor(
     private modalService: BsModalService,
     private _sessionService: SessionService,
     private _router: Router,
-    ) { }
-  roomToShow = {}
+  ) { }
   
-
   ngOnInit() {
     
   }
@@ -45,23 +45,22 @@ export class HubComponent implements OnInit {
   showCreateRoomForm() {
     this.bsModalRef = this.modalService.show(CreateRoomFormComponent);
     (this.bsModalRef.content as CreateRoomFormComponent).formDone
-    .subscribe(roomId => {
-      console.log("YAY")
-      this._router.navigate(['/draw/' + roomId]);
-    })
+      .subscribe(roomId => {
+        this._router.navigate(['/draw/' + roomId]);
+      })
     this.bsModalRef.content.closeBtnName = 'Close';
   }
 
   setRoomToShow(room) {
     this.roomToShow = room;
   }
-
-  logOutClicked() {
-    this._sessionService.removeUserToken();
+  
+  setRoomListQuery(e) {
+    this.currQuery = e;
   }
 
-  queryRoomList(e) {
-    this.currQuery = e;
+  logout() {
+    this._sessionService.removeUserToken();
   }
 
   isLoggedIn() {

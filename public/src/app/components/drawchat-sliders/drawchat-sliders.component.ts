@@ -1,11 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-drawchat-sliders',
   templateUrl: './drawchat-sliders.component.html',
   styleUrls: ['./drawchat-sliders.component.css']
 })
-export class DrawchatSlidersComponent implements OnInit {
+export class DrawchatSlidersComponent implements OnInit, OnChanges {
+  
   @Input() brushSettings;
 
   currMode = 'rgba';
@@ -24,21 +25,25 @@ export class DrawchatSlidersComponent implements OnInit {
     this.sizeSliderVal = 1;
    }
 
-  ngOnInit() {
-    console.log(this.brushSettings)
-    this.brushSettings['size'] = 5;
+  ngOnInit() { }
+
+
+  ngOnChanges(change: SimpleChanges) {
+    let [val1, val2, val3] = this.brushSettings.rgba;
+    if (this.currMode === 'hsla') {
+      [val1, val2, val3] = this.rgbToHsl([val1, val2, val3])
+    }
+    this.colorSlider1Val = val1;
+    this.colorSlider2Val = val2;
+    this.colorSlider3Val = val3;
   }
 
   updateBrushSettings() {
     let newVals;
     if (this.currMode === 'rgba') {
-      newVals = [this.colorSlider1Val, this.colorSlider2Val, this.colorSlider3Val];
+      newVals = this.getColorSliderVals();
     } else {
-      newVals = this.hslToRgb(
-        this.colorSlider1Val,
-        this.colorSlider2Val, 
-        this.colorSlider3Val
-      );
+      newVals = this.hslToRgb(this.getColorSliderVals());
     }
 
     this.brushSettings['rgba'] = [...newVals, this.alphaSliderVal];
@@ -48,14 +53,12 @@ export class DrawchatSlidersComponent implements OnInit {
   changeMode(mode:string) {
     if (mode !== 'rgba' && mode !== 'hsla') { return ;}
     if (this.currMode === mode) { return; }
+
     const colorTransform = this.currMode === 'rgba' ? 
-      'rgbToHsl' :
-      'hslToRgb';
-    const newVals = this[colorTransform](
-      this.colorSlider1Val,
-      this.colorSlider2Val,
-      this.colorSlider3Val
-    )
+      this.rgbToHsl :
+      this.hslToRgb;
+
+    const newVals = colorTransform(this.getColorSliderVals())
     
     this.colorSlider1Val = newVals[0];
     this.colorSlider2Val = newVals[1];
@@ -63,8 +66,20 @@ export class DrawchatSlidersComponent implements OnInit {
     this.currMode = mode;
   }
 
+  cssString() {
+    return `rgba(${this.brushSettings.rgba.join(',')})`
+  }
 
-  private hslToRgb(h, s, l) {
+  private getColorSliderVals() {
+    return [
+      this.colorSlider1Val,
+      this.colorSlider2Val,
+      this.colorSlider3Val,
+    ]
+  }
+
+
+  private hslToRgb([h, s, l]: number[]) {
     h /= 360, s /= 100, l /= 100;
     var r, g, b;
 
@@ -88,7 +103,7 @@ export class DrawchatSlidersComponent implements OnInit {
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
   }
 
-  private rgbToHsl(r, g, b) {
+  private rgbToHsl([r, g, b]: number[]) {
     r /= 255, g /= 255, b /= 255;
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
     var h, s, l = (max + min) / 2;
@@ -108,5 +123,4 @@ export class DrawchatSlidersComponent implements OnInit {
     return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
   }
 
-  
 }

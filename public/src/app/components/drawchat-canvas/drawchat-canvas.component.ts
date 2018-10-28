@@ -8,11 +8,13 @@ import { MouseposService } from '../../services/mousepos.service';
   providers: [MouseposService]
 })
 export class DrawchatCanvasComponent implements OnInit {
-  @ViewChild('container') canvasContainer;
-  @ViewChild('base') baseCanvas;
-  @ViewChild('self') selfCanvas;
+  @ViewChild('container') canvasContainerRef;
+  @ViewChild('base') baseCanvasRef;
+  @ViewChild('self') selfCanvasRef;
 
   @Input() brushSettings;
+
+  @Input() currZoom = 1;
 
   baseCtx: CanvasRenderingContext2D;
   selfCtx: CanvasRenderingContext2D;
@@ -25,19 +27,19 @@ export class DrawchatCanvasComponent implements OnInit {
     ) {}
 
   ngOnInit() {
-    this.baseCtx = (this.baseCanvas.nativeElement as HTMLCanvasElement).getContext('2d');
-    this.selfCtx = (this.selfCanvas.nativeElement as HTMLCanvasElement).getContext('2d');
+    this.baseCtx = (this.baseCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
+    this.selfCtx = (this.selfCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
     this.myBrush = new Brush(this.selfCtx);
+
   }
 
   onMouseDown(e: MouseEvent) {
-    const {x, y} = this.mouse.getMousePos(e, this.baseCtx.canvas);
     if (e.buttons === 1) {
+      const {x, y} = this.mouse.getMousePos(e, this.baseCtx.canvas);
       this.myBrush
         .setColor(this.brushSettings['rgba'])
         .setSize(this.brushSettings['size'])
         .startAt(x, y)
-        .drawTo(x, y);
     }
   }
 
@@ -48,10 +50,9 @@ export class DrawchatCanvasComponent implements OnInit {
     }
   }
 
-  onMouseUp(e: MouseEvent) {
+  onMouseUpOrLeave(e: MouseEvent) {
     if (this.myBrush.isDrawing()) {
       this.myBrush
-        .end()
         .setOn(this.baseCtx)
         .reset();
     }

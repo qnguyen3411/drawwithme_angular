@@ -38,8 +38,8 @@ export class SignupFormComponent implements OnInit {
       .signUp({ username, password })
       .subscribe(response => {
         const token = response['token'];
-          this._sessionService.setUserToken(token);
-          this.bsModalRef.hide();
+        this._sessionService.setUserToken(token);
+        this.bsModalRef.hide();
       })
   }
 }

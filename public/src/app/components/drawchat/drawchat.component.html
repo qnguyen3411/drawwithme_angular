@@ -1,7 +1,24 @@
 <p id="spy">{{brushSettings | json}}</p>
+<div id="mainContent">
 <div id="canvasFrame">
-<app-drawchat-canvas [(brushSettings)]="brushSettings"></app-drawchat-canvas>
+  <app-drawchat-canvas [currZoom]="zoom" [(brushSettings)]="brushSettings"></app-drawchat-canvas>
+</div>
+<div id="toolbar">
+  <img src="assets/brush.png" alt="brush" (click)="updateTool('brush')">
+  <img src="assets/eraser.png" alt="eraser" (click)="updateTool('eraser')">
+  <img src="assets/eyedropper.png" alt="eyedropper" (click)="updateTool('eyedropper')">
+  <img src="assets/ruler.png" alt="ruler" (click)="updateTool('ruler')">
 </div>
 <div id="brushSettings">
-<app-drawchat-sliders [(brushSettings)]="brushSettings"></app-drawchat-sliders>
+  <app-drawchat-sliders [(brushSettings)]="brushSettings"></app-drawchat-sliders>
+
+  <div id="zoomSlider">
+    <img src="assets/zoom.png" alt="zoom"> {{zoom * 100}}%
+    <input type="range" name="zoom" [(ngModel)]="zoom" min="1" max="5" step="0.5">
+  </div>
+  
+  <app-drawchat-palette (colorPicked)="setColor($event)"></app-drawchat-palette>
 </div>
+</div>
+
+<div id="sideBar"></div>

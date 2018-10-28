@@ -1,7 +1,11 @@
-<div id="canvasContainer" #container 
-  (mousedown)="onMouseDown($event)"
-  (mouseup)="onMouseUp($event)"
-  (mousemove)="onMouseMove($event)">
-  <canvas width="1820" height="1024" id="base" #base></canvas>
-  <canvas width="1820" height="1024" id="self" #self></canvas>
+<div id="canvasContainer" #container (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (mouseup)="onMouseUpOrLeave($event)"
+  (mouseleave)="onMouseUpOrLeave($event)">
+
+  <canvas width="1820" height="1024" id="base" [ngStyle]="{zoom: currZoom}" #base></canvas>
+  <canvas width="1820" height="1024" id="self" [ngStyle]="{zoom: currZoom}" #self></canvas>
+
+  <!-- <canvas *ngFor="let i of [1,2,3,4]"
+    width="1820" height="1024" 
+    [ngStyle]="{zoom: currZoom}" 
+  ></canvas> -->
 </div>
