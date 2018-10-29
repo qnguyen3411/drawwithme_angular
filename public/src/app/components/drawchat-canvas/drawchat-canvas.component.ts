@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Compiler, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Brush } from '../../draw_modules/brush';
 import { Cursor } from '../../draw_modules/cursor';
 import { MouseposService } from '../../services/mousepos.service';
@@ -12,7 +12,6 @@ export class DrawchatCanvasComponent implements OnInit {
   @ViewChild('container') canvasContainerRef;
   @ViewChild('base') baseCanvasRef;
   @ViewChild('self') selfCanvasRef;
-  @ViewChild('selfCursor') selfCursorRef;
 
   @Input() brushSettings;
 
@@ -23,10 +22,7 @@ export class DrawchatCanvasComponent implements OnInit {
   myCursor: Cursor;
   myBrush: Brush;
 
-
-
   constructor(
-    private compiler: Compiler,
     private mouse: MouseposService,
     ) {}
 
@@ -35,7 +31,6 @@ export class DrawchatCanvasComponent implements OnInit {
     this.selfCtx = (this.selfCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
     this.myBrush = new Brush(this.selfCtx);
     this.myCursor = new Cursor().hide();
-    console.log(this.selfCursorRef);
   }
 
   onMouseEnter() {
@@ -44,7 +39,7 @@ export class DrawchatCanvasComponent implements OnInit {
 
   onMouseDown(e: MouseEvent) {
     if (e.buttons === 1) {
-      const {x, y} = this.mouse.getMousePos(e, this.baseCtx.canvas);
+      const {x, y} = this.getMousePosOnCanvas(e);
       this.myBrush
         .setColor(this.brushSettings['rgba'])
         .setSize(this.brushSettings['size'])
@@ -53,14 +48,14 @@ export class DrawchatCanvasComponent implements OnInit {
   }
 
   onMouseMove(e: MouseEvent) {
-    const {x, y} = this.mouse.getMousePos(e, this.baseCtx.canvas);
+    const {x, y} = this.getMousePosOnCanvas(e);
     this.myCursor.moveTo(x, y);
     if (e.buttons === 1) {
       this.myBrush.drawTo(x, y);
     }
   }
 
-  onMouseUp(e: MouseEvent) {
+  onMouseUp() {
     this.endCurrentStroke();
   }
   
@@ -68,6 +63,16 @@ export class DrawchatCanvasComponent implements OnInit {
     this.endCurrentStroke();
     this.myCursor.hide()
   }
+
+  onScroll(e) {
+    console.log(e)
+    // const {x, y} = this.getMousePosOnCanvas(e);
+    // this.myCursor.moveTo(x, y);
+  }
+
+  getMousePosOnCanvas(e: MouseEvent) {
+    return this.mouse.getMousePos(e, this.baseCtx.canvas);
+  } 
 
   endCurrentStroke() {
     if (this.myBrush.isDrawing()) {

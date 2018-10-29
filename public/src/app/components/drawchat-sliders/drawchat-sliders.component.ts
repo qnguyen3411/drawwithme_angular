@@ -27,15 +27,12 @@ export class DrawchatSlidersComponent implements OnInit, OnChanges {
 
   ngOnInit() { }
 
-
   ngOnChanges(change: SimpleChanges) {
-    let [val1, val2, val3] = this.brushSettings.rgba;
+    let newVals = this.brushSettings.rgba;
     if (this.currMode === 'hsla') {
-      [val1, val2, val3] = this.rgbToHsl([val1, val2, val3])
+      newVals = this.rgbToHsl(newVals);
     }
-    this.colorSlider1Val = val1;
-    this.colorSlider2Val = val2;
-    this.colorSlider3Val = val3;
+    this.setColorSliderVals(newVals);
   }
 
   updateBrushSettings() {
@@ -43,7 +40,7 @@ export class DrawchatSlidersComponent implements OnInit, OnChanges {
     if (this.currMode === 'rgba') {
       newVals = this.getColorSliderVals();
     } else {
-      newVals = this.hslToRgb(this.getColorSliderVals());
+      newVals = this.getAlternateModeVals();
     }
 
     this.brushSettings['rgba'] = [...newVals, this.alphaSliderVal];
@@ -54,20 +51,22 @@ export class DrawchatSlidersComponent implements OnInit, OnChanges {
     if (mode !== 'rgba' && mode !== 'hsla') { return ;}
     if (this.currMode === mode) { return; }
 
-    const colorTransform = this.currMode === 'rgba' ? 
-      this.rgbToHsl :
-      this.hslToRgb;
-
-    const newVals = colorTransform(this.getColorSliderVals())
-    
-    this.colorSlider1Val = newVals[0];
-    this.colorSlider2Val = newVals[1];
-    this.colorSlider3Val = newVals[2];
+    const newVals = this.getAlternateModeVals()
+    this.setColorSliderVals(newVals);
     this.currMode = mode;
   }
 
-  cssString() {
-    return `rgba(${this.brushSettings.rgba.join(',')})`
+  private getAlternateModeVals() {
+    const colorTransform = this.currMode === 'rgba' ? 
+      this.rgbToHsl :
+      this.hslToRgb;
+    return colorTransform(this.getColorSliderVals());
+  } 
+
+  private setColorSliderVals([val1, val2, val3]: number[]) {
+    this.colorSlider1Val = val1;
+    this.colorSlider2Val = val2;
+    this.colorSlider3Val = val3;
   }
 
   private getColorSliderVals() {
@@ -78,6 +77,9 @@ export class DrawchatSlidersComponent implements OnInit, OnChanges {
     ]
   }
 
+  cssString() {
+    return `rgba(${this.brushSettings.rgba.join(',')})`
+  }
 
   private hslToRgb([h, s, l]: number[]) {
     h /= 360, s /= 100, l /= 100;

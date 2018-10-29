@@ -4,20 +4,21 @@
   (mouseenter)="onMouseEnter()"
   (mousedown)="onMouseDown($event)" 
   (mousemove)="onMouseMove($event)" 
-  (mouseup)="onMouseUp($event)"
-  (mouseleave)="onMouseLeave()">
+  (mouseup)="onMouseUp()"
+  (mouseleave)="onMouseLeave()"
+  (scroll)="onScroll($event)"
+  >
 
   <canvas width="1820" height="1024" id="base" [ngStyle]="{zoom: currZoom}" #base></canvas>
   <canvas width="1820" height="1024" id="self" [ngStyle]="{zoom: currZoom}" #self></canvas>
   
-  <svg width="1820" height="1024" xmlns="http://www.w3.org/2000/svg">
+  <svg width="1820" height="1024" xmlns="http://www.w3.org/2000/svg" [ngStyle]="{zoom: currZoom}">
     <circle 
       stroke="black" stroke-width="1" fill="none"
       [attr.cx]="myCursor.x" 
       [attr.cy]="myCursor.y" 
       [attr.r]="brushSettings['size'] / 2"
-      [attr.display]="myCursor.isVisible ? 'block' : 'none'"
-      #selfCursor/>
+      [attr.display]="myCursor.isVisible ? 'block' : 'none'"/>
   </svg>
   
   <!-- <canvas *ngFor="let i of [1,2,3,4]"

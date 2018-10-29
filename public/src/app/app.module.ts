@@ -24,6 +24,7 @@ import { DrawchatPaletteComponent } from './components/drawchat-palette/drawchat
 import { UserService } from './services/user.service';
 import { DrawchatService } from './services/drawchat.service';
 import { SessionService } from './services/session.service';
+import { SocketsService } from './services/sockets.service';
 // PIPES
 // import { KeepHtmlPipe } from './pipes/keep-html.pipe';
 
@@ -58,7 +59,8 @@ import { SessionService } from './services/session.service';
   providers: [
     UserService,
     DrawchatService,
-    SessionService
+    SessionService,
+    SocketsService
   ],
   bootstrap: [AppComponent]
 })
