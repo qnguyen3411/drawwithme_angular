@@ -51,7 +51,6 @@ export class DrawchatComponent implements OnInit, OnDestroy {
     this.brushSettings.rgba[0] = e[0];
     this.brushSettings.rgba[1] = e[1];
     this.brushSettings.rgba[2] = e[2];
-    console.log("BRUSH COLOR SET")
      // Clone the object so that change detection triggers
     this.brushSettings = Object.assign({}, this.brushSettings);
   }
@@ -71,6 +70,7 @@ export class DrawchatComponent implements OnInit, OnDestroy {
     this.peerList[id] = { username };
     this.peerAdded.next({ id, username })
   }
+
 
 
 }

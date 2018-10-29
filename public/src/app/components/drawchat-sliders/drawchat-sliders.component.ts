@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
-
+import { SocketsService } from '../../services/sockets.service';
 @Component({
   selector: 'app-drawchat-sliders',
   templateUrl: './drawchat-sliders.component.html',
@@ -17,7 +17,7 @@ export class DrawchatSlidersComponent implements OnInit, OnChanges {
   alphaSliderVal: number;
   sizeSliderVal: number;
 
-  constructor() {
+  constructor(private _socket: SocketsService) {
     this.colorSlider1Val = 128;
     this.colorSlider2Val = 128;
     this.colorSlider3Val = 128;
@@ -34,6 +34,12 @@ export class DrawchatSlidersComponent implements OnInit, OnChanges {
     }
     this.setColorSliderVals(newVals);
   }
+
+  emitCursorSizeUpdate() {
+    console.log("EMITTING CURSOR SIZE UPDATE")
+    this._socket.drawModule.emitCursorSizeUpdate(this.brushSettings.size);
+  }
+
 
   updateBrushSettings() {
     let newVals;

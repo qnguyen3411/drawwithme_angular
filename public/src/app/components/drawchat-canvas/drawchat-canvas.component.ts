@@ -48,6 +48,14 @@ export class DrawchatCanvasComponent implements OnInit {
     this.myCursor = new Cursor().hide();
 
     this.peerAdded.subscribe(this.putPeerOnCanvas.bind(this));
+    console.log()
+    this.drawConnection
+      .onPeersCursorSizeUpdate()
+      .subscribe(this.updatePeersCursorSize.bind(this));
+
+    this.drawConnection
+      .onPeersMousePosUpdate()
+      .subscribe(this.updatePeersMousePos.bind(this));
   }
 
   putPeerOnCanvas(newPeer) {
@@ -64,17 +72,28 @@ export class DrawchatCanvasComponent implements OnInit {
     let newCtx: CanvasRenderingContext2D;
 
     const obs = interval(200)
-    .pipe(
-      takeWhile(() => !newCtx)
+      .pipe(
+        takeWhile(() => !newCtx)
       )
-    .subscribe(_ => {
-      const found = Array.from(this.container.children).find(val => val.id == peerId);
-      if (found !== undefined) {
-        newCtx = (found as HTMLCanvasElement).getContext('2d')
-        this.peerList[peerId]['brush'] = new Brush(newCtx);
-        console.log(this.peerList)
-      }
-    })
+      .subscribe(() => {
+        const hasPeerId = val => val.id == peerId;
+        const found = Array.from(this.container.children).find(hasPeerId);
+
+        if (found !== undefined) {
+          newCtx = (found as HTMLCanvasElement).getContext('2d')
+          this.peerList[peerId]['brush'] = new Brush(newCtx);
+        }
+      })
+  }
+
+  updatePeersCursorSize({ id, data }) {
+    const cursor = this.peerList[id]['cursor'] as Cursor;
+    cursor.setSize(data);
+  }
+
+  updatePeersMousePos({ id, data: { x, y } }) {
+    const cursor = this.peerList[id]['cursor'] as Cursor;
+    cursor.moveTo(x, y);
   }
 
 
@@ -122,9 +141,6 @@ export class DrawchatCanvasComponent implements OnInit {
         .setOn(this.baseCtx)
         .reset();
     }
-  }
-
-  onPeerMousePosUpdate() {
   }
 
   peerListIsEmpty() {

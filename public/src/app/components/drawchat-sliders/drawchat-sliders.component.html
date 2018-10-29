@@ -64,7 +64,7 @@
       type="range" 
       name="sizeSliderVal"
       [(ngModel)]="sizeSliderVal"
-      (change)="updateBrushSettings()"
+      (change)="updateBrushSettings(); emitCursorSizeUpdate()"
       min="0" max="100">
     <label class="sliderVal">{{sizeSliderVal}}</label>
   </div>

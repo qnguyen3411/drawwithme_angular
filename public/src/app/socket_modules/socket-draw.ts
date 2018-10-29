@@ -9,7 +9,7 @@ export class DrawSocketModule {
   }
 
   emitCursorSizeUpdate(size: number) {
-    this.socket.emit('sizeUpdate', { data: size });
+    this.socket.emit('cursorSizeUpdate', { data: size });
   }
 
   emitMousePosUpdate(x: number, y: number) {
@@ -24,10 +24,18 @@ export class DrawSocketModule {
     this.socket.emit('actionEnd');
   }
 
+  onPeersCursorSizeUpdate() {
+    return Observable.create((observer) => {
+      this.socket.on('peersCursorSizeUpdate', (data) => {
+        observer.next(data);
+      })
+    })
+  }
+
   onPeersMousePosUpdate() {
     return Observable.create((observer) => {
-      this.socket.on('peersMousePosUpdate', ({ x, y }) => {
-        observer.next(x, y);
+      this.socket.on('peersMousePosUpdate', (data) => {
+        observer.next(data);
       });
     });
   }
