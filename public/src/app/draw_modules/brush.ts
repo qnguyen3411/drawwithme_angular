@@ -169,7 +169,7 @@ export class Brush {
   }
 
   isDrawing() {
-    return !!this.pathX;
+    return this.pathX.length !== 0;
   }
 
   getData() {

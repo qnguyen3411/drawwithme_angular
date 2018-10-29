@@ -48,7 +48,7 @@ export class DrawchatCanvasComponent implements OnInit {
     this.myCursor = new Cursor().hide();
 
     this.peerAdded.subscribe(this.putPeerOnCanvas.bind(this));
-    console.log()
+
     this.drawConnection
       .onPeersCursorSizeUpdate()
       .subscribe(this.updatePeersCursorSize.bind(this));
@@ -56,6 +56,14 @@ export class DrawchatCanvasComponent implements OnInit {
     this.drawConnection
       .onPeersMousePosUpdate()
       .subscribe(this.updatePeersMousePos.bind(this));
+
+    this.drawConnection
+      .onPeersCanvasActionStart()
+      .subscribe(this.startPeerAction.bind(this));
+
+    this.drawConnection
+      .onPeersCanvasActionEnd()
+      .subscribe(this.endPeerAction.bind(this));
   }
 
   putPeerOnCanvas(newPeer) {
@@ -93,9 +101,27 @@ export class DrawchatCanvasComponent implements OnInit {
 
   updatePeersMousePos({ id, data: { x, y } }) {
     const cursor = this.peerList[id]['cursor'] as Cursor;
+    const brush = this.peerList[id]['brush'] as Brush; 
     cursor.moveTo(x, y);
+    if (brush.isDrawing()) {
+      brush.drawTo(x, y);
+    }
   }
 
+  startPeerAction({ id, data }) {
+    const cursor = this.peerList[id]['cursor'] as Cursor;
+    const brush = this.peerList[id]['brush'] as Brush; 
+    brush.setColor(data['rgba'])
+      .setSize(cursor.size)
+      .startAt(cursor.x, cursor.y);
+  }
+
+  endPeerAction({ id, data }) {
+    const brush = this.peerList[id]['brush'] as Brush; 
+    if (brush.isDrawing()) {
+      brush.setOn(this.baseCtx).reset();
+    }
+  }
 
   onMouseEnter() {
     this.myCursor.show();
@@ -119,7 +145,7 @@ export class DrawchatCanvasComponent implements OnInit {
     if (e.buttons === 1 && e.button === 0) {
       this.myBrush.drawTo(x, y);
     }
-    this.drawConnection.emitMousePosUpdate(x, y);
+    this.drawConnection.emitMousePosUpdate({x, y});
   }
 
   onMouseUp() {
@@ -140,6 +166,7 @@ export class DrawchatCanvasComponent implements OnInit {
       this.myBrush
         .setOn(this.baseCtx)
         .reset();
+      this.drawConnection.emitCanvasActionEnd();
     }
   }
 

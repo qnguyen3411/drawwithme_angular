@@ -8,20 +8,20 @@ export class DrawSocketModule {
     this.socket = socket;
   }
 
-  emitCursorSizeUpdate(size: number) {
-    this.socket.emit('cursorSizeUpdate', { data: size });
+  emitCursorSizeUpdate(data) {
+    this.socket.emit('cursorSizeUpdate', { data });
   }
 
-  emitMousePosUpdate(x: number, y: number) {
-    this.socket.emit('mousePosUpdate', { data: { x, y } });
+  emitMousePosUpdate(data) {
+    this.socket.emit('mousePosUpdate', { data });
   }
 
-  emitCanvasActionStart(actionData) {
-    this.socket.emit('canvasActionStart', { data: actionData });
+  emitCanvasActionStart(data) {
+    this.socket.emit('canvasActionStart', { data });
   }
 
   emitCanvasActionEnd() {
-    this.socket.emit('actionEnd');
+    this.socket.emit('canvasActionEnd', {});
   }
 
   onPeersCursorSizeUpdate() {
@@ -42,13 +42,17 @@ export class DrawSocketModule {
 
   onPeersCanvasActionStart() {
     return Observable.create((observer) => {
-      this.socket.on('peersCanvasActionStart', actionData => {
-        observer.next(actionData);
+      this.socket.on('peersCanvasActionStart', (data) => {
+        observer.next(data);
       });
     });
   }
 
   onPeersCanvasActionEnd() {
-
+    return Observable.create((observer) => {
+      this.socket.on('peersCanvasActionEnd', (data) => {
+        observer.next(data);
+      });
+    });
   }
 }
