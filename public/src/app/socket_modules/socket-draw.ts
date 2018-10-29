@@ -1,21 +1,23 @@
+import { Observable } from 'rxjs';
 
 export class DrawSocketModule {
-  socket: SocketIOClient.Socket;
-  room: string;
+  private socket: SocketIOClient.Socket;
+
   constructor(socket: SocketIOClient.Socket) {
+    // this.socketsService
     this.socket = socket;
   }
 
-  setRoom(room: string) {
-    this.room = room;
+  emitCursorSizeUpdate(size: number) {
+    this.socket.emit('sizeUpdate', { data: size });
   }
 
-  emitMousePosUpdate(x, y) {
-    this.socket.emit('mousePosUpdate', {room: this.room, data: {x, y}});
+  emitMousePosUpdate(x: number, y: number) {
+    this.socket.emit('mousePosUpdate', { data: { x, y } });
   }
 
   emitCanvasActionStart(actionData) {
-    this.socket.emit('actionStart', {room: this.room, data: actionData });
+    this.socket.emit('canvasActionStart', { data: actionData });
   }
 
   emitCanvasActionEnd() {
@@ -23,11 +25,19 @@ export class DrawSocketModule {
   }
 
   onPeersMousePosUpdate() {
-  
+    return Observable.create((observer) => {
+      this.socket.on('peersMousePosUpdate', ({ x, y }) => {
+        observer.next(x, y);
+      });
+    });
   }
 
   onPeersCanvasActionStart() {
-
+    return Observable.create((observer) => {
+      this.socket.on('peersCanvasActionStart', actionData => {
+        observer.next(actionData);
+      });
+    });
   }
 
   onPeersCanvasActionEnd() {

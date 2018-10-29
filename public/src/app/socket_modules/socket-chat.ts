@@ -1,8 +1,9 @@
 
 export class ChatSocketModule {
-  socket: SocketIOClient.Socket;
+  private socket: SocketIOClient.Socket;
 
   constructor(socket: SocketIOClient.Socket) {
+    // this.socketsService
     this.socket = socket;
   }
 

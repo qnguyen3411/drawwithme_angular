@@ -19,10 +19,18 @@
       [attr.cy]="myCursor.y" 
       [attr.r]="brushSettings['size'] / 2"
       [attr.display]="myCursor.isVisible ? 'block' : 'none'"/>
+
+      <circle *ngFor="let peer of peerList | keyvalue"
+      stroke="black" stroke-width="1" fill="none"
+      [attr.cx]="peer.value['cursor'].x" 
+      [attr.cy]="peer.value['cursor'].y" 
+      [attr.r]="peer.value['cursor'].size / 2"
+      [attr.display]="peer.value['cursor'].isVisible ? 'block' : 'none'"/>
   </svg>
   
-  <!-- <canvas *ngFor="let i of [1,2,3,4]"
+  <canvas *ngFor="let peer of peerList | keyvalue"
+    [attr.id]="peer.key"
     width="1820" height="1024" 
     [ngStyle]="{zoom: currZoom}" 
-  ></canvas> -->
+  ></canvas>
 </div>

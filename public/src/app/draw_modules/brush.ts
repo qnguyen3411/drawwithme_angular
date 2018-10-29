@@ -9,8 +9,8 @@ export class Brush {
   size: number;
   ctx: CanvasRenderingContext2D;
 
-  pathX: number[];
-  pathY: number[];
+  pathX: number[] = [];
+  pathY: number[] = [];
 
   minX: number;
   minY: number;

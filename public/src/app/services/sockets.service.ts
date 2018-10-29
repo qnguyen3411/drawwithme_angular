@@ -1,46 +1,32 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
+
+import { SessionService } from '../services/session.service';
 import { DrawSocketModule } from '../socket_modules/socket-draw';
 import { RoomSocketModule } from '../socket_modules/socket-room';
 import { ChatSocketModule } from '../socket_modules/socket-chat';
-
+import { ConnectionSocketModule } from '../socket_modules/socket-connection';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocketsService {
+
   private url = 'http://localhost:5000';
-  private socket : SocketIOClient.Socket;
+  private socket: SocketIOClient.Socket;
+  private room: string;
+
+  connectionModule: ConnectionSocketModule;
   drawModule: DrawSocketModule;
   roomModule: RoomSocketModule;
   chatModule: ChatSocketModule;
 
-  constructor() { 
-    this.socket = io(this.url, {autoConnect: false});
+  constructor(private session: SessionService) {
+    this.socket = io(this.url, { autoConnect: false });
+    this.connectionModule = new ConnectionSocketModule(this.session, this.socket);
     this.drawModule = new DrawSocketModule(this.socket);
     this.roomModule = new RoomSocketModule(this.socket);
     this.chatModule = new ChatSocketModule(this.socket);
   }
-
-  connect() {
-    this.socket.connect();
-  }
-
-  disconnect() {
-    this.socket.disconnect();
-  }
-
-  getChatModule() {
-    return this.chatModule;
-  }
-
-  getDrawModule() {
-    return this.drawModule;
-  }
-
-  getRoomModule() {
-    return this.roomModule;
-  }
-
 
 }

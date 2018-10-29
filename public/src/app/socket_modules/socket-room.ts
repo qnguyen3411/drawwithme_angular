@@ -1,19 +1,17 @@
+import { Observable } from 'rxjs';
 
+
+// Handles room administrative tasks such as
+// Tokens and updating user list
 export class RoomSocketModule {
-  socket: SocketIOClient.Socket;
-  roomId: string;
+  private socket: SocketIOClient.Socket;
 
   constructor(socket: SocketIOClient.Socket) {
     this.socket = socket;
   }
 
-  joinRoom(roomId: string) {
-    this.roomId = roomId;
-    // emit join
-  }
+  onReceivingRoomInfo() {
 
-  leaveRoom() {
-    this.roomId = "";
   }
 
   emitTokenConsumption() {
@@ -24,19 +22,15 @@ export class RoomSocketModule {
 
   }
 
-  onRecievingRoomInfo() {
-
-  }
-
   onPeerJoin() {
-
+    return Observable.create((observer) => {
+      this.socket.on('peerJoined', data => {
+        observer.next(data);
+      });
+    });
   }
 
   onPeerLeave() {
-
-  }
-
-  onForceDisconnect() {
 
   }
 
