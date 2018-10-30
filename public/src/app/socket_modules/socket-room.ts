@@ -11,7 +11,21 @@ export class RoomSocketModule {
   }
 
   onReceivingRoomInfo() {
+    return Observable.create((observer) => {
+      this.socket.on('roomInfo', data => {
+        observer.next(data);
+      });
+    });
+  }
 
+  onReceivingUserList() {
+    return Observable.create((observer) => {
+      this.socket.on('userList', data => {
+        console.log("IN OBSERVABLE")
+        console.log(data)
+        observer.next(data);
+      });
+    });
   }
 
   emitTokenConsumption() {
@@ -31,6 +45,11 @@ export class RoomSocketModule {
   }
 
   onPeerLeave() {
+    return Observable.create((observer) => {
+      this.socket.on('peerLeft', data => {
+        observer.next(data);
+      });
+    });
 
   }
 

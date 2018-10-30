@@ -37,8 +37,8 @@ export class DrawchatComponent implements OnInit, OnDestroy {
       const roomId = params['id'];
       this._socket.connectionModule.joinRoom(roomId);
     });
-    
-    this.listenToRoomEvents();
+
+    this.subscribeToRoomEvents();
   }
 
   ngOnDestroy() {
@@ -47,30 +47,43 @@ export class DrawchatComponent implements OnInit, OnDestroy {
     this.destroy.unsubscribe();
   }
 
-  setColor(e) {
-    this.brushSettings.rgba[0] = e[0];
-    this.brushSettings.rgba[1] = e[1];
-    this.brushSettings.rgba[2] = e[2];
-     // Clone the object so that change detection triggers
-    this.brushSettings = Object.assign({}, this.brushSettings);
-  }
-
-  listenToRoomEvents() {
+  subscribeToRoomEvents() {
     this._socket.roomModule.onPeerJoin()
-      .pipe(
-        takeUntil(this.destroy)
-      )
-      .subscribe(data => {
-        this.addToPeerList(data['id'], data['username']);
-      })
+      .pipe(takeUntil(this.destroy))
+      .subscribe(this.addToPeerList.bind(this))
+
+    this._socket.roomModule.onPeerLeave()
+      .pipe(takeUntil(this.destroy))
+      .subscribe(this.removeFromPeerList.bind(this));
+
+    this._socket.roomModule.onReceivingUserList()
+      .pipe(takeUntil(this.destroy))
+      .subscribe(this.initializePeerList.bind(this));
   }
 
-  addToPeerList(id, username) {
 
+  // Expects dictionary in form of {id: username}
+  initializePeerList(peerList) {
+    console.log("RECEIVED PEER LIST: ", peerList);
+    Object.entries(peerList).forEach(
+      ([id, username]) => this.addToPeerList({id, username})
+  );
+  }
+
+  addToPeerList({id, username}) {
     this.peerList[id] = { username };
     this.peerAdded.next({ id, username })
   }
 
+  removeFromPeerList({ id }) {
 
+  }
 
+  setColor(e) {
+    this.brushSettings.rgba[0] = e[0];
+    this.brushSettings.rgba[1] = e[1];
+    this.brushSettings.rgba[2] = e[2];
+    // Clone the object so that change detection triggers
+    this.brushSettings = Object.assign({}, this.brushSettings);
+  }
 }
