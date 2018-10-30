@@ -5,6 +5,7 @@ import { takeWhile, takeUntil } from 'rxjs/operators';
 
 import { Brush } from '../../draw_modules/brush';
 import { Cursor } from '../../draw_modules/cursor';
+import { PaintCursor } from '../../draw_modules/paintcursor';
 import { MouseposService } from '../../services/mousepos.service';
 import { SocketsService } from 'src/app/services/sockets.service';
 import { DrawSocketModule } from 'src/app/socket_modules/socket-draw';
@@ -32,6 +33,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   baseCtx: CanvasRenderingContext2D;
   selfCtx: CanvasRenderingContext2D;
   container: HTMLElement;
+  myPaintCursor: PaintCursor;
   myCursor: Cursor;
   myBrush: Brush;
 
@@ -46,7 +48,9 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.container = (this.canvasContainerRef.nativeElement as HTMLElement);
     this.baseCtx = (this.baseCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
     this.selfCtx = (this.selfCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
-    this.myBrush = new Brush(this.selfCtx);
+    // this.myBrush = new Brush(this.selfCtx);
+    this.myPaintCursor = new PaintCursor(this.baseCtx).setUpperLayer(this.selfCtx);
+    this.myPaintCursor.setTool('RULER');
     this.myCursor = new Cursor().hide();
 
     this.peerAdded.subscribe(this.putPeerOnCanvas.bind(this));
@@ -146,22 +150,28 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   onMouseDown(e: MouseEvent) {
     if (e.button === 0) {
       const { x, y } = this.getMousePosOnCanvas(e);
-      this.myBrush
+      // this.myBrush
+      //   .setColor(this.brushSettings['rgba'])
+      //   .setSize(this.brushSettings['size'])
+      //   .startAt(x, y);
+      this.myPaintCursor
         .setColor(this.brushSettings['rgba'])
         .setSize(this.brushSettings['size'])
-        .startAt(x, y);
+        .startAction();
 
-      this.drawConnection.emitCanvasActionStart(this.brushSettings);
+      console.log(this.myPaintCursor)
+      // this.drawConnection.emitCanvasActionStart(this.brushSettings);
     }
   }
 
   onMouseMove(e: MouseEvent) {
     const { x, y } = this.getMousePosOnCanvas(e);
     this.myCursor.moveTo(x, y);
-    if (e.buttons === 1 && e.button === 0) {
-      this.myBrush.drawTo(x, y);
-    }
-    this.drawConnection.emitMousePosUpdate({ x, y });
+    // if (e.buttons === 1 && e.button === 0) {
+    //   this.myBrush.drawTo(x, y);
+    // }
+    this.myPaintCursor.moveTo(x, y);
+    // this.drawConnection.emitMousePosUpdate({ x, y });
   }
 
   onMouseUp() {
@@ -178,12 +188,13 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   endCurrentStroke() {
-    if (this.myBrush.isDrawing()) {
-      this.myBrush
-        .setOn(this.baseCtx)
-        .reset();
-      this.drawConnection.emitCanvasActionEnd();
-    }
+    // if (this.myBrush.isDrawing()) {
+    //   this.myBrush
+    //     .setOn(this.baseCtx)
+    //     .reset();
+      // this.drawConnection.emitCanvasActionEnd();
+    // }
+    this.myPaintCursor.endAction();
   }
 
   peerListIsEmpty() {

@@ -23,6 +23,7 @@ export class Brush implements IPaintTool {
   rgba: number[];
   size: number;
   ctx: CanvasRenderingContext2D;
+  baseCtx: CanvasRenderingContext2D;
 
   pathX: number[] = [];
   pathY: number[] = [];
@@ -34,10 +35,36 @@ export class Brush implements IPaintTool {
 
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
+    this.baseCtx = ctx;
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
     this.rgba = Brush.default.rgba;
     this.size = Brush.default.size;
+  }
+
+  setCtx(ctx: CanvasRenderingContext2D) {
+    this.ctx = ctx;
+    return this;
+  }
+  setBase(ctx: CanvasRenderingContext2D) {
+    this.baseCtx = ctx;
+    return this;
+  }
+
+  onActivate(x: number, y: number) {
+    return this.startAt(x, y);
+  }
+
+  onMoveWhileActivated(x: number, y: number) {
+    return this.drawTo(x, y);
+  }
+
+  onDeactivate() {
+    return this.setOn(this.baseCtx).reset();
+  }
+
+  isActivated() {
+    return this.isDrawing();
   }
 
   startAt(x: number, y: number) {
@@ -84,10 +111,10 @@ export class Brush implements IPaintTool {
 
   private saveCtxSettings(ctx) {
     return {
-      lineWidth : ctx.lineWidth,
-      lineCap : ctx.lineCap,
-      lineJoin : ctx.lineJoin,
-      fillStyle : ctx.fillStyle,
+      lineWidth: ctx.lineWidth,
+      lineCap: ctx.lineCap,
+      lineJoin: ctx.lineJoin,
+      fillStyle: ctx.fillStyle,
       strokeStyle: ctx.strokeStyle
     }
   }
@@ -148,23 +175,22 @@ export class Brush implements IPaintTool {
     ctx.lineWidth = this.size;
   }
 
-  asEraser() {
-    this.rgba = [255, 255, 255, 1];
+  setColor(rgba: any[]) {
+    console.log(rgba)
+    this.setRgba(rgba)
     this.setCtxStyle();
     return this;
   }
 
-  setColor(rgba: any[]) {
+  setRgba(rgba: any[]) {
     const r = parseInt(rgba[0]);
     const g = parseInt(rgba[1]);
     const b = parseInt(rgba[2]);
     const a = parseFloat(rgba[3]);
     this.rgba = [r, g, b, a];
-    this.setCtxStyle();
-    return this;
   }
 
-  private setCtxStyle() {
+  setCtxStyle() {
     const cssString = `rgba(${this.rgba.join(', ')})`;
     this.ctx.strokeStyle = cssString;
     this.ctx.fillStyle = cssString;
@@ -176,14 +202,6 @@ export class Brush implements IPaintTool {
     return this;
   }
 
-  
-  setCtx(ctx: CanvasRenderingContext2D) { }
-  setBase(ctx: CanvasRenderingContext2D) { }
-
-  onActivate(x: number, y: number) { }
-  onMoveWhileActivated(x: number, y: number) { }
-  onDeactivate() { }
-  isActivated() { }
 
   reset() {
     this.rgba = Brush.default.rgba;
