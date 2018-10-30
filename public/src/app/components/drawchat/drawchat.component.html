@@ -1,7 +1,12 @@
 <p id="spy">{{brushSettings | json}}</p>
 <div id="mainContent">
 <div id="canvasFrame">
-  <app-drawchat-canvas [currZoom]="zoom" [(brushSettings)]="brushSettings" [peerList]="peerList" [peerAdded]="peerAdded"></app-drawchat-canvas>
+  <app-drawchat-canvas 
+    [currZoom]="zoom" 
+    [(brushSettings)]="brushSettings" 
+    [peerList]="peerList" 
+    [peerAdded]="peerAdded">
+  </app-drawchat-canvas>
 </div>
 <div id="toolbar">
   <img src="assets/brush.png" alt="brush" (click)="updateTool('brush')">

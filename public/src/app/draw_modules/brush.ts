@@ -1,4 +1,19 @@
-export class Brush {
+interface IPaintTool {
+  rgba: any[];
+  size: number;
+
+  setColor(color: any[])
+  setSize(size: number)
+  setCtx(ctx: CanvasRenderingContext2D)
+  setBase(ctx: CanvasRenderingContext2D)
+
+  onActivate(x: number, y: number)
+  onMoveWhileActivated(x: number, y: number)
+  onDeactivate()
+  isActivated()
+}
+
+export class Brush implements IPaintTool {
 
   static default = {
     rgba: [1, 1, 1, 1],
@@ -43,12 +58,15 @@ export class Brush {
   drawTo(newX: number, newY: number) {
     this.updateBoundingRectPoints(newX, newY);
 
-    this.pathX.push(newX);
-    this.pathY.push(newY);
-
+    this.updateStroke(newX, newY);
     this.clearStroke();
     this.draw(this.ctx);
     return this;
+  }
+
+  updateStroke(newX: number, newY: number) {
+    this.pathX.push(newX);
+    this.pathY.push(newY);
   }
 
   setOn(baseCtx: CanvasRenderingContext2D) {
@@ -158,6 +176,14 @@ export class Brush {
     return this;
   }
 
+  
+  setCtx(ctx: CanvasRenderingContext2D) { }
+  setBase(ctx: CanvasRenderingContext2D) { }
+
+  onActivate(x: number, y: number) { }
+  onMoveWhileActivated(x: number, y: number) { }
+  onDeactivate() { }
+  isActivated() { }
 
   reset() {
     this.rgba = Brush.default.rgba;

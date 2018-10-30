@@ -64,7 +64,6 @@ export class DrawchatComponent implements OnInit, OnDestroy {
 
   // Expects dictionary in form of {id: username}
   initializePeerList(peerList) {
-    console.log("RECEIVED PEER LIST: ", peerList);
     Object.entries(peerList).forEach(
       ([id, username]) => this.addToPeerList({id, username})
   );
@@ -76,7 +75,9 @@ export class DrawchatComponent implements OnInit, OnDestroy {
   }
 
   removeFromPeerList({ id }) {
-
+    if (this.peerList[id]) {
+      delete this.peerList[id];
+    }
   }
 
   setColor(e) {
