@@ -46,17 +46,17 @@ export class DrawchatComponent implements OnInit, OnDestroy {
   }
 
   subscribeToRoomEvents() {
-    this._socket.roomModule.onPeerJoin()
-      .pipe(takeUntil(this.destroy))
-      .subscribe(this.addToPeerList.bind(this))
+    // this._socket.roomModule.onPeerJoin()
+    //   .pipe(takeUntil(this.destroy))
+    //   .subscribe(this.addToPeerList.bind(this))
 
-    this._socket.roomModule.onPeerLeave()
-      .pipe(takeUntil(this.destroy))
-      .subscribe(this.removeFromPeerList.bind(this));
+    // this._socket.roomModule.onPeerLeave()
+    //   .pipe(takeUntil(this.destroy))
+    //   .subscribe(this.removeFromPeerList.bind(this));
 
-    this._socket.roomModule.onReceivingUserList()
-      .pipe(takeUntil(this.destroy))
-      .subscribe(this.initializePeerList.bind(this));
+    // this._socket.roomModule.onReceivingUserList()
+    //   .pipe(takeUntil(this.destroy))
+    //   .subscribe(this.initializePeerList.bind(this));
   }
 
   // Expects dictionary in form of {id: username}

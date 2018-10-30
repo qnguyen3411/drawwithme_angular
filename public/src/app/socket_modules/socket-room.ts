@@ -21,8 +21,6 @@ export class RoomSocketModule {
   onReceivingUserList() {
     return Observable.create((observer) => {
       this.socket.on('userList', data => {
-        console.log("IN OBSERVABLE")
-        console.log(data)
         observer.next(data);
       });
     });
@@ -39,6 +37,7 @@ export class RoomSocketModule {
   onPeerJoin() {
     return Observable.create((observer) => {
       this.socket.on('peerJoined', data => {
+        console.log("PEER JOIN RECEIVED ON OBSERVABLE")
         observer.next(data);
       });
     });

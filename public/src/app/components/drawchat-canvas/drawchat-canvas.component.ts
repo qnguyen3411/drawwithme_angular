@@ -25,8 +25,8 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   destroy: Subject<boolean> = new Subject<boolean>();
 
   @Input() currZoom = 1;
-  @Input() peerList = {};
   @Input() peerAdded: Subject<any>;
+  peerList = {};
 
   drawConnection: DrawSocketModule;
   baseCtx: CanvasRenderingContext2D;
@@ -48,9 +48,9 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.selfCtx = (this.selfCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
     this.myPaintCursor = new PaintCursor(this.baseCtx).setUpperLayer(this.selfCtx);
 
-    this.peerAdded.subscribe(this.putPeerOnCanvas.bind(this));
-    this.subscribeToCanvasEvents();
     this.subscribeToBrushChanges();
+    this.subscribeToRoomEvents();
+    this.subscribeToCanvasEvents();
   }
 
   ngOnDestroy() {
@@ -60,16 +60,42 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   subscribeToBrushChanges() {
-    this.brush.colorChanged.subscribe(color => {
-      console.log("COLOR CHANGED!");
-      this.myPaintCursor.setColor(color);
-      // console.log(color);
-    });
-    this.brush.sizeChanged.subscribe(size => {
-      console.log("SIZE CHANGED!");
-      // console.log(size);
-      this.myPaintCursor.setSize(size);
-    })
+    this.brush.colorChanged.subscribe(this.myPaintCursor.setColor);
+    this.brush.sizeChanged.subscribe(this.myPaintCursor.setSize);
+  }
+
+  subscribeToRoomEvents() {
+    this._socket.roomModule
+      .onPeerJoin()
+      .subscribe(this.addPeerCursor.bind(this));
+
+    this._socket.roomModule
+      .onReceivingUserList()
+      .subscribe(this.initializePeerList.bind(this));
+  }
+
+  initializePeerList(peerList) {
+    Object.entries(peerList).forEach(
+      ([id, username]) => this.addPeerCursor({ id, username })
+    );
+  }
+
+  addPeerCursor({ id, username }) {
+    let newCtx: CanvasRenderingContext2D;
+    const cursor = new PaintCursor(this.baseCtx).setLabel(username)
+    this.peerList[id] = { username, cursor }
+    const obs = interval(200)
+      .pipe(takeWhile(() => !newCtx))
+      .subscribe(() => {
+        const hasPeerId = val => val.id == id;
+        const found = Array.from(this.container.children).find(hasPeerId);
+
+        if (found !== undefined) {
+          newCtx = (found as HTMLCanvasElement).getContext('2d');
+          cursor.setUpperLayer(newCtx);
+          console.log(this.peerList)
+        }
+      })
   }
 
   subscribeToCanvasEvents() {
@@ -94,31 +120,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .subscribe(this.endPeerAction.bind(this));
   }
 
-  putPeerOnCanvas(newPeer) {
-    const id = newPeer['id'];
-    this.addPeerCursor(id);
-    this.addPeerBrush(id);
-  }
 
-  addPeerCursor(peerId: string) {
-    this.peerList[peerId]['cursor'] = new Cursor();
-  }
-
-  addPeerBrush(peerId: string) {
-    let newCtx: CanvasRenderingContext2D;
-
-    const obs = interval(200)
-      .pipe(takeWhile(() => !newCtx))
-      .subscribe(() => {
-        const hasPeerId = val => val.id == peerId;
-        const found = Array.from(this.container.children).find(hasPeerId);
-
-        if (found !== undefined) {
-          newCtx = (found as HTMLCanvasElement).getContext('2d');
-          this.peerList[peerId]['brush'] = new Brush(newCtx);
-        }
-      })
-  }
 
   updatePeersCursorSize({ id, data }) {
     const cursor = this.peerList[id]['cursor'] as Cursor;
@@ -126,27 +128,21 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   updatePeersMousePos({ id, data: { x, y } }) {
-    const cursor = this.peerList[id]['cursor'] as Cursor;
-    const brush = this.peerList[id]['brush'] as Brush;
+    const cursor = this.peerList[id]['cursor'] as PaintCursor;
     cursor.moveTo(x, y);
-    if (brush.isDrawing()) {
-      brush.drawTo(x, y);
-    }
   }
 
   startPeerAction({ id, data }) {
-    const cursor = this.peerList[id]['cursor'] as Cursor;
-    const brush = this.peerList[id]['brush'] as Brush;
-
-    brush.setColor(data['rgba'])
+    const cursor = this.peerList[id]['cursor'] as PaintCursor;
+    cursor.setColor(data['rgba'])
       .setSize(cursor.size)
-      .startAt(cursor.x, cursor.y);
+      .startAction();
   }
 
   endPeerAction({ id, data }) {
-    const brush = this.peerList[id]['brush'] as Brush;
-    if (brush.isDrawing()) {
-      brush.setOn(this.baseCtx).reset();
+    const cursor = this.peerList[id]['cursor'] as PaintCursor;
+    if (cursor.hasOngoingAction()) {
+      cursor.endAction();
     }
   }
 
@@ -159,14 +155,15 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   onMouseDown(e: MouseEvent) {
     if (e.button === 0) {
       this.myPaintCursor.startAction();
-
-      // this.drawConnection.emitCanvasActionStart(this.brushSettings);
+      // TODO: implement tools
+      this.drawConnection.emitCanvasActionStart({ rgba: this.brush.rgba });
     }
   }
 
   onMouseMove(e: MouseEvent) {
     const { x, y } = this.getMousePosOnCanvas(e);
     this.myPaintCursor.moveTo(x, y);
+    this.drawConnection.emitMousePosUpdate({ x, y })
   }
 
   onMouseUp() {
@@ -185,7 +182,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   endCurrentStroke() {
     if (this.myPaintCursor.hasOngoingAction()) {
       this.myPaintCursor.endAction();
-      // this.drawConnection.emitCanvasActionEnd();
+      this.drawConnection.emitCanvasActionEnd();
     }
   }
 
