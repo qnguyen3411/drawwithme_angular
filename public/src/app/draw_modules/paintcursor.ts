@@ -16,9 +16,19 @@ interface IPaintTool {
   onMoveWhileActivated(x: number, y: number)
   onDeactivate()
   isActivated()
+  getActionData()
 }
 
 export class PaintCursor {
+
+  private static getToolCreator(tool) {
+    return {
+      'BRUSH': Brush,
+      'ERASER': Eraser,
+      'RULER': Ruler
+    }[tool];
+  }
+  
   x: number;
   y: number;
   rgba = Brush.default.rgba;
@@ -51,6 +61,8 @@ export class PaintCursor {
   }
 
   startAction() {
+    this.currTool.setColor(this.rgba);
+    this.currTool.setSize(this.size);
     this.currTool.onActivate(this.x, this.y);
     return this;
   }
@@ -71,26 +83,26 @@ export class PaintCursor {
     return this;
   }
 
+  hasOngoingAction() {
+    return this.currTool.isActivated();
+  }
+
+  getActionData() {
+    return this.currTool.getActionData();
+  }
+
   setTool(tool: string) {
     if (tool === this.currToolName) { return this; }
+    // TODO: implementing enum in a way that outsiders can use it
     if (tool !== 'BRUSH' && tool !== 'ERASER' && tool !== 'RULER') { return this; }
     this.currToolName = tool;
-    switch (tool) {
-      case 'BRUSH':
-        this.currTool = new Brush(this.baseCtx);
-        break;
-      case 'ERASER':
-        this.currTool = new Eraser(this.baseCtx);
-        break;
-      default:
-        this.currTool = new Ruler(this.baseCtx);
-    }
-    this.currTool.setCtx(this.topCtx || this.baseCtx);
-    console.log("SETTING CONTEXT OK")
-    this.currTool.setColor(this.rgba);
-    console.log("SETTING COLOR OK")
-    this.currTool.setSize(this.size);
-    console.log(this.currTool);
+    const toolCreator = PaintCursor.getToolCreator(tool);
+    this.currTool = new toolCreator(this.baseCtx);
+   
+    this.currTool
+      .setCtx(this.topCtx || this.baseCtx)
+      .setColor(this.rgba)
+      .setSize(this.size);
     return this;
   }
 
@@ -120,6 +132,5 @@ export class PaintCursor {
     this.isVisible = false;
     return this;
   }
-
 
 }

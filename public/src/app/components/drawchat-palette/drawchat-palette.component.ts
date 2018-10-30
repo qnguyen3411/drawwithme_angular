@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { MouseposService } from 'src/app/services/mousepos.service';
+import { DrawchatBrushService } from '../../services/drawchat-brush.service';
 
 @Component({
   selector: 'app-drawchat-palette',
@@ -9,13 +10,13 @@ import { MouseposService } from 'src/app/services/mousepos.service';
 })
 export class DrawchatPaletteComponent implements OnInit {
 
-  @Output() colorPicked = new EventEmitter<number[]>();
   @ViewChild('palette') paletteRef;
 
   palCtx: CanvasRenderingContext2D;
 
   constructor(
-    private mouse: MouseposService
+    private mouse: MouseposService,
+    private brush: DrawchatBrushService
   ) { }
 
   ngOnInit() {
@@ -39,7 +40,7 @@ export class DrawchatPaletteComponent implements OnInit {
   getColorFromPalette({ x, y }) {
     const {data} = this.palCtx.getImageData(x, y, 1, 1);
     this.palCtx.beginPath()
-    this.colorPicked.emit([data[0], data[1], data[2]])
+    this.brush.changeColor([data[0], data[1], data[2]]);
   }
 
 }

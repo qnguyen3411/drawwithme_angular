@@ -11,6 +11,7 @@ interface IPaintTool {
   onMoveWhileActivated(x: number, y: number)
   onDeactivate()
   isActivated()
+  getActionData()
 }
 
 export class Brush implements IPaintTool {
@@ -65,6 +66,10 @@ export class Brush implements IPaintTool {
 
   isActivated() {
     return this.isDrawing();
+  }
+
+  getActionData() {
+    return this.getData();
   }
 
   startAt(x: number, y: number) {
@@ -176,7 +181,6 @@ export class Brush implements IPaintTool {
   }
 
   setColor(rgba: any[]) {
-    console.log(rgba)
     this.setRgba(rgba)
     this.setCtxStyle();
     return this;
@@ -201,7 +205,6 @@ export class Brush implements IPaintTool {
     this.ctx.lineWidth = size;
     return this;
   }
-
 
   reset() {
     this.rgba = Brush.default.rgba;

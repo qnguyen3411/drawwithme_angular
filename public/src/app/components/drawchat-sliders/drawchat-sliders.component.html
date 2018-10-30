@@ -15,7 +15,7 @@
       type="range" 
       name="colorSlider1Val" 
       [(ngModel)]="colorSlider1Val" 
-      (change)="updateBrushSettings()"
+      (change)="updateColor()"
       min="1" max="{{currMode == 'rgba' ? 255 : 360}}">
     <label class="sliderVal">{{colorSlider1Val}}</label>
   </div>
@@ -26,7 +26,7 @@
       type="range" 
       name="colorSlider2Val"
       [(ngModel)]="colorSlider2Val"
-      (change)="updateBrushSettings()"
+      (change)="updateColor()"
       min="1" max="{{currMode == 'rgba' ? 255 : 100}}">
     <label class="sliderVal">{{colorSlider2Val}}</label>
 
@@ -38,7 +38,7 @@
       type="range" 
       name="colorSlider3Val"
       [(ngModel)]="colorSlider3Val"
-      (change)="updateBrushSettings()"
+      (change)="updateColor()"
       min="1" max="{{currMode == 'rgba' ? 255 : 100}}">
     <label class="sliderVal">{{colorSlider3Val}}</label>
   </div>
@@ -64,7 +64,7 @@
       type="range" 
       name="sizeSliderVal"
       [(ngModel)]="sizeSliderVal"
-      (change)="updateBrushSettings(); emitCursorSizeUpdate()"
+      (change)="updateSize()"
       min="0" max="100">
     <label class="sliderVal">{{sizeSliderVal}}</label>
   </div>

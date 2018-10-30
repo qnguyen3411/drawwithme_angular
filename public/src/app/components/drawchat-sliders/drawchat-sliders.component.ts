@@ -1,14 +1,15 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SocketsService } from '../../services/sockets.service';
+import { DrawchatBrushService } from '../../services/drawchat-brush.service';
+
 @Component({
   selector: 'app-drawchat-sliders',
   templateUrl: './drawchat-sliders.component.html',
-  styleUrls: ['./drawchat-sliders.component.css']
+  styleUrls: ['./drawchat-sliders.component.css'],
+  providers: []
 })
-export class DrawchatSlidersComponent implements OnInit, OnChanges {
+export class DrawchatSlidersComponent implements OnInit {
   
-  @Input() brushSettings;
-
   currMode = 'rgba';
   colorSlider1Val: number;
   colorSlider2Val: number;
@@ -17,7 +18,10 @@ export class DrawchatSlidersComponent implements OnInit, OnChanges {
   alphaSliderVal: number;
   sizeSliderVal: number;
 
-  constructor(private _socket: SocketsService) {
+  constructor(
+    private _socket: SocketsService,
+    private brush: DrawchatBrushService
+    ) {
     this.colorSlider1Val = 128;
     this.colorSlider2Val = 128;
     this.colorSlider3Val = 128;
@@ -25,32 +29,33 @@ export class DrawchatSlidersComponent implements OnInit, OnChanges {
     this.sizeSliderVal = 1;
    }
 
-  ngOnInit() { }
-
-  ngOnChanges(change: SimpleChanges) {
-    let newVals = this.brushSettings.rgba;
-    if (this.currMode === 'hsla') {
-      newVals = this.rgbToHsl(newVals);
-    }
-    this.setColorSliderVals(newVals);
+  ngOnInit() { 
+    this.subscribeToColorChanges();
   }
 
-  emitCursorSizeUpdate() {
-    console.log("EMITTING CURSOR SIZE UPDATE")
-    this._socket.drawModule.emitCursorSizeUpdate(this.brushSettings.size);
+  subscribeToColorChanges() {
+    this.brush.colorChanged.subscribe(color => {
+      let newVals = color;
+      if (this.currMode === 'hsla') {
+        newVals = this.rgbToHsl(newVals);
+      }
+      this.setColorSliderVals(newVals);
+    })
   }
 
-
-  updateBrushSettings() {
+  updateColor() {
     let newVals;
     if (this.currMode === 'rgba') {
       newVals = this.getColorSliderVals();
     } else {
       newVals = this.getAlternateModeVals();
     }
+    this.brush.changeColorAndAlpha([...newVals, this.alphaSliderVal]);
+  }
 
-    this.brushSettings['rgba'] = [...newVals, this.alphaSliderVal];
-    this.brushSettings['size'] = this.sizeSliderVal;
+  updateSize() {
+    this.brush.changeSize(this.sizeSliderVal);
+    this._socket.drawModule.emitCursorSizeUpdate(this.brush.size);
   }
 
   changeMode(mode:string) {
@@ -83,8 +88,9 @@ export class DrawchatSlidersComponent implements OnInit, OnChanges {
     ]
   }
 
+  // TODO: implement solid color switch
   cssString() {
-    return `rgba(${this.brushSettings.rgba.join(',')})`
+    return `rgba(${this.brush.rgba.join(',')})`
   }
 
   private hslToRgb([h, s, l]: number[]) {

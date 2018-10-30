@@ -5,7 +5,6 @@ export class Eraser extends Brush {
     super(ctx);
     this.rgba = [255,255,255,1];
     this.size = Brush.default.size;
-    // super.set
   }
 
   setRgba(rgba: any[]) {

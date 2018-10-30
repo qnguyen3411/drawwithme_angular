@@ -15,10 +15,10 @@
   <svg width="1820" height="1024" xmlns="http://www.w3.org/2000/svg" [ngStyle]="{zoom: currZoom}">
     <circle 
       stroke="black" stroke-width="1" fill="none"
-      [attr.cx]="myCursor.x" 
-      [attr.cy]="myCursor.y" 
-      [attr.r]="brushSettings['size'] / 2"
-      [attr.display]="myCursor.isVisible ? 'block' : 'none'"/>
+      [attr.cx]="myPaintCursor.x" 
+      [attr.cy]="myPaintCursor.y" 
+      [attr.r]="myPaintCursor.size / 2"
+      [attr.display]="myPaintCursor.isVisible ? 'block' : 'none'"/>
 
       <circle *ngFor="let peer of peerList | keyvalue"
       stroke="black" stroke-width="1" fill="none"

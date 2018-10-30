@@ -3,24 +3,22 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-// import 'rxjs/add/operator/takeUntil';
-
-
 import { SessionService } from '../../services/session.service';
 import { SocketsService } from '../../services/sockets.service';
+import { DrawchatBrushService } from '../../services/drawchat-brush.service';
 import { Brush } from 'src/app/draw_modules/brush';
-
 
 @Component({
   selector: 'app-drawchat',
   templateUrl: './drawchat.component.html',
-  styleUrls: ['./drawchat.component.css']
+  styleUrls: ['./drawchat.component.css'],
+  providers: [DrawchatBrushService]
 })
 export class DrawchatComponent implements OnInit, OnDestroy {
-
+  // TODO: PeerList should be a service
   peerList = {};
 
-  brushSettings = Brush.default;
+  // brushSettings = Brush.default;
   zoom = 1;
 
   destroy: Subject<boolean> = new Subject<boolean>();
@@ -61,7 +59,6 @@ export class DrawchatComponent implements OnInit, OnDestroy {
       .subscribe(this.initializePeerList.bind(this));
   }
 
-
   // Expects dictionary in form of {id: username}
   initializePeerList(peerList) {
     Object.entries(peerList).forEach(
@@ -79,12 +76,5 @@ export class DrawchatComponent implements OnInit, OnDestroy {
       delete this.peerList[id];
     }
   }
-
-  setColor(e) {
-    this.brushSettings.rgba[0] = e[0];
-    this.brushSettings.rgba[1] = e[1];
-    this.brushSettings.rgba[2] = e[2];
-    // Clone the object so that change detection triggers
-    this.brushSettings = Object.assign({}, this.brushSettings);
-  }
+ 
 }

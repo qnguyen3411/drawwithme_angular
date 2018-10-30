@@ -7,9 +7,9 @@ import { Brush } from '../../draw_modules/brush';
 import { Cursor } from '../../draw_modules/cursor';
 import { PaintCursor } from '../../draw_modules/paintcursor';
 import { MouseposService } from '../../services/mousepos.service';
+import { DrawchatBrushService } from '../../services/drawchat-brush.service';
 import { SocketsService } from 'src/app/services/sockets.service';
 import { DrawSocketModule } from 'src/app/socket_modules/socket-draw';
-
 
 @Component({
   selector: 'app-drawchat-canvas',
@@ -24,7 +24,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
   destroy: Subject<boolean> = new Subject<boolean>();
 
-  @Input() brushSettings;
   @Input() currZoom = 1;
   @Input() peerList = {};
   @Input() peerAdded: Subject<any>;
@@ -34,12 +33,11 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   selfCtx: CanvasRenderingContext2D;
   container: HTMLElement;
   myPaintCursor: PaintCursor;
-  myCursor: Cursor;
-  myBrush: Brush;
 
   constructor(
     private mouse: MouseposService,
-    private _socket: SocketsService
+    private _socket: SocketsService,
+    private brush: DrawchatBrushService
   ) {
     this.drawConnection = this._socket.drawModule;
   }
@@ -48,19 +46,30 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.container = (this.canvasContainerRef.nativeElement as HTMLElement);
     this.baseCtx = (this.baseCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
     this.selfCtx = (this.selfCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
-    // this.myBrush = new Brush(this.selfCtx);
     this.myPaintCursor = new PaintCursor(this.baseCtx).setUpperLayer(this.selfCtx);
-    this.myPaintCursor.setTool('RULER');
-    this.myCursor = new Cursor().hide();
 
     this.peerAdded.subscribe(this.putPeerOnCanvas.bind(this));
     this.subscribeToCanvasEvents();
+    this.subscribeToBrushChanges();
   }
 
   ngOnDestroy() {
     this._socket.connectionModule.leaveRoom();
     this.destroy.next(true);
     this.destroy.unsubscribe();
+  }
+
+  subscribeToBrushChanges() {
+    this.brush.colorChanged.subscribe(color => {
+      console.log("COLOR CHANGED!");
+      this.myPaintCursor.setColor(color);
+      // console.log(color);
+    });
+    this.brush.sizeChanged.subscribe(size => {
+      console.log("SIZE CHANGED!");
+      // console.log(size);
+      this.myPaintCursor.setSize(size);
+    })
   }
 
   subscribeToCanvasEvents() {
@@ -144,34 +153,20 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   // Personal events
 
   onMouseEnter() {
-    this.myCursor.show();
+    this.myPaintCursor.show();
   }
 
   onMouseDown(e: MouseEvent) {
     if (e.button === 0) {
-      const { x, y } = this.getMousePosOnCanvas(e);
-      // this.myBrush
-      //   .setColor(this.brushSettings['rgba'])
-      //   .setSize(this.brushSettings['size'])
-      //   .startAt(x, y);
-      this.myPaintCursor
-        .setColor(this.brushSettings['rgba'])
-        .setSize(this.brushSettings['size'])
-        .startAction();
+      this.myPaintCursor.startAction();
 
-      console.log(this.myPaintCursor)
       // this.drawConnection.emitCanvasActionStart(this.brushSettings);
     }
   }
 
   onMouseMove(e: MouseEvent) {
     const { x, y } = this.getMousePosOnCanvas(e);
-    this.myCursor.moveTo(x, y);
-    // if (e.buttons === 1 && e.button === 0) {
-    //   this.myBrush.drawTo(x, y);
-    // }
     this.myPaintCursor.moveTo(x, y);
-    // this.drawConnection.emitMousePosUpdate({ x, y });
   }
 
   onMouseUp() {
@@ -180,7 +175,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
   onMouseLeave() {
     this.endCurrentStroke();
-    this.myCursor.hide()
+    this.myPaintCursor.hide()
   }
 
   getMousePosOnCanvas(e: MouseEvent) {
@@ -188,13 +183,14 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   endCurrentStroke() {
-    // if (this.myBrush.isDrawing()) {
-    //   this.myBrush
-    //     .setOn(this.baseCtx)
-    //     .reset();
+    if (this.myPaintCursor.hasOngoingAction()) {
+      this.myPaintCursor.endAction();
       // this.drawConnection.emitCanvasActionEnd();
-    // }
-    this.myPaintCursor.endAction();
+    }
+  }
+
+  getCurrSize() {
+    return this.brush.size;
   }
 
   peerListIsEmpty() {
