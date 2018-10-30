@@ -1,9 +1,8 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { Subject, interval } from 'rxjs';
-import { takeWhile, takeUntil } from 'rxjs/operators';
+import { takeWhile, takeUntil, map, filter } from 'rxjs/operators';
 
 
-import { Brush } from '../../draw_modules/brush';
 import { Cursor } from '../../draw_modules/cursor';
 import { PaintCursor } from '../../draw_modules/paintcursor';
 import { MouseposService } from '../../services/mousepos.service';
@@ -54,49 +53,87 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this._socket.connectionModule.leaveRoom();
     this.destroy.next(true);
     this.destroy.unsubscribe();
   }
 
   subscribeToBrushChanges() {
-    this.brush.colorChanged.subscribe(this.myPaintCursor.setColor);
-    this.brush.sizeChanged.subscribe(this.myPaintCursor.setSize);
+    this.brush.colorChanged
+      .pipe(takeUntil(this.destroy))
+      .subscribe(this.myPaintCursor.setColor);
+    this.brush.sizeChanged
+      .pipe(takeUntil(this.destroy))
+      .subscribe(this.myPaintCursor.setSize);
   }
 
   subscribeToRoomEvents() {
     this._socket.roomModule
       .onPeerJoin()
+      .pipe(takeUntil(this.destroy))
       .subscribe(this.addPeerCursor.bind(this));
 
     this._socket.roomModule
       .onReceivingUserList()
+      .pipe(takeUntil(this.destroy))
       .subscribe(this.initializePeerList.bind(this));
+
+    this._socket.roomModule.onPeerLeave()
+      .pipe(takeUntil(this.destroy))
+      .subscribe(this.removeFromPeerList.bind(this));
+
+  }
+
+  removeFromPeerList({ id }) {
+    if (this.peerList[id]) {
+      delete this.peerList[id];
+    }
   }
 
   initializePeerList(peerList) {
-    Object.entries(peerList).forEach(
-      ([id, username]) => this.addPeerCursor({ id, username })
+    Object.entries(peerList).forEach(([id, username]) =>
+      this.addPeerCursor({ id, username })
     );
   }
 
   addPeerCursor({ id, username }) {
-    let newCtx: CanvasRenderingContext2D;
     const cursor = new PaintCursor(this.baseCtx).setLabel(username)
     this.peerList[id] = { username, cursor }
-    const obs = interval(200)
-      .pipe(takeWhile(() => !newCtx))
-      .subscribe(() => {
-        const hasPeerId = val => val.id == id;
-        const found = Array.from(this.container.children).find(hasPeerId);
 
-        if (found !== undefined) {
-          newCtx = (found as HTMLCanvasElement).getContext('2d');
-          cursor.setUpperLayer(newCtx);
-          console.log(this.peerList)
-        }
+    // const obs = interval(200)
+    //   .pipe(
+    //     takeWhile(ctxNotFound),
+    //     map(() => this.findCanvasWithId(id)),
+    //     filter(found => found !== undefined)
+    //   )
+    //   .subscribe(found => {
+    //     newCtx = (found as HTMLCanvasElement).getContext('2d');
+    //     cursor.setUpperLayer(newCtx);
+    //     console.log(this.peerList)
+    //   })
+    let newCtx: CanvasRenderingContext2D;
+    const ctxNotFound = () => !newCtx;
+    const obs = this.checkForCanvas({ id: id, intervalInMs: 200 })
+      .pipe(takeWhile(ctxNotFound))
+      .subscribe(foundCanvas => {
+        newCtx = (foundCanvas as HTMLCanvasElement).getContext('2d');
+        cursor.setUpperLayer(newCtx);
+        console.log(this.peerList)
       })
   }
+
+  checkForCanvas({ id, intervalInMs }: { id: string, intervalInMs: number }) {
+    return interval(intervalInMs)
+      .pipe(
+        map(() => this.findCanvasWithId(id)),
+        filter(found => found !== undefined)
+      )
+  }
+
+  findCanvasWithId(id: string) {
+    console.log("FINDING CANVAS....")
+    return Array.from(this.container.children).find(val => val.id == id);
+  }
+
 
   subscribeToCanvasEvents() {
     this.drawConnection

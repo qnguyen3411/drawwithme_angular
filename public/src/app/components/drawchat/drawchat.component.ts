@@ -46,35 +46,9 @@ export class DrawchatComponent implements OnInit, OnDestroy {
   }
 
   subscribeToRoomEvents() {
-    // this._socket.roomModule.onPeerJoin()
-    //   .pipe(takeUntil(this.destroy))
-    //   .subscribe(this.addToPeerList.bind(this))
-
-    // this._socket.roomModule.onPeerLeave()
-    //   .pipe(takeUntil(this.destroy))
-    //   .subscribe(this.removeFromPeerList.bind(this));
-
-    // this._socket.roomModule.onReceivingUserList()
-    //   .pipe(takeUntil(this.destroy))
-    //   .subscribe(this.initializePeerList.bind(this));
   }
 
   // Expects dictionary in form of {id: username}
-  initializePeerList(peerList) {
-    Object.entries(peerList).forEach(
-      ([id, username]) => this.addToPeerList({id, username})
-  );
-  }
 
-  addToPeerList({id, username}) {
-    this.peerList[id] = { username };
-    this.peerAdded.next({ id, username })
-  }
-
-  removeFromPeerList({ id }) {
-    if (this.peerList[id]) {
-      delete this.peerList[id];
-    }
-  }
  
 }

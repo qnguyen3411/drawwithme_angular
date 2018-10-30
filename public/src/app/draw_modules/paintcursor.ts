@@ -93,7 +93,6 @@ export class PaintCursor {
 
   setTool(tool: string) {
     if (tool === this.currToolName) { return this; }
-    // TODO: implementing enum in a way that outsiders can use it
     if (tool !== 'BRUSH' && tool !== 'ERASER' && tool !== 'RULER') { return this; }
     this.currToolName = tool;
     const toolCreator = PaintCursor.getToolCreator(tool);
