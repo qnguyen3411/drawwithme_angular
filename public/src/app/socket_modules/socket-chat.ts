@@ -14,7 +14,6 @@ export class ChatSocketModule {
   onNewMessage(): Observable<any> {
     return Observable.create((observer) => {
       this.socket.on('peersChatMessageSent', (data) => {
-        console.log("GOT IT INSIDE OBSERVER")
         observer.next(data);
       })
     })

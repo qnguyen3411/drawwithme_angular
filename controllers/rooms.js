@@ -23,6 +23,7 @@ module.exports = {
     }
   },
 
+  //TODO: joining an inactive room should give an error
   join: async (req, res, next) => {
     if (!req.user) { return; }
     const roomId = req.params.id;
@@ -59,6 +60,14 @@ module.exports = {
   },
 
   getOne: async (req, res, next) => {
-    res.json({ status: 'error', error: err });
+    try {
+      const found = await roomModel.getById(req.params.id);
+      if (!found) {
+        throw new Error ('Room not found')
+      }
+      res.json({ status: 'success', data: found[0] });
+    } catch (err) {
+      res.json({ status: 'error', error: err });
+    }
   }
 }

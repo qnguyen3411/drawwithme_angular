@@ -24,9 +24,9 @@ export class DrawchatSlidersComponent implements OnInit {
     private brush: DrawchatBrushService,
     private color: DrawchatColorService
     ) {
-    this.colorSlider1Val = 128;
-    this.colorSlider2Val = 128;
-    this.colorSlider3Val = 128;
+    this.colorSlider1Val = 1;
+    this.colorSlider2Val = 1;
+    this.colorSlider3Val = 1;
     this.alphaSliderVal = 1;
     this.sizeSliderVal = 1;
    }

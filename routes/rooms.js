@@ -9,6 +9,22 @@ const passportJWT = passport.authenticate('jwt', { session: false });
 const { validateBody, schemas } = require('../middlewares');
 const roomController = require('../controllers/rooms');
 
+
+// TODO: move this into its own config file config/ env
+
+router.route('/config')
+  .get(async (req, res) => {
+    console.log("HEYMAN")
+    const MS_PER_HOUR = 1000 * 60 * 60;
+
+    res.json({
+      tokenCap: 5,
+      tokenInterval: MS_PER_HOUR * 2,
+      tokenTimeValue: MS_PER_HOUR * 4
+    })
+  })
+
+
 router.route('/create')
   .post(
     validateBody(schemas.roomSchema), passportJWT, roomController.create)
@@ -22,17 +38,6 @@ router.route('/')
 router.route('/:id')
   .get(roomController.getOne);
 
-router.route('/:id/log').get((req, res) => {
-  const id = req.params.id;
-  let s = fs.createReadStream(__dirname + `/../../strokeLogs/${id}.txt`)
-    .pipe(es.split()) 
-    .pipe(res)
-    .on('error', function (err) {
-      console.log('Error while reading file.', err);
-    })
-    .on('end', function () {
-      console.log('Read entire file.')
-    });
-})
+
 module.exports = router;
 

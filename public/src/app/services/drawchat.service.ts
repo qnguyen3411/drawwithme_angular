@@ -34,7 +34,10 @@ export class DrawchatService {
   }
 
   fetchLog(id) {
-    return this._http.get(`/rooms/${id}/log`, {responseType: "text"})
-    
+    return this._http.get(`/rooms/${id}/log`, {responseType: "text"});
+  }
+
+  fetchRoomTokenConfig() {
+    return this._http.get('/rooms/config');
   }
 }

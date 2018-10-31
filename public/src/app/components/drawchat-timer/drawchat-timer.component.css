@@ -1,0 +1,21 @@
+#tokenCountdown {
+  font-weight: bolder;
+  font-size: 30px;
+  margin-bottom: 5px;
+  padding-left: 10px;
+}
+
+#roomCountdown {
+  font-weight: bold;
+  font-size: 13px; 
+}
+
+img {
+  width: 15px;
+  height: 15px;
+}
+
+#tokenButton {
+  width:40%;
+  border-radius: 5px;
+}

@@ -12,7 +12,6 @@ module.exports = {
       'users.username',
       'rooms.creator_id',
       'rooms.created_at',
-      'rooms.is_active'
     ]
     const sql =
       "SELECT ??"
@@ -31,13 +30,12 @@ module.exports = {
       'users.username',
       'rooms.creator_id',
       'rooms.created_at',
-      'rooms.is_active'
     ]
     const sql =
       "SELECT ?? FROM rooms"
       + " LEFT JOIN users"
       + " ON rooms.creator_id = users.id"
-      + " WHERE id = ?";
+      + " WHERE rooms.id = ?";
     return db.query(sql, [columns, id]);
   },
 
@@ -50,7 +48,6 @@ module.exports = {
       'users.username',
       'rooms.creator_id',
       'rooms.created_at',
-      'rooms.is_active'
     ]
     const sql =
       'SELECT ?? '
@@ -75,7 +72,6 @@ module.exports = {
       'users.username',
       'rooms.creator_id',
       'rooms.created_at',
-      'rooms.is_active'
     ]
     const sql =
       "SELECT ?? "
