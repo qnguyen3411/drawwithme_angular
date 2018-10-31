@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { Subject, interval } from 'rxjs';
-import { takeWhile, takeUntil, map, filter } from 'rxjs/operators';
+import { takeWhile, takeUntil, map, filter, take } from 'rxjs/operators';
 
 
 import { PaintCursor } from '../../draw_modules/paintcursor';
+import { ObservablePaintCursor } from '../../draw_modules/observablepaintcursor';
 import { MouseposService } from '../../services/mousepos.service';
 import { DrawchatBrushService } from '../../services/drawchat-brush.service';
 import { SocketsService } from 'src/app/services/sockets.service';
@@ -30,7 +31,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   baseCtx: CanvasRenderingContext2D;
   selfCtx: CanvasRenderingContext2D;
   container: HTMLElement;
-  myPaintCursor: PaintCursor;
+  myPaintCursor: ObservablePaintCursor;
 
   trackMouse;
 
@@ -46,8 +47,10 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.container = (this.canvasContainerRef.nativeElement as HTMLElement);
     this.baseCtx = (this.baseCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
     this.selfCtx = (this.selfCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
-    this.myPaintCursor = new PaintCursor(this.baseCtx).setUpperLayer(this.selfCtx);
+    this.myPaintCursor = new ObservablePaintCursor(this.baseCtx).setUpperLayer(this.selfCtx);
     this.trackMouse = this.mouse.getMousePosTracker(this.baseCtx.canvas);
+    
+    this.subscribeToCursorEvents();
     this.subscribeToBrushChanges();
     this.subscribeToRoomEvents();
     this.subscribeToCanvasEvents();
@@ -58,13 +61,30 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.destroy.unsubscribe();
   }
 
+  subscribeToCursorEvents() {
+    this.myPaintCursor.onStart.subscribe(
+      this.drawConnection.emitCanvasActionStart
+      .bind(this.drawConnection));
+
+    this.myPaintCursor.onMove.subscribe(
+      this.drawConnection.emitMousePosUpdate
+      .bind(this.drawConnection));
+
+    this.myPaintCursor.onEnd.subscribe(
+      this.drawConnection.emitCanvasActionEnd
+      .bind(this.drawConnection));
+  }
+
   subscribeToBrushChanges() {
     this.brush.colorChanged
       .pipe(takeUntil(this.destroy))
-      .subscribe(this.myPaintCursor.setColor.bind(this.myPaintCursor));
+      .subscribe(this.myPaintCursor.setColor
+        .bind(this.myPaintCursor));
+
     this.brush.sizeChanged
       .pipe(takeUntil(this.destroy))
-      .subscribe(this.myPaintCursor.setSize.bind(this.myPaintCursor));
+      .subscribe(this.myPaintCursor.setSize
+        .bind(this.myPaintCursor));
   }
 
   subscribeToRoomEvents() {
@@ -78,7 +98,8 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy))
       .subscribe(this.initializePeerList.bind(this));
 
-    this._socket.roomModule.onPeerLeave()
+    this._socket.roomModule
+      .onPeerLeave()
       .pipe(takeUntil(this.destroy))
       .subscribe(this.removeFromPeerList.bind(this));
 
@@ -99,14 +120,10 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   addPeerCursor({ id, username }) {
     const cursor = new PaintCursor(this.baseCtx).setLabel(username)
     this.peerList[id] = { username, cursor }
-    // Get upper layer for new cursor
-    let newCtx: CanvasRenderingContext2D;
-    const ctxNotFound = () => !newCtx;
+    // Get upper Canvas for new cursor
     this.checkForCanvas({ id: id, intervalInMs: 200 })
-      .pipe(takeWhile(ctxNotFound))
       .subscribe(foundCanvas => {
-        newCtx = (foundCanvas as HTMLCanvasElement).getContext('2d');
-        cursor.setUpperLayer(newCtx);
+        cursor.setUpperLayer(foundCanvas.getContext('2d'));
       })
   }
 
@@ -114,7 +131,9 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     return interval(intervalInMs)
       .pipe(
         map(() => this.findCanvasWithId(id)),
-        filter(found => found !== undefined)
+        filter(found => found !== undefined),
+        map(found => found as HTMLCanvasElement),
+        take(1)
       )
   }
 
@@ -143,7 +162,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy))
       .subscribe(this.endPeerAction.bind(this));
   }
-
 
   updatePeersCursorSize({ id, data }) {
     this.getCursorByUserId(id).setSize(data);
@@ -179,17 +197,12 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   onMouseDown(e: MouseEvent) {
     if (e.button === 0) {
       this.myPaintCursor.startAction();
-      this.drawConnection.emitCanvasActionStart({
-        tool: this.myPaintCursor.currToolName, 
-        rgba: this.brush.rgba 
-      });
     }
   }
 
   onMouseMove(e: MouseEvent) {
     const { x, y } = this.trackMouse(e);
     this.myPaintCursor.moveTo(x, y);
-    this.drawConnection.emitMousePosUpdate({ x, y })
   }
 
   onMouseUp() {
@@ -204,7 +217,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   endCurrentStroke() {
     if (this.myPaintCursor.hasOngoingAction()) {
       this.myPaintCursor.endAction();
-      this.drawConnection.emitCanvasActionEnd();
     }
   }
 

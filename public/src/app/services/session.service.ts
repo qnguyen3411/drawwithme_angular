@@ -15,14 +15,6 @@ export class SessionService {
     return localStorage.getItem('drawwithme_user_token');
   }
 
-  setRoomJoinToken(token) {
-    sessionStorage.setItem('drawwithme_room_token', token);
-  }
-
-  getRoomJoinToken() {
-    return sessionStorage.getItem('drawwithme_room_token');
-  }
-
   getTokenHeader() {
     const token = this.getUserToken();
     return { headers: new HttpHeaders().set('Authorization', token) };

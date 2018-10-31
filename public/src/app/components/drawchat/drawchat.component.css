@@ -111,7 +111,14 @@
   height: 100vh;
 }
 
-#roomTimer {
+
+#leaveButton {
+  width: 20%;
+  height:40px;
+  background-color: blueviolet;
+}
+
+app-drawchat-timer {
   display: inline-block;
   vertical-align: top;
   width:80%;
@@ -119,8 +126,10 @@
   background-color: aliceblue;
 }
 
-#leaveButton {
-  width: 20%;
-  height:40px;
-  background-color: blueviolet;
+app-drawchat-userlist {
+  background-color: darkgoldenrod;
+}
+
+app-drawchat-chat {
+  background-color: darkolivegreen;
 }
