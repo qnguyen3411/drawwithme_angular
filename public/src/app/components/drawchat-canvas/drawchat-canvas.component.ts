@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { Subject, interval } from 'rxjs';
-import { takeWhile, takeUntil, map, filter, take } from 'rxjs/operators';
+import { takeUntil, map, filter, take } from 'rxjs/operators';
 
 
 import { PaintCursor } from '../../draw_modules/paintcursor';
@@ -47,7 +47,9 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.container = (this.canvasContainerRef.nativeElement as HTMLElement);
     this.baseCtx = (this.baseCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
     this.selfCtx = (this.selfCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
+
     this.myPaintCursor = new ObservablePaintCursor(this.baseCtx).setUpperLayer(this.selfCtx);
+
     this.trackMouse = this.mouse.getMousePosTracker(this.baseCtx.canvas);
     
     this.subscribeToCursorEvents();
@@ -102,7 +104,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .onPeerLeave()
       .pipe(takeUntil(this.destroy))
       .subscribe(this.removeFromPeerList.bind(this));
-
   }
 
   removeFromPeerList({ id }) {
@@ -122,9 +123,8 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.peerList[id] = { username, cursor }
     // Get upper Canvas for new cursor
     this.checkForCanvas({ id: id, intervalInMs: 200 })
-      .subscribe(foundCanvas => {
-        cursor.setUpperLayer(foundCanvas.getContext('2d'));
-      })
+      .subscribe(foundCanvas => 
+        cursor.setUpperLayer(foundCanvas.getContext('2d')))
   }
 
   checkForCanvas({ id, intervalInMs }: { id: string, intervalInMs: number }) {
@@ -177,7 +177,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .startAction();
   }
 
-  endPeerAction({ id, data }) {
+  endPeerAction({ id }) {
     const cursor = this.getCursorByUserId(id);
     if (cursor.hasOngoingAction()) {
       cursor.endAction();

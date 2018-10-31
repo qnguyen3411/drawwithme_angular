@@ -1,45 +1,45 @@
 <div id="color" class="sliderContainer">
-  <button (click)="changeMode('rgba')" [ngClass]="{'inactive': currMode === 'hsla' }">RGB</button>
-  <button (click)="changeMode('hsla')" [ngClass]="{'inactive': currMode === 'rgba' }">HSL</button>
+  <button (click)="changeMode('rgb')" [ngClass]="{'inactive': currMode === 'hsl' }">RGB</button>
+  <button (click)="changeMode('hsl')" [ngClass]="{'inactive': currMode === 'rgb' }">HSL</button>
   
   <div 
     id="colorBox" 
     [ngStyle]="{
-      'background-color': cssString() 
+      'background-color': solidColorCssString() 
     }">
   </div>
 
   <div class="slider">
-    <label class="sliderInitial">{{currMode == 'rgba' ? 'R' : 'H'}}</label>
+    <label class="sliderInitial">{{currMode == 'rgb' ? 'R' : 'H'}}</label>
     <input 
       type="range" 
       name="colorSlider1Val" 
       [(ngModel)]="colorSlider1Val" 
       (change)="updateColor()"
-      min="1" max="{{currMode == 'rgba' ? 255 : 360}}">
+      min="1" max="{{currMode == 'rgb' ? 255 : 360}}">
     <label class="sliderVal">{{colorSlider1Val}}</label>
   </div>
 
   <div class="slider">
-    <label class="sliderInitial">{{currMode == 'rgba' ? 'G' : 'S'}}</label>
+    <label class="sliderInitial">{{currMode == 'rgb' ? 'G' : 'S'}}</label>
     <input 
       type="range" 
       name="colorSlider2Val"
       [(ngModel)]="colorSlider2Val"
       (change)="updateColor()"
-      min="1" max="{{currMode == 'rgba' ? 255 : 100}}">
+      min="1" max="{{currMode == 'rgb' ? 255 : 100}}">
     <label class="sliderVal">{{colorSlider2Val}}</label>
 
   </div>
 
   <div class="slider">
-    <label class="sliderInitial">{{currMode == 'rgba' ? 'B' : 'L'}}</label>
+    <label class="sliderInitial">{{currMode == 'rgb' ? 'B' : 'L'}}</label>
     <input 
       type="range" 
       name="colorSlider3Val"
       [(ngModel)]="colorSlider3Val"
       (change)="updateColor()"
-      min="1" max="{{currMode == 'rgba' ? 255 : 100}}">
+      min="1" max="{{currMode == 'rgb' ? 255 : 100}}">
     <label class="sliderVal">{{colorSlider3Val}}</label>
   </div>
 

@@ -28,8 +28,6 @@ import { UserService } from './services/user.service';
 import { DrawchatService } from './services/drawchat.service';
 import { SessionService } from './services/session.service';
 import { SocketsService } from './services/sockets.service';
-// PIPES
-// import { KeepHtmlPipe } from './pipes/keep-html.pipe';
 
 @NgModule({
   declarations: [
@@ -48,7 +46,6 @@ import { SocketsService } from './services/sockets.service';
     DrawchatTimerComponent,
     DrawchatUserlistComponent,
     DrawchatChatComponent,
-    // KeepHtmlPipe
   ],
   imports: [
     ModalModule.forRoot(),
