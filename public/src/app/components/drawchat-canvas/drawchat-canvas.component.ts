@@ -3,7 +3,6 @@ import { Subject, interval } from 'rxjs';
 import { takeWhile, takeUntil, map, filter } from 'rxjs/operators';
 
 
-import { Cursor } from '../../draw_modules/cursor';
 import { PaintCursor } from '../../draw_modules/paintcursor';
 import { MouseposService } from '../../services/mousepos.service';
 import { DrawchatBrushService } from '../../services/drawchat-brush.service';
@@ -24,7 +23,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   destroy: Subject<boolean> = new Subject<boolean>();
 
   @Input() currZoom = 1;
-  @Input() peerAdded: Subject<any>;
+
   peerList = {};
 
   drawConnection: DrawSocketModule;
@@ -60,10 +59,10 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   subscribeToBrushChanges() {
     this.brush.colorChanged
       .pipe(takeUntil(this.destroy))
-      .subscribe(this.myPaintCursor.setColor);
+      .subscribe(this.myPaintCursor.setColor.bind(this.myPaintCursor));
     this.brush.sizeChanged
       .pipe(takeUntil(this.destroy))
-      .subscribe(this.myPaintCursor.setSize);
+      .subscribe(this.myPaintCursor.setSize.bind(this.myPaintCursor));
   }
 
   subscribeToRoomEvents() {
@@ -98,26 +97,14 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   addPeerCursor({ id, username }) {
     const cursor = new PaintCursor(this.baseCtx).setLabel(username)
     this.peerList[id] = { username, cursor }
-
-    // const obs = interval(200)
-    //   .pipe(
-    //     takeWhile(ctxNotFound),
-    //     map(() => this.findCanvasWithId(id)),
-    //     filter(found => found !== undefined)
-    //   )
-    //   .subscribe(found => {
-    //     newCtx = (found as HTMLCanvasElement).getContext('2d');
-    //     cursor.setUpperLayer(newCtx);
-    //     console.log(this.peerList)
-    //   })
+    // Get upper layer for new cursor
     let newCtx: CanvasRenderingContext2D;
     const ctxNotFound = () => !newCtx;
-    const obs = this.checkForCanvas({ id: id, intervalInMs: 200 })
+    this.checkForCanvas({ id: id, intervalInMs: 200 })
       .pipe(takeWhile(ctxNotFound))
       .subscribe(foundCanvas => {
         newCtx = (foundCanvas as HTMLCanvasElement).getContext('2d');
         cursor.setUpperLayer(newCtx);
-        console.log(this.peerList)
       })
   }
 
@@ -130,7 +117,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   findCanvasWithId(id: string) {
-    console.log("FINDING CANVAS....")
     return Array.from(this.container.children).find(val => val.id == id);
   }
 
@@ -158,9 +144,8 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
 
-
   updatePeersCursorSize({ id, data }) {
-    const cursor = this.peerList[id]['cursor'] as Cursor;
+    const cursor = this.peerList[id]['cursor'] as PaintCursor;
     cursor.setSize(data);
   }
 
@@ -192,8 +177,10 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   onMouseDown(e: MouseEvent) {
     if (e.button === 0) {
       this.myPaintCursor.startAction();
-      // TODO: implement tools
-      this.drawConnection.emitCanvasActionStart({ rgba: this.brush.rgba });
+      this.drawConnection.emitCanvasActionStart({
+        tool: this.myPaintCursor.currToolName, 
+        rgba: this.brush.rgba 
+      });
     }
   }
 
@@ -209,7 +196,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
   onMouseLeave() {
     this.endCurrentStroke();
-    this.myPaintCursor.hide()
+    this.myPaintCursor.hide();
   }
 
   getMousePosOnCanvas(e: MouseEvent) {
@@ -223,12 +210,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     }
   }
 
-  getCurrSize() {
-    return this.brush.size;
-  }
+  
 
-  peerListIsEmpty() {
-    return Object.keys(this.peerList).length === 0;
-  }
 }
 

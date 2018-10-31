@@ -50,6 +50,7 @@ export class PaintCursor {
     this.currTool = new Brush(this.baseCtx)
       .setCtx(baseCtx);
     this.currToolName = 'BRUSH';
+    console.log("THIS TOOL:", this.currTool)
   }
 
   setUpperLayer(ctx: CanvasRenderingContext2D) {
