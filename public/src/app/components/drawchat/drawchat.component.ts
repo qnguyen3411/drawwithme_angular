@@ -1,12 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { SessionService } from '../../services/session.service';
 import { SocketsService } from '../../services/sockets.service';
 import { DrawchatBrushService } from '../../services/drawchat-brush.service';
-import { Brush } from 'src/app/draw_modules/brush';
 
 @Component({
   selector: 'app-drawchat',
@@ -15,14 +13,10 @@ import { Brush } from 'src/app/draw_modules/brush';
   providers: [DrawchatBrushService]
 })
 export class DrawchatComponent implements OnInit, OnDestroy {
-  // TODO: PeerList should be a service
-  peerList = {};
-
-  // brushSettings = Brush.default;
+  // TODO: move zoom to its own service
   zoom = 1;
 
   destroy: Subject<boolean> = new Subject<boolean>();
-  peerAdded: Subject<any> = new Subject<any>();
 
   constructor(
     private _route: ActivatedRoute,
@@ -35,8 +29,6 @@ export class DrawchatComponent implements OnInit, OnDestroy {
       const roomId = params['id'];
       this._socket.connectionModule.joinRoom(roomId);
     });
-
-    this.subscribeToRoomEvents();
   }
 
   ngOnDestroy() {
@@ -44,11 +36,5 @@ export class DrawchatComponent implements OnInit, OnDestroy {
     this.destroy.next(true);
     this.destroy.unsubscribe();
   }
-
-  subscribeToRoomEvents() {
-  }
-
-  // Expects dictionary in form of {id: username}
-
  
 }

@@ -8,9 +8,11 @@ import { Brush } from '../draw_modules/brush'
 export class DrawchatBrushService {
   rgba: any[] = Brush.default.rgba;
   size: number = Brush.default.size;
+  tool: string = 'BRUSH';
 
   colorChanged: Subject<any[]> = new Subject<any[]>();
   sizeChanged: Subject<number> = new Subject<number>();
+  toolChanged: Subject<string> = new Subject<string>();
 
   constructor() { }
 
@@ -44,4 +46,8 @@ export class DrawchatBrushService {
     } catch { return; }
     this.colorChanged.next(this.rgba);
   } 
+
+  changeTool(tool: string) {
+    this.toolChanged.next(tool);
+  }
 }

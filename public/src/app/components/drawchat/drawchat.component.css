@@ -102,19 +102,25 @@
     height: 150px;
   }
 
-  #spy {
-    position: fixed;
-    top:0px;
-    left:0px;
-    color: black;
-    z-index: 10;
-  }
-
 #sideBar {
   vertical-align: top;
   display: inline-block;
-  background-color: blueviolet;
+  background-color: rgb(53, 56, 58);
+  border-left: 1px solid white;
   width: 230px;
   height: 100vh;
 }
 
+#roomTimer {
+  display: inline-block;
+  vertical-align: top;
+  width:80%;
+  height:60px;
+  background-color: aliceblue;
+}
+
+#leaveButton {
+  width: 20%;
+  height:40px;
+  background-color: blueviolet;
+}

@@ -19,12 +19,15 @@ import { DrawchatComponent } from './components/drawchat/drawchat.component';
 import { DrawchatCanvasComponent } from './components/drawchat-canvas/drawchat-canvas.component';
 import { DrawchatSlidersComponent } from './components/drawchat-sliders/drawchat-sliders.component';
 import { DrawchatPaletteComponent } from './components/drawchat-palette/drawchat-palette.component';
+import { DrawchatTimerComponent } from './components/drawchat-timer/drawchat-timer.component';
+import { DrawchatUserlistComponent } from './components/drawchat-userlist/drawchat-userlist.component';
 
 // SERVICES
 import { UserService } from './services/user.service';
 import { DrawchatService } from './services/drawchat.service';
 import { SessionService } from './services/session.service';
 import { SocketsService } from './services/sockets.service';
+import { DrawchatChatComponent } from './drawchat-chat/drawchat-chat.component';
 // PIPES
 // import { KeepHtmlPipe } from './pipes/keep-html.pipe';
 
@@ -42,6 +45,9 @@ import { SocketsService } from './services/sockets.service';
     DrawchatCanvasComponent,
     DrawchatSlidersComponent,
     DrawchatPaletteComponent,
+    DrawchatTimerComponent,
+    DrawchatUserlistComponent,
+    DrawchatChatComponent,
     // KeepHtmlPipe
   ],
   imports: [

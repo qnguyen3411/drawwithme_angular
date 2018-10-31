@@ -122,7 +122,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     return Array.from(this.container.children).find(val => val.id == id);
   }
 
-
   subscribeToCanvasEvents() {
     this.drawConnection
       .onPeersCursorSizeUpdate()
