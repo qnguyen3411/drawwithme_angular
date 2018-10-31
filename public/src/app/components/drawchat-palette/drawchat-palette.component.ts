@@ -13,6 +13,7 @@ export class DrawchatPaletteComponent implements OnInit {
   @ViewChild('palette') paletteRef;
 
   palCtx: CanvasRenderingContext2D;
+  trackMouse;
 
   constructor(
     private mouse: MouseposService,
@@ -21,8 +22,8 @@ export class DrawchatPaletteComponent implements OnInit {
 
   ngOnInit() {
     const canvas = this.paletteRef.nativeElement as HTMLCanvasElement;
+    this.trackMouse = this.mouse.getMousePosTracker(canvas);
     this.palCtx = canvas.getContext('2d');
-
     const img = new Image();
     img.src = 'assets/palette.png';
     img.onload = () => {
@@ -32,7 +33,7 @@ export class DrawchatPaletteComponent implements OnInit {
 
   onMouseDownOrMove(e: MouseEvent) {
     if (e.buttons == 1) {
-      const mousepos = this.mouse.getMousePos(e, this.palCtx.canvas);
+      const mousepos = this.trackMouse(e);
       this.getColorFromPalette(mousepos);
     }
   }

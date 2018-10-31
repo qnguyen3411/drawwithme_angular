@@ -32,6 +32,8 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   container: HTMLElement;
   myPaintCursor: PaintCursor;
 
+  trackMouse;
+
   constructor(
     private mouse: MouseposService,
     private _socket: SocketsService,
@@ -45,7 +47,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.baseCtx = (this.baseCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
     this.selfCtx = (this.selfCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
     this.myPaintCursor = new PaintCursor(this.baseCtx).setUpperLayer(this.selfCtx);
-
+    this.trackMouse = this.mouse.getMousePosTracker(this.baseCtx.canvas);
     this.subscribeToBrushChanges();
     this.subscribeToRoomEvents();
     this.subscribeToCanvasEvents();
@@ -145,27 +147,28 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
 
   updatePeersCursorSize({ id, data }) {
-    const cursor = this.peerList[id]['cursor'] as PaintCursor;
-    cursor.setSize(data);
+    this.getCursorByUserId(id).setSize(data);
   }
 
   updatePeersMousePos({ id, data: { x, y } }) {
-    const cursor = this.peerList[id]['cursor'] as PaintCursor;
-    cursor.moveTo(x, y);
+    this.getCursorByUserId(id).moveTo(x, y);
   }
 
   startPeerAction({ id, data }) {
-    const cursor = this.peerList[id]['cursor'] as PaintCursor;
-    cursor.setColor(data['rgba'])
-      .setSize(cursor.size)
+    this.getCursorByUserId(id)
+      .setColor(data['rgba'])
       .startAction();
   }
 
   endPeerAction({ id, data }) {
-    const cursor = this.peerList[id]['cursor'] as PaintCursor;
+    const cursor = this.getCursorByUserId(id);
     if (cursor.hasOngoingAction()) {
       cursor.endAction();
     }
+  }
+
+  getCursorByUserId(id) {
+    return this.peerList[id]['cursor'] as PaintCursor;
   }
 
   // Personal events
@@ -185,7 +188,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   onMouseMove(e: MouseEvent) {
-    const { x, y } = this.getMousePosOnCanvas(e);
+    const { x, y } = this.trackMouse(e);
     this.myPaintCursor.moveTo(x, y);
     this.drawConnection.emitMousePosUpdate({ x, y })
   }
@@ -199,18 +202,12 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.myPaintCursor.hide();
   }
 
-  getMousePosOnCanvas(e: MouseEvent) {
-    return this.mouse.getMousePos(e, this.baseCtx.canvas);
-  }
-
   endCurrentStroke() {
     if (this.myPaintCursor.hasOngoingAction()) {
       this.myPaintCursor.endAction();
       this.drawConnection.emitCanvasActionEnd();
     }
   }
-
-  
 
 }
 

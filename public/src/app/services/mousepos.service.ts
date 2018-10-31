@@ -7,7 +7,7 @@ export class MouseposService {
 
   // Given a mouse event and element, find the mouse position relative to the element's
   // top left corner
- getMousePos(event: MouseEvent, elem: HTMLElement) {
+ private getMousePos(event: MouseEvent, elem: HTMLElement) {
     const rect = elem.getBoundingClientRect();
     const zoom = parseFloat(elem.style.zoom || '1');
     return {
@@ -15,6 +15,10 @@ export class MouseposService {
       y: Math.round(event.clientY / zoom - rect.top)
     };
   };
+
+  getMousePosTracker(elem: HTMLElement) {
+    return (event: MouseEvent) => this.getMousePos(event, elem);
+  }
 
   constructor() { }
 }
