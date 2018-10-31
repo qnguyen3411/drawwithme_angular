@@ -1,3 +1,13 @@
-<p>
-  drawchat-chat works!
-</p>
+<div id="chatBox" #chatBox [scrollTop]="chatLog.length === 0 ? 0 : chatBoxElem.scrollHeight">
+  <p *ngFor="let entry of chatLog">
+    <span class="text-warning">{{entry.username}} ({{entry.time | date:'shortTime'}})</span> : <br> {{entry.message}}
+  </p>
+</div>
+
+<input 
+  id="chatInput" 
+  type="text" 
+  name="chatInput" 
+  [(ngModel)]="currInput"
+  placeholder="New message..."
+  (keydown)="onKeyDown($event)">

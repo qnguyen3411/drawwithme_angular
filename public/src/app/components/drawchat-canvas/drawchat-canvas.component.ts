@@ -119,6 +119,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   addPeerCursor({ id, username }) {
+    console.log("ADDING PEER TO CANVAS...")
     const cursor = new PaintCursor(this.baseCtx).setLabel(username)
     this.peerList[id] = { username, cursor }
     // Get upper Canvas for new cursor

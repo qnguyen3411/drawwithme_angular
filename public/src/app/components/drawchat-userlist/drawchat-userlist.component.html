@@ -1,3 +1,4 @@
-<p>
-  drawchat-userlist works!
-</p>
+<div id="container">
+<p>You: {{ownUsername}}</p>
+<p *ngFor="let peer of peerList | keyvalue">{{peer.value}}</p>
+</div>

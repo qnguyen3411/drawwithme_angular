@@ -122,14 +122,27 @@ app-drawchat-timer {
   display: inline-block;
   vertical-align: top;
   width:80%;
-  height:60px;
+  height:10vh;
   background-color: aliceblue;
 }
 
 app-drawchat-userlist {
-  background-color: darkgoldenrod;
+  display: block;
+  width:100%;
+  height:30vh;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+  border-top: 1px solid whitesmoke; 
+  border-bottom: 1px solid whitesmoke;
 }
 
+
+
 app-drawchat-chat {
-  background-color: darkolivegreen;
+  display: block;
+  width:100%;
+  height:54vh;
+  border-top: 1px solid whitesmoke; 
+  border-bottom: 1px solid whitesmoke
 }
+

@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs';
-
+import { Observable, Subject } from 'rxjs';
+import { share } from 'rxjs/operators';
 
 // Handles room administrative tasks such as
 // Tokens and updating user list
@@ -34,22 +34,29 @@ export class RoomSocketModule {
 
   }
 
-  onPeerJoin() {
+  onPeerJoin(): Observable<any> {
     return Observable.create((observer) => {
       this.socket.on('peerJoined', data => {
-        console.log("PEER JOIN RECEIVED ON OBSERVABLE")
         observer.next(data);
       });
     });
   }
 
-  onPeerLeave() {
+  onPeerLeave(): Observable<any> {
     return Observable.create((observer) => {
       this.socket.on('peerLeft', data => {
         observer.next(data);
       });
     });
 
+  }
+
+  onUsernameAssigned(): Observable<any> {
+    return Observable.create((observer) => {
+      this.socket.on('assignedUsername', data => {
+        observer.next(data);
+      });
+    });
   }
 
 }
