@@ -4,6 +4,7 @@ import { interval } from 'rxjs';
 
 import { SocketsService } from '../../services/sockets.service';
 import { DrawchatTokenCalculatorService } from '../../services/drawchat-token-calculator.service';
+import { Timer } from '../../timer_modules/timer';
 
 @Component({
   selector: 'app-drawchat-timer',
@@ -18,50 +19,56 @@ export class DrawchatTimerComponent implements OnInit {
   roomCountdown: string;
   tokensRemaining: number;
 
+  tokenTimer: Timer;
+  expireTimer: Timer;
+
+
   constructor(
     private tokenCalculator: DrawchatTokenCalculatorService,
     private socket: SocketsService
   ) { }
 
   ngOnInit() {
-
     this.socket.roomModule.onReceivingRoomInfo()
       .pipe(
-        map(this.tokenCalculator.getCalculatorForRoom
-          .bind(this.tokenCalculator))
+        map(room => {
+          this.tokenCalculator.createdAt = new Date(room['created_at']).getTime();
+          this.tokenCalculator.expiresAt = new Date(room['expires_at']).getTime();
+        })
       )
-      .subscribe(calculator => {
+      .subscribe(this.initializeTimers.bind(this))
 
-        this.initializeTimer(calculator.getTimeTilNextToken())
-          .subscribe(timeStr => {
-            this.tokenCountdown = timeStr;
-          });
+    this.socket.roomModule.onTokenConsumption()
+      .subscribe(this.onTokenConsumed.bind(this));
+  }
 
-        this.initializeTimer(calculator.getTimeTilExpire()) 
-          .subscribe(timeStr => {
-            this.roomCountdown = timeStr;
-          })
-        
-        this.tokensRemaining = calculator.getTokensAvailable();
-      })
+  initializeTimers() {
+    this.tokenTimer = new Timer(this.tokenCalculator.getTimeTilNextToken());
+    this.tokenTimer.observable.subscribe(timeStr => { this.tokenCountdown = timeStr });
+    this.tokenTimer.onTimeOut.subscribe(() => {
+      const tokensAvailable = this.tokenCalculator.getTokensAvailable()
+      if (tokensAvailable) {
+        this.tokensRemaining++;
+      }
+    });
+
+    this.expireTimer = new Timer(this.tokenCalculator.getTimeTilExpire());
+    this.expireTimer.observable.subscribe(timeStr => { this.roomCountdown = timeStr });
+    this.expireTimer.onTimeOut.subscribe(() => { })
+
+    this.tokensRemaining = this.tokenCalculator.getTokensAvailable();
 
   }
 
-  
-
-  initializeTimer(timeInMs: number) {
-    return interval(1000).pipe(
-      map((val) => this.formatTime(timeInMs - val * 1000)),
-    )
+  consumeToken() {
+    this.socket.roomModule.emitTokenConsumption();
   }
 
-  formatTime(t: number) {
-    const hours = Math.floor(t / (3600 * 1000))
-    t -= hours * (3600 * 1000)
-    const minutes = Math.floor(t / (60 * 1000)) % 60
-    t -= minutes * (60 * 1000)
-    const seconds = Math.floor(t / (1000)) % 1000;
-    return [hours + 'h', minutes + 'm', seconds + 's'].join(' ')
+  onTokenConsumed({newExpireDate}) {
+    const now = new Date().getTime();
+    this.tokenCalculator.expiresAt = newExpireDate;
+    this.tokensRemaining = this.tokenCalculator.getTokensAvailable();
+    this.expireTimer.setTime(now - newExpireDate);
   }
 
 }

@@ -10,7 +10,7 @@ module.exports = {
     if (!req.user) { res.json({ status: 'error', error: err }); }
     const { name, description, tags } = req.body;
     const { id: creatorId } = req.user;
-    
+
     try {
       const result = await roomModel.insert({ name, description, creatorId });
       const roomId = result.insertId;
@@ -63,11 +63,45 @@ module.exports = {
     try {
       const found = await roomModel.getById(req.params.id);
       if (!found) {
-        throw new Error ('Room not found')
+        throw new Error('Room not found')
       }
       res.json({ status: 'success', data: found[0] });
     } catch (err) {
       res.json({ status: 'error', error: err });
+    }
+  },
+
+  consumeToken: async (req, res, next) => {
+    console.log("WE're at CONESUME TOKEN")
+    const MS_PER_HOUR = 1000 * 60 * 60;
+    const { tokenCap, tokenInterval, tokenTimeValue } = {
+      tokenCap: 5,
+      tokenInterval: MS_PER_HOUR * 2,
+      tokenTimeValue: MS_PER_HOUR * 4
+    }
+
+    try {
+      // Get room by id
+      const found = await roomModel.getById(req.params.id)
+      if (!found) {
+        throw new Error('Room not found')
+      }
+      const room = found[0];
+      // calculate remaining tokens
+      const now = new Date().getTime();
+      const { expires_at, created_at } = room;
+      const expiresAt = new Date(expires_at).getTime();
+      const createdAt = new Date(created_at).getTime();
+      const tokenUsed = Math.round((expiresAt - createdAt) / tokenTimeValue) - 1;
+      const tokensReceivedSoFar = Math.floor((now - createdAt) / tokenInterval);
+      const tokenAvailable = Math.min(tokensReceivedSoFar, tokenCap) - tokenUsed;
+
+      if (tokenAvailable <= 0) { throw new Error('No available tokens') }
+      await roomModel.extendExpireDate({ roomId: room.id, timeInMs: tokenTimeValue })
+      res.json({ status: 'success', data: {newExpireDate: expiresAt + tokenTimeValue }});
+    } catch (error) {
+      console.log(error)
+      res.json({ status: 'error', error: error });
     }
   }
 }

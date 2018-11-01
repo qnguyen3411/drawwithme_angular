@@ -1,13 +1,20 @@
 import { Injectable } from '@angular/core';
 import { DrawchatService } from './drawchat.service';
+import { utils } from 'protractor';
+import { utf8Encode } from '@angular/compiler/src/util';
+import { utimes } from 'fs';
 @Injectable({
   providedIn: 'root'
 })
 export class DrawchatTokenCalculatorService {
-  private tokenConfig;
   private TOKEN_CAP;
   private TOKEN_INTERVAL;
   private TOKEN_TIME_VALUE;
+
+  createdAt: number;
+  expiresAt: number;
+  // roomState: { createdAt: number, expiresAt: number };
+
   constructor(private drawChatService: DrawchatService) {
     this.drawChatService.fetchRoomTokenConfig()
       .subscribe(response => {
@@ -17,41 +24,35 @@ export class DrawchatTokenCalculatorService {
       })
   }
 
-  getCalculatorForRoom(room) {
-    console.log(room)
-    const expiresAt = new Date(room['expires_at']).getTime();
-    const createdAt = new Date(room['created_at']).getTime();
+  roomIsActive() {
     const now = new Date().getTime();
-    const tokenCap = this.TOKEN_CAP;
-    const tokenInterval = this.TOKEN_INTERVAL;
-    const tokenTimeValue = this.TOKEN_TIME_VALUE;
+    return now < this.expiresAt;
+  }
 
-    return {
-      roomIsActive() {
-        return now < expiresAt;
-      },
+  getTokensConsumed() {
+    return Math.round((this.expiresAt - this.createdAt) / this.TOKEN_TIME_VALUE) - 1;
+  }
 
-      getTokensConsumed() {
-        return Math.round((expiresAt - createdAt) / tokenTimeValue) - 1;
-      },
+  getTokensAvailable() {
+    const now = new Date().getTime();
+    const tokensReceivedByNow = Math.floor((now - this.createdAt) / this.TOKEN_INTERVAL);
+    console.log("TOKENS RECEIVED BY NOW", tokensReceivedByNow)
+    return Math.min(tokensReceivedByNow, this.TOKEN_CAP) - this.getTokensConsumed();
+  }
 
-      getTokensAvailable() {
-        const tokensReceivedSoFar = Math.round((now - createdAt) / tokenInterval);
-        return tokensReceivedSoFar - this.getTokensConsumed();
-      },
+  getTimeTilNextToken() {
+    const now = new Date().getTime();
 
-      getTimeTilNextToken() {
-        if (this.getTokensConsumed >= tokenCap) {
-          return null;
-        }
-        const timeSinceLastToken = (now - createdAt) % tokenInterval;
-        return tokenInterval - timeSinceLastToken;
-      },
-
-      getTimeTilExpire() {
-        return Math.max(expiresAt - now, 0);
-      }
+    if (this.getTokensConsumed >= this.TOKEN_CAP) {
+      return null;
     }
+    const timeSinceLastToken = (now - this.createdAt) % this.TOKEN_INTERVAL;
+    return this.TOKEN_INTERVAL - timeSinceLastToken;
+  }
+
+  getTimeTilExpire() {
+    const now = new Date().getTime();
+    return Math.max(this.expiresAt - now, 0);
   }
 
 

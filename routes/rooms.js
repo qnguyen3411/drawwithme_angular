@@ -14,9 +14,7 @@ const roomController = require('../controllers/rooms');
 
 router.route('/config')
   .get(async (req, res) => {
-    console.log("HEYMAN")
     const MS_PER_HOUR = 1000 * 60 * 60;
-
     res.json({
       tokenCap: 5,
       tokenInterval: MS_PER_HOUR * 2,
@@ -35,8 +33,11 @@ router.route('/join/:id')
 router.route('/')
   .get(roomController.index);
 
+router.route('/token/:id')
+  .get(roomController.consumeToken)
 router.route('/:id')
   .get(roomController.getOne);
+
 
 
 module.exports = router;

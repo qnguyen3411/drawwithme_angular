@@ -26,13 +26,6 @@ export class RoomSocketModule {
     });
   }
 
-  emitTokenConsumption() {
-
-  }
-
-  onTokenConsumption() {
-
-  }
 
   onPeerJoin(): Observable<any> {
     return Observable.create((observer) => {
@@ -54,6 +47,18 @@ export class RoomSocketModule {
   onUsernameAssigned(): Observable<any> {
     return Observable.create((observer) => {
       this.socket.on('assignedUsername', data => {
+        observer.next(data);
+      });
+    });
+  }
+
+  emitTokenConsumption() {
+    this.socket.emit('tokenConsumed')
+  }
+
+  onTokenConsumption() {
+    return Observable.create((observer) => {
+      this.socket.on('tokenConsumed', data => {
         observer.next(data);
       });
     });

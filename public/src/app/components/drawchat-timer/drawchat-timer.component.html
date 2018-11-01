@@ -1,6 +1,6 @@
-<p id="tokenCountdown" class="text-warning">{{ tokenCountdown }}</p>
+<p id="tokenCountdown" class="text-warning">{{ roomCountdown || '0h 0m 0s' }}</p>
 <!-- <p>{{ roomCountdown}}</p> -->
-<button class="btn-warning" id="tokenButton">
+<button class="btn-warning" id="tokenButton" (click)="consumeToken()">
   <img src="assets/clock.png" alt="clock">  x{{tokensRemaining}}
 </button>
-<span class="text-warning" id="roomCountdown"> {{roomCountdown}}</span>
+<span class="text-warning" id="roomCountdown"> {{tokenCountdown || '0h 0m 0s'}}</span>

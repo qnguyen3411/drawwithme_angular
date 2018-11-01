@@ -110,6 +110,17 @@ module.exports = {
     return db.query(sql, [name, description, creatorId]);
   },
 
+  extendExpireDate: function (data) {
+    const { roomId, timeInMs } = data;
+    const timeInSecs = timeInMs / 1000;
+    
+    const sql = "UPDATE rooms" 
+    + " SET expires_at = DATE_ADD(expires_at, INTERVAL ? SECOND)"
+    + " WHERE id = ?"
+
+    return db.query(sql, [timeInSecs, roomId]);
+  },
+
   addJoiner(roomId, joinerId) {
     const sql =
       "INSERT INTO users_rooms"
