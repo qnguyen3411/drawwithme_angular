@@ -17,9 +17,10 @@ module.exports = {
       await Promise.all(tags.map(roomModel.addTag));
       await Promise.all(tags.map(tag => roomModel.addTagToRoom(roomId, tag)));
       await roomModel.addJoiner(roomId, creatorId);
+      
       res.json({ status: 'success', data: roomId });
     } catch (err) {
-      res.json({ status: 'error', error: err });
+      next(err);
     }
   },
 
@@ -31,20 +32,13 @@ module.exports = {
       await roomModel.addJoiner(roomId, req.user.id)
       res.json({ status: 'success', data: {} });
     } catch (error) {
-      res.json({ status: 'error', error: err });
+      next(err);
     }
   },
 
   index: async (req, res, next) => {
     try {
-      let rooms;
-      if (req.query.user) {
-        rooms = await roomModel.getByJoinedUser(req.query.user);
-      } else if (req.query.tag) {
-        rooms = await roomModel.getByTag(req.query.tag)
-      } else {
-        rooms = await roomModel.getAll();
-      }
+      let rooms = req.index;
       let roomList = []
       for (let i = 0; i < rooms.length; i++) {
         let tags = await roomModel.getRoomTags(rooms[i].id);
@@ -55,7 +49,24 @@ module.exports = {
       }
       res.json({ status: 'success', data: roomList });
     } catch (err) {
-      res.json({ status: 'error', error: err });
+      next(err);
+    }
+  },
+
+  fetchToQuery: async (req, res, next) => {
+    let rooms;
+    try {
+      if (req.query.user) {
+        rooms = await roomModel.getByJoinedUser(req.query.user);
+      } else if (req.query.tag) {
+        rooms = await roomModel.getByTag(req.query.tag)
+      } else {
+        rooms = await roomModel.getAll();
+      }
+    req.index = rooms;
+    next();
+    } catch (err) {
+      next(err);
     }
   },
 
@@ -67,12 +78,11 @@ module.exports = {
       }
       res.json({ status: 'success', data: found[0] });
     } catch (err) {
-      res.json({ status: 'error', error: err });
+      next(err);
     }
   },
 
   consumeToken: async (req, res, next) => {
-    console.log("WE're at CONESUME TOKEN")
     const MS_PER_HOUR = 1000 * 60 * 60;
     const { tokenCap, tokenInterval, tokenTimeValue } = {
       tokenCap: 5,
@@ -95,13 +105,11 @@ module.exports = {
       const tokenUsed = Math.round((expiresAt - createdAt) / tokenTimeValue) - 1;
       const tokensReceivedSoFar = Math.floor((now - createdAt) / tokenInterval);
       const tokenAvailable = Math.min(tokensReceivedSoFar, tokenCap) - tokenUsed;
-
       if (tokenAvailable <= 0) { throw new Error('No available tokens') }
       await roomModel.extendExpireDate({ roomId: room.id, timeInMs: tokenTimeValue })
-      res.json({ status: 'success', data: {newExpireDate: expiresAt + tokenTimeValue }});
+      res.json({ status: 'success', data: { newExpireDate: expiresAt + tokenTimeValue } });
     } catch (error) {
-      console.log(error)
-      res.json({ status: 'error', error: error });
+      next(error);
     }
   }
 }

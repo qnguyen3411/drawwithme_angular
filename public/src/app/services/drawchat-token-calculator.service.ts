@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DrawchatService } from './drawchat.service';
-import { utils } from 'protractor';
-import { utf8Encode } from '@angular/compiler/src/util';
-import { utimes } from 'fs';
+
+// TODO: Double responsibility - keeping the room state and 
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +12,6 @@ export class DrawchatTokenCalculatorService {
 
   createdAt: number;
   expiresAt: number;
-  // roomState: { createdAt: number, expiresAt: number };
 
   constructor(private drawChatService: DrawchatService) {
     this.drawChatService.fetchRoomTokenConfig()
@@ -36,7 +34,6 @@ export class DrawchatTokenCalculatorService {
   getTokensAvailable() {
     const now = new Date().getTime();
     const tokensReceivedByNow = Math.floor((now - this.createdAt) / this.TOKEN_INTERVAL);
-    console.log("TOKENS RECEIVED BY NOW", tokensReceivedByNow)
     return Math.min(tokensReceivedByNow, this.TOKEN_CAP) - this.getTokensConsumed();
   }
 

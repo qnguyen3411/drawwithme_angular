@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 
 const db = require('./db/wrapper');
 const { dbConfig } = require('./configurations');
+const { logErrors, clientErrorHandler } = require('./errorhandler');
+
 
 const connection = db.initializeConnection(dbConfig)
 
@@ -16,6 +18,8 @@ app.use(bodyParser.json());
 
 app.use('/users', require('./routes/users'));
 app.use('/rooms', require('./routes/rooms'));
+app.use(logErrors)
+app.use(clientErrorHandler)
 
 
 app.all("*", (req, res) => {

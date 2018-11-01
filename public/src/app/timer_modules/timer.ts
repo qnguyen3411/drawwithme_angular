@@ -1,9 +1,10 @@
 import { Observable, interval, Subject } from 'rxjs'; 
-import { map, takeWhile, finalize } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 export class Timer {
   private startTime: number;
   private currTime: number;
+  private restartTime: number;
 
   observable: Observable<string>;
   onTimeOut: Subject<boolean> = new Subject<boolean>();
@@ -11,31 +12,23 @@ export class Timer {
 
   constructor(startTimeInMs: number) {
     this.startTime = startTimeInMs;
+    this.restartTime = this.startTime;
     this.currTime = this.startTime;
 
     this.observable = interval(1000).pipe(
-      map(val => {
-        this.currTime = this.startTime - val * 1000;
-        return this.currTime;
-      }),
-      map(timeInMs => {
-        if (timeInMs <= 0) {
-          this.onTimeOut.next(true);
-          this.currTime = this.startTime;
-        }
-        return timeInMs;
-      }),
-      map(timeInMs => this.formatTime(timeInMs)))
+      map(this.updateCurrTime.bind(this)),
+      map(this.formatTime.bind(this))
+    )
   }
 
-  setTime(timeInMs: number) {
-    this.startTime = timeInMs;
+  private updateCurrTime() {
+    this.currTime -= 1000;
+    if (this.currTime <= 0) {
+      this.onTimeOut.next(true);
+      this.currTime = this.restartTime;
+    }
+    return this.currTime;
   }
-  
-  addTime(timeInMs: number) {
-    this.startTime += timeInMs;
-  }
-
 
   private formatTime(t: number) {
     const hours = Math.floor(t / (3600 * 1000))
@@ -45,4 +38,14 @@ export class Timer {
     const seconds = Math.floor(t / (1000)) % 1000;
     return [hours + 'h', minutes + 'm', seconds + 's'].join(' ')
   }
+
+  setTime(timeInMs: number) {
+    this.startTime = timeInMs;
+    this.currTime = this.startTime;
+  }
+
+  setRestartTime(timeInMs: number) {
+    this.restartTime = timeInMs;
+  }
+
 }

@@ -22,8 +22,8 @@ export class DrawchatUserlistComponent implements OnInit {
     this.socket.roomModule.onPeerJoin()
       .subscribe(this.addToPeerList.bind(this));
 
-    this.socket.roomModule.onReceivingUserList()
-      .subscribe(this.initializePeerList.bind(this));
+    this.socket.roomModule.onReceivingPeerInfo()
+      .subscribe(this.addToPeerList.bind(this));
     
     this.socket.roomModule.onPeerLeave()
       .subscribe(this.removeFromPeerList.bind(this));
@@ -31,6 +31,7 @@ export class DrawchatUserlistComponent implements OnInit {
     this.socket.roomModule.onUsernameAssigned()
       .subscribe(this.setOwnUsername.bind(this));
   }
+
 
   addToPeerList({username, id}) {
     this.peerList[id] = username;

@@ -37,10 +37,10 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
   constructor(
     private mouse: MouseposService,
-    private _socket: SocketsService,
+    private socket: SocketsService,
     private brush: DrawchatBrushService
   ) {
-    this.drawConnection = this._socket.drawModule;
+    this.drawConnection = this.socket.drawModule;
   }
 
   ngOnInit() {
@@ -51,7 +51,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.myPaintCursor = new ObservablePaintCursor(this.baseCtx).setUpperLayer(this.selfCtx);
 
     this.trackMouse = this.mouse.getMousePosTracker(this.baseCtx.canvas);
-    
+
     this.subscribeToCursorEvents();
     this.subscribeToBrushChanges();
     this.subscribeToRoomEvents();
@@ -66,15 +66,15 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   subscribeToCursorEvents() {
     this.myPaintCursor.onStart.subscribe(
       this.drawConnection.emitCanvasActionStart
-      .bind(this.drawConnection));
+        .bind(this.drawConnection));
 
     this.myPaintCursor.onMove.subscribe(
       this.drawConnection.emitMousePosUpdate
-      .bind(this.drawConnection));
+        .bind(this.drawConnection));
 
     this.myPaintCursor.onEnd.subscribe(
       this.drawConnection.emitCanvasActionEnd
-      .bind(this.drawConnection));
+        .bind(this.drawConnection));
   }
 
   subscribeToBrushChanges() {
@@ -90,17 +90,17 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   subscribeToRoomEvents() {
-    this._socket.roomModule
+    this.socket.roomModule
       .onPeerJoin()
       .pipe(takeUntil(this.destroy))
       .subscribe(this.addPeerCursor.bind(this));
 
-    this._socket.roomModule
-      .onReceivingUserList()
+    this.socket.roomModule
+      .onReceivingPeerInfo()
       .pipe(takeUntil(this.destroy))
-      .subscribe(this.initializePeerList.bind(this));
+      .subscribe(this.addPeerCursor.bind(this));
 
-    this._socket.roomModule
+    this.socket.roomModule
       .onPeerLeave()
       .pipe(takeUntil(this.destroy))
       .subscribe(this.removeFromPeerList.bind(this));
@@ -112,19 +112,13 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     }
   }
 
-  initializePeerList(peerList) {
-    Object.entries(peerList).forEach(([id, username]) =>
-      this.addPeerCursor({ id, username })
-    );
-  }
-
   addPeerCursor({ id, username }) {
     console.log("ADDING PEER TO CANVAS...")
     const cursor = new PaintCursor(this.baseCtx).setLabel(username)
     this.peerList[id] = { username, cursor }
     // Get upper Canvas for new cursor
     this.checkForCanvas({ id: id, intervalInMs: 200 })
-      .subscribe(foundCanvas => 
+      .subscribe(foundCanvas =>
         cursor.setUpperLayer(foundCanvas.getContext('2d')))
   }
 

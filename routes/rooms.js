@@ -31,7 +31,7 @@ router.route('/join/:id')
   .post(roomController.join)
 
 router.route('/')
-  .get(roomController.index);
+  .get(roomController.fetchToQuery, roomController.index);
 
 router.route('/token/:id')
   .get(roomController.consumeToken)

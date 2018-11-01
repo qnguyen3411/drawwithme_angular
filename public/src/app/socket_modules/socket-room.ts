@@ -5,6 +5,7 @@ import { share } from 'rxjs/operators';
 // Tokens and updating user list
 export class RoomSocketModule {
   private socket: SocketIOClient.Socket;
+  currUsername: string;
 
   constructor(socket: SocketIOClient.Socket) {
     this.socket = socket;
@@ -17,7 +18,7 @@ export class RoomSocketModule {
       });
     });
   }
-
+  // TODO: in process of replacing
   onReceivingUserList() {
     return Observable.create((observer) => {
       this.socket.on('userList', data => {
@@ -26,10 +27,22 @@ export class RoomSocketModule {
     });
   }
 
+  emitInfoToPeer({peerId, data}: {peerId: string, data: any}) {
+    this.socket.emit('shareInfoWithPeer', {id: peerId, data: data});
+  }
+
+  onReceivingPeerInfo() {
+    return Observable.create((observer) => {
+      this.socket.on('peerInfoShared', data => {
+        observer.next(data);
+      });
+    });
+  }
 
   onPeerJoin(): Observable<any> {
     return Observable.create((observer) => {
       this.socket.on('peerJoined', data => {
+        this.socket.emit('shareInfoWithPeer', {id: data['id'], data: this.currUsername})
         observer.next(data);
       });
     });
@@ -47,6 +60,8 @@ export class RoomSocketModule {
   onUsernameAssigned(): Observable<any> {
     return Observable.create((observer) => {
       this.socket.on('assignedUsername', data => {
+        console.log("RECEIVED USERNAME,", data)
+        this.currUsername = data['username'];
         observer.next(data);
       });
     });

@@ -13,8 +13,6 @@ import { Timer } from '../../timer_modules/timer';
   providers: [DrawchatTokenCalculatorService],
 })
 export class DrawchatTimerComponent implements OnInit {
-  // calculator;
-
   tokenCountdown: string;
   roomCountdown: string;
   tokensRemaining: number;
@@ -30,13 +28,13 @@ export class DrawchatTimerComponent implements OnInit {
 
   ngOnInit() {
     this.socket.roomModule.onReceivingRoomInfo()
-      .pipe(
-        map(room => {
-          this.tokenCalculator.createdAt = new Date(room['created_at']).getTime();
-          this.tokenCalculator.expiresAt = new Date(room['expires_at']).getTime();
-        })
-      )
-      .subscribe(this.initializeTimers.bind(this))
+      .subscribe(room => {
+
+        this.tokenCalculator.createdAt = new Date(room['created_at']).getTime();
+        this.tokenCalculator.expiresAt = new Date(room['expires_at']).getTime();
+
+        this.initializeTimers();
+      })
 
     this.socket.roomModule.onTokenConsumption()
       .subscribe(this.onTokenConsumed.bind(this));
@@ -45,10 +43,12 @@ export class DrawchatTimerComponent implements OnInit {
   initializeTimers() {
     this.tokenTimer = new Timer(this.tokenCalculator.getTimeTilNextToken());
     this.tokenTimer.observable.subscribe(timeStr => { this.tokenCountdown = timeStr });
-    this.tokenTimer.onTimeOut.subscribe(() => {
+    const tokenSub = this.tokenTimer.onTimeOut.subscribe(() => {
       const tokensAvailable = this.tokenCalculator.getTokensAvailable()
       if (tokensAvailable) {
         this.tokensRemaining++;
+      } else {
+        tokenSub.unsubscribe()
       }
     });
 

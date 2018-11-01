@@ -32,8 +32,10 @@ export class DrawchatChatComponent implements OnInit, AfterViewInit {
     this.socket.roomModule.onPeerJoin()
       .subscribe(this.addToPeerList.bind(this));
 
-    this.socket.roomModule.onReceivingUserList()
-      .subscribe(this.initializePeerList.bind(this));
+    this.socket.roomModule.onReceivingPeerInfo()
+      .subscribe(this.addToPeerList.bind(this));
+
+
 
     this.socket.roomModule.onPeerLeave()
       .subscribe(this.removeFromPeerList.bind(this));
@@ -42,12 +44,6 @@ export class DrawchatChatComponent implements OnInit, AfterViewInit {
   addToPeerList({ username, id }) {
     this.peerList[id] = username;
     console.log(this.peerList);
-  }
-
-  initializePeerList(peerList) {
-    Object.entries(peerList).forEach(([id, data]) =>
-      this.addToPeerList({ username: data['username'], id })
-    );
   }
 
   removeFromPeerList({ id }) {
@@ -64,7 +60,7 @@ export class DrawchatChatComponent implements OnInit, AfterViewInit {
       .subscribe(this.appendMessageToChatlog.bind(this));
   }
 
-  formatMessage({id, data}) {
+  formatMessage({ id, data }) {
     if (!this.peerList[id]) { return };
     const username = this.peerList[id];
     return {
