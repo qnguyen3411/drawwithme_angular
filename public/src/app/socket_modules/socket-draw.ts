@@ -20,8 +20,8 @@ export class DrawSocketModule {
     this.socket.emit('canvasActionStart', { data });
   }
 
-  emitCanvasActionEnd() {
-    this.socket.emit('canvasActionEnd', {});
+  emitCanvasActionEnd(data) {
+    this.socket.emit('canvasActionEnd', { data });
   }
 
   onPeersCursorSizeUpdate() {

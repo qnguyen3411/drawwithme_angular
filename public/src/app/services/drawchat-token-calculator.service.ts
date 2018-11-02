@@ -52,6 +52,10 @@ export class DrawchatTokenCalculatorService {
     return Math.max(this.expiresAt - now, 0);
   }
 
+  getTokenInterval() {
+    return this.TOKEN_INTERVAL;
+  }
+
 
 
 }

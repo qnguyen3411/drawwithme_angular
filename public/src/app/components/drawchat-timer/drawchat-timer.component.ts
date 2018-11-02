@@ -41,12 +41,14 @@ export class DrawchatTimerComponent implements OnInit {
   initializeTimers() {
     
     this.tokenTimer = new Timer(this.tokenCalculator.getTimeTilNextToken());
+    this.tokenTimer.setRestartTime(this.tokenCalculator.getTokenInterval());
     this.tokenTimer.observable.subscribe(timeStr => { this.tokenCountdown = timeStr });
     const tokenSub = this.tokenTimer.onTimeOut.subscribe(() => {
       const tokensAvailable = this.tokenCalculator.getTokensAvailable()
       if (tokensAvailable) {
         this.tokensRemaining++;
       } else {
+        this.tokenCountdown = "0h 0m 0s";
         tokenSub.unsubscribe()
       }
     });
@@ -59,6 +61,8 @@ export class DrawchatTimerComponent implements OnInit {
 
   }
 
+
+
   consumeToken() {
     this.socket.roomModule.emitTokenConsumption();
   }
@@ -67,7 +71,7 @@ export class DrawchatTimerComponent implements OnInit {
     const now = new Date().getTime();
     this.tokenCalculator.expiresAt = newExpireDate;
     this.tokensRemaining = this.tokenCalculator.getTokensAvailable();
-    this.expireTimer.setTime(now - newExpireDate);
+    this.expireTimer.setTime(newExpireDate -  now );
   }
 
 }

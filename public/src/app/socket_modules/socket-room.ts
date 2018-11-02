@@ -52,7 +52,6 @@ export class RoomSocketModule {
   onUsernameAssigned(): Observable<any> {
     return Observable.create((observer) => {
       this.socket.on('assignedUsername', data => {
-        console.log("RECEIVED USERNAME,", data)
         this.currUsername = data['username'];
         observer.next(data);
       });
@@ -63,9 +62,9 @@ export class RoomSocketModule {
     this.socket.emit('tokenConsumed')
   }
 
-  onTokenConsumption() {
+  onTokenConsumption(): Observable<any> {
     return Observable.create((observer) => {
-      this.socket.on('tokenConsumed', data => {
+      this.socket.on('roomTokenConsumed', data => {
         observer.next(data);
       });
     });
