@@ -9,13 +9,11 @@ const bcrypt = require('bcryptjs');
 
 const userModel = require('./models/user');
 
-// JSON WEB TOKEN
 passport.use(new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
   secretOrKey: JWT_SECRET
 }, async (payload, done) => {
   try {
-    // Find the user specified in token
     const id = payload.sub.id;
     const result = await userModel.getById(id);
     const user = Array.isArray(result) ? result[0] : result;
@@ -27,7 +25,6 @@ passport.use(new JwtStrategy({
 
 
 
-// LOCAL
 passport.use(new LocalStrategy({
   usernameField: 'username'
 }, async (username, password, done) => {

@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { interval } from 'rxjs';
 
 import { SocketsService } from '../../services/sockets.service';
 import { DrawchatTokenCalculatorService } from '../../services/drawchat-token-calculator.service';
@@ -41,6 +39,7 @@ export class DrawchatTimerComponent implements OnInit {
   }
 
   initializeTimers() {
+    
     this.tokenTimer = new Timer(this.tokenCalculator.getTimeTilNextToken());
     this.tokenTimer.observable.subscribe(timeStr => { this.tokenCountdown = timeStr });
     const tokenSub = this.tokenTimer.onTimeOut.subscribe(() => {

@@ -18,14 +18,6 @@ export class RoomSocketModule {
       });
     });
   }
-  // TODO: in process of replacing
-  onReceivingUserList() {
-    return Observable.create((observer) => {
-      this.socket.on('userList', data => {
-        observer.next(data);
-      });
-    });
-  }
 
   emitInfoToPeer({peerId, data}: {peerId: string, data: any}) {
     this.socket.emit('shareInfoWithPeer', {id: peerId, data: data});

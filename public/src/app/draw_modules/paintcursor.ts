@@ -3,6 +3,14 @@ import { Eraser } from './eraser';
 import { Ruler } from './ruler';
 
 // Can't export interfaces apparently
+interface StrokeData {
+  rgba: any[],
+  size: number,
+  x: number[],
+  y: number[]
+}
+
+
 interface IPaintTool {
   rgba: any[];
   size: number;
@@ -16,8 +24,9 @@ interface IPaintTool {
   onMoveWhileActivated(x: number, y: number)
   onDeactivate()
   isActivated()
-  getActionData()
+  getActionData(): StrokeData
 }
+
 
 export class PaintCursor {
 
@@ -68,6 +77,7 @@ export class PaintCursor {
   }
 
   endAction() {
+    //TODO: strokedata resets before we're able to get it
     if (this.currTool.isActivated()) {
       this.currTool.onDeactivate();
     }
@@ -95,8 +105,8 @@ export class PaintCursor {
     if (tool === this.currToolName) { return this; }
     if (tool !== 'BRUSH' && tool !== 'ERASER' && tool !== 'RULER') { return this; }
     this.currToolName = tool;
-    const toolCreator = PaintCursor.getToolCreator(tool);
-    this.currTool = new toolCreator(this.baseCtx);
+    const newTool = PaintCursor.getToolCreator(tool);
+    this.currTool = new newTool(this.baseCtx);
    
     this.currTool
       .setCtx(this.topCtx || this.baseCtx)

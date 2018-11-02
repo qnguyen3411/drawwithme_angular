@@ -1,3 +1,11 @@
+interface StrokeData {
+  rgba: any[],
+  size: number,
+  x: number[],
+  y: number[]
+}
+
+
 interface IPaintTool {
   rgba: any[];
   size: number;
@@ -11,7 +19,7 @@ interface IPaintTool {
   onMoveWhileActivated(x: number, y: number)
   onDeactivate()
   isActivated()
-  getActionData()
+  getActionData(): StrokeData
 }
 
 export class Brush implements IPaintTool {
@@ -29,10 +37,11 @@ export class Brush implements IPaintTool {
   pathX: number[] = [];
   pathY: number[] = [];
 
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
+  private minX: number;
+  private minY: number;
+  private maxX: number;
+  private maxY: number;
+
 
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
@@ -41,6 +50,7 @@ export class Brush implements IPaintTool {
     this.ctx.lineJoin = 'round';
     this.rgba = Brush.default.rgba;
     this.size = Brush.default.size;
+
   }
 
   setCtx(ctx: CanvasRenderingContext2D) {
@@ -68,7 +78,7 @@ export class Brush implements IPaintTool {
     return this.isDrawing();
   }
 
-  getActionData() {
+  getActionData(): StrokeData {
     return this.getData();
   }
 
@@ -90,13 +100,18 @@ export class Brush implements IPaintTool {
   drawTo(newX: number, newY: number) {
     this.updateBoundingRectPoints(newX, newY);
 
-    this.updateStroke(newX, newY);
+    this.updatePath(newX, newY);
     this.clearStroke();
+
     this.draw(this.ctx);
     return this;
   }
 
-  updateStroke(newX: number, newY: number) {
+  alphaModeIsOn() {
+    return this.rgba[3] !== 1;
+  }
+
+  updatePath(newX: number, newY: number) {
     this.pathX.push(newX);
     this.pathY.push(newY);
   }
@@ -162,6 +177,7 @@ export class Brush implements IPaintTool {
     return this;
   }
 
+
   private drawPath(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     const len = this.pathX.length;
@@ -198,6 +214,7 @@ export class Brush implements IPaintTool {
     const cssString = `rgba(${this.rgba.join(', ')})`;
     this.ctx.strokeStyle = cssString;
     this.ctx.fillStyle = cssString;
+    return this;
   }
 
   setSize(size: number) {
@@ -215,11 +232,11 @@ export class Brush implements IPaintTool {
     return this;
   }
 
-  isDrawing() {
+  isDrawing(): boolean {
     return this.pathX.length !== 0;
   }
 
-  getData() {
+  getData(): StrokeData {
     return {
       rgba: this.rgba,
       size: this.size,

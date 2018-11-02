@@ -1,10 +1,17 @@
 import { PaintCursor } from './paintcursor';
 import { Subject } from 'rxjs';
 // A wrapper around paintcursor where action events are subcribable
+interface StrokeData {
+  rgba: any[],
+  size: number,
+  x: number[],
+  y: number[]
+}
+
 export class ObservablePaintCursor extends PaintCursor {
   onStart: Subject<{ tool: string, rgba: any[] }> = new Subject<{ tool: string, rgba: any[] }>();
   onMove: Subject<{ x: number, y: number }> = new Subject<{ x: number, y: number }>();
-  onEnd: Subject<any> = new Subject<any>();
+  onEnd: Subject<StrokeData> = new Subject<StrokeData>();
 
   startAction() {
     this.onStart.next({ tool: this.currToolName, rgba: this.rgba });
@@ -17,7 +24,11 @@ export class ObservablePaintCursor extends PaintCursor {
   }
 
   endAction() {
-    this.onEnd.next();
-    return super.endAction()
+    if (this.currTool.isActivated()) {
+      const strokeData = this.currTool.getActionData();
+      this.onEnd.next(strokeData);
+      this.currTool.onDeactivate();
+    }
+    return this;
   }
 }
