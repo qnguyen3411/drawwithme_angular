@@ -64,6 +64,4 @@ export class DrawchatUserlistComponent implements OnInit, OnDestroy {
   setOwnUsername({ username }) {
     this.ownUsername = username;
   }
-
-
 }

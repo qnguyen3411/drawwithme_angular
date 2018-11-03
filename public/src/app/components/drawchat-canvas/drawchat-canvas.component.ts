@@ -24,20 +24,19 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   @ViewChild('base') baseCanvasRef;
   @ViewChild('self') selfCanvasRef;
 
-  destroy: Subject<boolean> = new Subject<boolean>();
-
-  @Input() currZoom = 1;
-
-  peerList = {};
-
-  drawConnection: DrawSocketModule;
+  container: HTMLElement;
   baseCtx: CanvasRenderingContext2D;
   selfCtx: CanvasRenderingContext2D;
-  container: HTMLElement;
+  
+  @Input() currZoom = 1;
   myPaintCursor: ObservablePaintCursor;
-
   trackMouse;
+  
+  drawConnection: DrawSocketModule;
+  destroy: Subject<boolean> = new Subject<boolean>();
 
+  peerList = {};
+  
   constructor(
     private mouse: MouseposService,
     private socket: SocketsService,
@@ -54,8 +53,8 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.selfCtx = (this.selfCanvasRef.nativeElement as HTMLCanvasElement).getContext('2d');
 
     this.myPaintCursor = new ObservablePaintCursor(this.baseCtx).setUpperLayer(this.selfCtx);
-
     this.trackMouse = this.mouse.getMousePosTracker(this.baseCtx.canvas);
+
     
     this.subscribeToWindowEvents();
     this.subscribeToSelfCursorEvents();
@@ -118,12 +117,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy))
       .subscribe(this.addPeerCursor.bind(this));
     
-    // merge(
-    //   this.socket.roomModule.onReceivingPeerInfo(),
-    //   this.socket.roomModule.onPeerJoin()
-    // ).pipe(takeUntil(this.destroy))
-    // .subscribe(this.addPeerCursor.bind(this))
-
     this.socket.roomModule
       .onPeerLeave()
       .pipe(takeUntil(this.destroy))
@@ -138,11 +131,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .onCanvasDataReceived()
       .pipe(take(1))
       .subscribe(this.receiveCanvasData.bind(this));
-
-    // this.socket.roomModule
-    //   .onStrokeLogSignal()
-    //   .pipe(take(1))
-    //   .subscribe(this.drawStrokeLog.bind(this));
   }
 
   removeFromPeerList({ id }) {

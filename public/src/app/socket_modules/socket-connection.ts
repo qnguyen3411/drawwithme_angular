@@ -20,6 +20,10 @@ export class ConnectionSocketModule {
     this.socket.emit('join', { room, token });
   }
 
+  emitTimeOut() {
+    this.socket.emit('timeOut');
+  }
+
   leaveRoom() {
     this.disconnect();
   }

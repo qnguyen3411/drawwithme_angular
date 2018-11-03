@@ -29,7 +29,7 @@
 
 <div id="sideBar">
   <app-drawchat-timer></app-drawchat-timer>
-  <button id="leaveButton">Leave</button>
+  <button [routerLink]="['/']" id="leaveButton"><img src="assets/leave.png" alt=""></button>
   <app-drawchat-userlist></app-drawchat-userlist>
   <app-drawchat-chat></app-drawchat-chat>
 </div>

@@ -48,7 +48,7 @@ export class DrawchatTimerComponent implements OnInit, OnDestroy {
   }
 
   initializeTimers() {
-    
+
     this.tokenTimer = new Timer(this.tokenCalculator.getTimeTilNextToken());
     this.tokenTimer.setRestartTime(this.tokenCalculator.getTokenInterval());
     this.tokenTimer.observable.subscribe(timeStr => { this.tokenCountdown = timeStr });
@@ -64,23 +64,23 @@ export class DrawchatTimerComponent implements OnInit, OnDestroy {
 
     this.expireTimer = new Timer(this.tokenCalculator.getTimeTilExpire());
     this.expireTimer.observable.subscribe(timeStr => { this.roomCountdown = timeStr });
-    this.expireTimer.onTimeOut.subscribe(() => { })
+    this.expireTimer.onTimeOut.subscribe(() => {
+      this.socket.connectionModule.emitTimeOut()
+    })
 
     this.tokensRemaining = this.tokenCalculator.getTokensAvailable();
 
   }
-
-
 
   consumeToken() {
     this.socket.roomModule.emitTokenConsumption();
   }
 
-  onTokenConsumed({newExpireDate}) {
+  onTokenConsumed({ newExpireDate }) {
     const now = new Date().getTime();
     this.tokenCalculator.expiresAt = newExpireDate;
     this.tokensRemaining = this.tokenCalculator.getTokensAvailable();
-    this.expireTimer.setTime(newExpireDate -  now );
+    this.expireTimer.setTime(newExpireDate - now);
   }
 
 }
