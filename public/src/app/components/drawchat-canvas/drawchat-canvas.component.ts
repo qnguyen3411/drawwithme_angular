@@ -1,21 +1,23 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
-import { Subject, interval } from 'rxjs';
+import { Subject, interval, merge } from 'rxjs';
 import { takeUntil, map, filter, take } from 'rxjs/operators';
 
+import { Brush } from 'src/app/draw_modules/brush';
+import { PaintCursor } from 'src/app/draw_modules/paintcursor';
+import { ObservablePaintCursor } from 'src/app/draw_modules/observablepaintcursor';
 
-import { PaintCursor } from '../../draw_modules/paintcursor';
-import { ObservablePaintCursor } from '../../draw_modules/observablepaintcursor';
-import { MouseposService } from '../../services/mousepos.service';
-import { DrawchatBrushService } from '../../services/drawchat-brush.service';
+import { MouseposService } from 'src/app/services/mousepos.service';
+import { DrawchatBrushService } from 'src/app/services/drawchat-brush.service';
 import { SocketsService } from 'src/app/services/sockets.service';
 import { DrawSocketModule } from 'src/app/socket_modules/socket-draw';
-import { DrawchatService } from '../../services/drawchat.service';
+import { DrawchatService } from 'src/app/services/drawchat.service';
+import { WindowService } from 'src/app/services/window.service';
 
 @Component({
   selector: 'app-drawchat-canvas',
   templateUrl: './drawchat-canvas.component.html',
   styleUrls: ['./drawchat-canvas.component.css'],
-  providers: [MouseposService]
+  providers: [MouseposService, WindowService]
 })
 export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   @ViewChild('container') canvasContainerRef;
@@ -39,8 +41,9 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   constructor(
     private mouse: MouseposService,
     private socket: SocketsService,
-    private brush: DrawchatBrushService,
-    private drawChatService: DrawchatService
+    private brushSettings: DrawchatBrushService,
+    private drawChatService: DrawchatService,
+    private window: WindowService
   ) {
     this.drawConnection = this.socket.drawModule;
   }
@@ -53,8 +56,9 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.myPaintCursor = new ObservablePaintCursor(this.baseCtx).setUpperLayer(this.selfCtx);
 
     this.trackMouse = this.mouse.getMousePosTracker(this.baseCtx.canvas);
-
-    this.subscribeToCursorEvents();
+    
+    this.subscribeToWindowEvents();
+    this.subscribeToSelfCursorEvents();
     this.subscribeToBrushChanges();
     this.subscribeToRoomEvents();
     this.subscribeToCanvasEvents();
@@ -63,9 +67,21 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy.next(true);
     this.destroy.unsubscribe();
+    this.onLeave();
   }
 
-  subscribeToCursorEvents() {
+  subscribeToWindowEvents() {
+    this.window.onWindowUnload()
+      .subscribe(this.onLeave.bind(this));
+  }
+
+  onLeave() {
+    if (Object.keys(this.peerList).length === 0) {
+      this.drawConnection.emitSnapshot({ data: this.getCanvasData() })
+    }
+  }
+
+  subscribeToSelfCursorEvents() {
     this.myPaintCursor.onStart.subscribe(
       this.drawConnection.emitCanvasActionStart
         .bind(this.drawConnection));
@@ -80,27 +96,33 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   subscribeToBrushChanges() {
-    this.brush.colorChanged
+    this.brushSettings.colorChanged
       .pipe(takeUntil(this.destroy))
       .subscribe(this.myPaintCursor.setColor
         .bind(this.myPaintCursor));
 
-    this.brush.sizeChanged
+    this.brushSettings.sizeChanged
       .pipe(takeUntil(this.destroy))
       .subscribe(this.myPaintCursor.setSize
         .bind(this.myPaintCursor));
   }
 
   subscribeToRoomEvents() {
-    this.socket.roomModule
-      .onPeerJoin()
-      .pipe(takeUntil(this.destroy))
-      .subscribe(this.addPeerCursor.bind(this));
+    // this.socket.roomModule
+    //   .onPeerJoin()
+    //   .pipe(takeUntil(this.destroy))
+    //   .subscribe(this.addPeerCursor.bind(this));
 
-    this.socket.roomModule
-      .onReceivingPeerInfo()
-      .pipe(takeUntil(this.destroy))
-      .subscribe(this.addPeerCursor.bind(this));
+    // this.socket.roomModule
+    //   .onReceivingPeerInfo()
+    //   .pipe(takeUntil(this.destroy))
+    //   .subscribe(this.addPeerCursor.bind(this));
+    
+    merge(
+      this.socket.roomModule.onReceivingPeerInfo(),
+      this.socket.roomModule.onPeerJoin()
+    ).pipe(takeUntil(this.destroy))
+    .subscribe(this.addPeerCursor.bind(this))
 
     this.socket.roomModule
       .onPeerLeave()
@@ -117,10 +139,10 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe(this.receiveCanvasData.bind(this));
 
-    this.socket.roomModule
-      .onStrokeLogSignal()
-      .pipe(take(1))
-      .subscribe(this.fetchStrokeLog.bind(this));
+    // this.socket.roomModule
+    //   .onStrokeLogSignal()
+    //   .pipe(take(1))
+    //   .subscribe(this.drawStrokeLog.bind(this));
   }
 
   removeFromPeerList({ id }) {
@@ -132,7 +154,8 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   addPeerCursor({ id, username }) {
     const cursor = new PaintCursor(this.baseCtx).setLabel(username)
     this.peerList[id] = { username, cursor }
-    // Get upper Canvas for new cursor
+    // New Cursor needs an upper canvas that won't be generated yet
+    // Keep checking until that canvas is generated
     this.checkForCanvas({ id: id, intervalInMs: 200 })
       .subscribe(foundCanvas =>
         cursor.setUpperLayer(foundCanvas.getContext('2d')))
@@ -155,7 +178,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
 
   shareCanvasWithPeer({ id }) {
-    console.log("SHARING CANVAS WITH PEER,", id)
     this.socket.roomModule.emitCanvasData({ id, data: this.getCanvasData() });
   }
 
@@ -163,7 +185,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     return this.baseCtx.canvas.toDataURL('image/png', 0.7);
   }
 
-  receiveCanvasData({data}) {
+  receiveCanvasData({ data }) {
     const img = new Image();
     img.onload = () => {
       this.baseCtx.drawImage(img, 0, 0);
@@ -171,11 +193,15 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     img.src = data;
   }
 
-  fetchStrokeLog({id}) {
+  drawStrokeLog({ id }) {
     this.drawChatService.fetchLog(id)
       .subscribe(data => {
-        console.log("YAYYYY")
-        console.log(data)
+        const strokeLog = data as Array<{ rgba: any[], size: number, x: number[], y: number[] }>
+        const brush = new Brush(this.selfCtx);
+        for (let i = 0; i < strokeLog.length; i++) {
+          brush.setData(strokeLog[i]);
+          brush.draw(this.baseCtx);
+        }
       })
   }
 
@@ -217,10 +243,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   endPeerAction({ id }) {
-    const cursor = this.getCursorByUserId(id);
-    if (cursor.hasOngoingAction()) {
-      cursor.endAction();
-    }
+    this.getCursorByUserId(id).endAction();
   }
 
 

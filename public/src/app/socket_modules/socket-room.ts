@@ -86,6 +86,14 @@ export class RoomSocketModule {
     });
   }
 
+  onSnapshotSignal() {
+    return Observable.create((observer) => {
+      this.socket.on('snapShotFetch', (data) => {
+        observer.next(data);
+      });
+    })
+  }
+
   emitTokenConsumption() {
     this.socket.emit('tokenConsumed')
   }

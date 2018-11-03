@@ -57,4 +57,8 @@ export class DrawSocketModule {
     });
   }
 
+  emitSnapshot(data) {
+    this.socket.emit('snapShot', data);
+  }
+
 }

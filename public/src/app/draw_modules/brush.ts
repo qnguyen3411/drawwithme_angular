@@ -236,6 +236,13 @@ export class Brush implements IPaintTool {
     return this.pathX.length !== 0;
   }
 
+  setData(data: StrokeData) {
+    this.rgba = data.rgba;
+    this.size = data.size;
+    this.pathX = data.x;
+    this.pathY = data.y;
+  }
+
   getData(): StrokeData {
     return {
       rgba: this.rgba,
