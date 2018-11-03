@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { map, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { SocketsService } from '../../services/sockets.service';
 
 @Component({
@@ -7,7 +8,7 @@ import { SocketsService } from '../../services/sockets.service';
   templateUrl: './drawchat-chat.component.html',
   styleUrls: ['./drawchat-chat.component.css']
 })
-export class DrawchatChatComponent implements OnInit, AfterViewInit {
+export class DrawchatChatComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('chatBox') private chatBox: ElementRef;
   chatBoxElem: HTMLElement;
@@ -16,6 +17,8 @@ export class DrawchatChatComponent implements OnInit, AfterViewInit {
   peerList = {}
   chatLog: Array<{ username: string, time: Date, message: string }> = [];
   currInput: string;
+
+  destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(private socket: SocketsService) { }
 
@@ -28,14 +31,22 @@ export class DrawchatChatComponent implements OnInit, AfterViewInit {
     this.chatBoxElem = this.chatBox.nativeElement;
   }
 
+  ngOnDestroy() {
+    this.destroy.next(true);
+    this.destroy.unsubscribe();
+  }
+
   subscribeToRoomEvents() {
     this.socket.roomModule.onPeerJoin()
+      .pipe(takeUntil(this.destroy))
       .subscribe(this.addToPeerList.bind(this));
 
     this.socket.roomModule.onReceivingPeerInfo()
+      .pipe(takeUntil(this.destroy))
       .subscribe(this.addToPeerList.bind(this));
 
     this.socket.roomModule.onPeerLeave()
+      .pipe(takeUntil(this.destroy))
       .subscribe(this.removeFromPeerList.bind(this));
   }
 

@@ -108,21 +108,21 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   subscribeToRoomEvents() {
-    // this.socket.roomModule
-    //   .onPeerJoin()
-    //   .pipe(takeUntil(this.destroy))
-    //   .subscribe(this.addPeerCursor.bind(this));
+    this.socket.roomModule
+      .onPeerJoin()
+      .pipe(takeUntil(this.destroy))
+      .subscribe(this.addPeerCursor.bind(this));
 
-    // this.socket.roomModule
-    //   .onReceivingPeerInfo()
-    //   .pipe(takeUntil(this.destroy))
-    //   .subscribe(this.addPeerCursor.bind(this));
+    this.socket.roomModule
+      .onReceivingPeerInfo()
+      .pipe(takeUntil(this.destroy))
+      .subscribe(this.addPeerCursor.bind(this));
     
-    merge(
-      this.socket.roomModule.onReceivingPeerInfo(),
-      this.socket.roomModule.onPeerJoin()
-    ).pipe(takeUntil(this.destroy))
-    .subscribe(this.addPeerCursor.bind(this))
+    // merge(
+    //   this.socket.roomModule.onReceivingPeerInfo(),
+    //   this.socket.roomModule.onPeerJoin()
+    // ).pipe(takeUntil(this.destroy))
+    // .subscribe(this.addPeerCursor.bind(this))
 
     this.socket.roomModule
       .onPeerLeave()

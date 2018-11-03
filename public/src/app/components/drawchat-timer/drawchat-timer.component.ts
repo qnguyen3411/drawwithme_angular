@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators'
 import { SocketsService } from '../../services/sockets.service';
 import { DrawchatTokenCalculatorService } from '../../services/drawchat-token-calculator.service';
 import { Timer } from '../../timer_modules/timer';
@@ -10,7 +11,7 @@ import { Timer } from '../../timer_modules/timer';
   styleUrls: ['./drawchat-timer.component.css'],
   providers: [DrawchatTokenCalculatorService],
 })
-export class DrawchatTimerComponent implements OnInit {
+export class DrawchatTimerComponent implements OnInit, OnDestroy {
   tokenCountdown: string;
   roomCountdown: string;
   tokensRemaining: number;
@@ -18,6 +19,7 @@ export class DrawchatTimerComponent implements OnInit {
   tokenTimer: Timer;
   expireTimer: Timer;
 
+  destroy: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private tokenCalculator: DrawchatTokenCalculatorService,
@@ -26,6 +28,7 @@ export class DrawchatTimerComponent implements OnInit {
 
   ngOnInit() {
     this.socket.roomModule.onReceivingRoomInfo()
+      .pipe(take(1))
       .subscribe(room => {
 
         this.tokenCalculator.createdAt = new Date(room['created_at']).getTime();
@@ -35,7 +38,13 @@ export class DrawchatTimerComponent implements OnInit {
       })
 
     this.socket.roomModule.onTokenConsumption()
+      .pipe(takeUntil(this.destroy))
       .subscribe(this.onTokenConsumed.bind(this));
+  }
+
+  ngOnDestroy() {
+    this.destroy.next(true);
+    this.destroy.unsubscribe();
   }
 
   initializeTimers() {
