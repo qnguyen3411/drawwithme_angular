@@ -22,6 +22,7 @@ import { DrawchatPaletteComponent } from './components/drawchat-palette/drawchat
 import { DrawchatTimerComponent } from './components/drawchat-timer/drawchat-timer.component';
 import { DrawchatUserlistComponent } from './components/drawchat-userlist/drawchat-userlist.component';
 import { DrawchatChatComponent } from './components/drawchat-chat/drawchat-chat.component';
+import { DrawchatDisconnectModalComponent } from './components/drawchat-disconnect-modal/drawchat-disconnect-modal.component';
 
 // SERVICES
 import { UserService } from './services/user.service';
@@ -46,6 +47,7 @@ import { SocketsService } from './services/sockets.service';
     DrawchatTimerComponent,
     DrawchatUserlistComponent,
     DrawchatChatComponent,
+    DrawchatDisconnectModalComponent,
   ],
   imports: [
     ModalModule.forRoot(),
@@ -57,7 +59,8 @@ import { SocketsService } from './services/sockets.service';
   entryComponents: [
     LoginFormComponent,
     SignupFormComponent,
-    CreateRoomFormComponent
+    CreateRoomFormComponent,
+    DrawchatDisconnectModalComponent
   ],
   providers: [
     UserService,

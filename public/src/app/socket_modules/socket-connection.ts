@@ -1,4 +1,5 @@
 import { SessionService } from '../services/session.service';
+import { Observable } from 'rxjs';
 
 // Handles room administrative tasks such as
 // Tokens and updating user list
@@ -31,8 +32,12 @@ export class ConnectionSocketModule {
     this.socket.disconnect();
   }
 
-  onForceDisconnect() {
-
+  onForceDisconnect(): Observable<any> {
+    return Observable.create((observer) => {
+      this.socket.on('forceDisconnect', () => {
+        observer.next();
+      });
+    });
   }
 
 

@@ -29,14 +29,12 @@ export class CreateRoomFormComponent implements OnInit {
     this.title = "Make a new room!"
   }
 
-
   onSubmit() {
     this.tagStr = this.tagStr.replace(/[^a-zA-Z0-9\ ]/g, "");
     this.postData.tags = this.tagStr.split(" ");
     this._drawChatService
       .createRoom(this.postData)
       .subscribe(response => {
-        console.log(response);
         if (response['status'] === 'success') {
           this.formDone.emit(response['data']);
           this.bsModalRef.hide();

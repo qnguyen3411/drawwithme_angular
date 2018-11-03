@@ -2,6 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subject } from 'rxjs';
 
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { DrawchatDisconnectModalComponent } from '../drawchat-disconnect-modal/drawchat-disconnect-modal.component';
+import { Router } from '@angular/router';
+
 import { SocketsService } from '../../services/sockets.service';
 import { DrawchatBrushService } from '../../services/drawchat-brush.service';
 
@@ -12,14 +17,18 @@ import { DrawchatBrushService } from '../../services/drawchat-brush.service';
   providers: [DrawchatBrushService]
 })
 export class DrawchatComponent implements OnInit, OnDestroy {
-  // TODO: move zoom to its own service
   zoom = 1;
 
   destroy: Subject<boolean> = new Subject<boolean>();
 
+  bsModalRef: BsModalRef;
+
   constructor(
     private _route: ActivatedRoute,
-    private _socket: SocketsService
+    private _socket: SocketsService,
+    private modalService: BsModalService,
+    private _router: Router,
+
   ) { }
 
   ngOnInit() {
@@ -27,6 +36,19 @@ export class DrawchatComponent implements OnInit, OnDestroy {
       const roomId = params['id'];
       this._socket.connectionModule.joinRoom(roomId);
     });
+
+    this._socket.connectionModule.onForceDisconnect()
+      .subscribe(this.showDisconnectModal.bind(this))
+
+  }
+
+  showDisconnectModal() {
+    this.bsModalRef = this.modalService.show(DrawchatDisconnectModalComponent);
+    (this.bsModalRef.content as DrawchatDisconnectModalComponent).formDone
+      .subscribe(() => {
+        this._router.navigate(['/']);
+        this.bsModalRef.hide();
+      })
   }
 
   ngOnDestroy() {
@@ -34,5 +56,5 @@ export class DrawchatComponent implements OnInit, OnDestroy {
     this.destroy.next(true);
     this.destroy.unsubscribe();
   }
- 
+
 }
