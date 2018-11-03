@@ -58,6 +58,34 @@ export class RoomSocketModule {
     });
   }
 
+  onPeersCanvasRequest() {
+    return Observable.create((observer) => {
+      this.socket.on('peersCanvasRequest', (data) => {
+        observer.next(data);
+      });
+    });
+  }
+
+  emitCanvasData(data) {
+    this.socket.emit('canvasDataToPeer',  data );
+  }
+
+  onCanvasDataReceived() {
+    return Observable.create((observer) => {
+      this.socket.on('canvasDataReceived', (data) => {
+        observer.next(data);
+      });
+    });
+  }
+
+  onStrokeLogSignal() {
+    return Observable.create((observer) => {
+      this.socket.on('strokeLogFetch', (data) => {
+        observer.next(data);
+      });
+    });
+  }
+
   emitTokenConsumption() {
     this.socket.emit('tokenConsumed')
   }

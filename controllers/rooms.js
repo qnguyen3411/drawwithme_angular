@@ -24,7 +24,6 @@ module.exports = {
     }
   },
 
-  //TODO: joining an inactive room should give an error
   join: async (req, res, next) => {
     if (!req.user) { return; }
     const roomId = req.params.id;
@@ -32,7 +31,7 @@ module.exports = {
       await roomModel.addJoiner(roomId, req.user.id)
       res.json({ status: 'success', data: {} });
     } catch (error) {
-      next(err);
+      next(error);
     }
   },
 

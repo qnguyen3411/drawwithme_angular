@@ -24,6 +24,7 @@ export class DrawSocketModule {
     this.socket.emit('canvasActionEnd', { data });
   }
 
+
   onPeersCursorSizeUpdate() {
     return Observable.create((observer) => {
       this.socket.on('peersCursorSizeUpdate', (data) => {
@@ -55,4 +56,5 @@ export class DrawSocketModule {
       });
     });
   }
+
 }

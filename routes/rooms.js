@@ -28,7 +28,7 @@ router.route('/create')
     validateBody(schemas.roomSchema), passportJWT, roomController.create)
 
 router.route('/join/:id')
-  .post(roomController.join)
+  .get(passportJWT, roomController.join)
 
 router.route('/')
   .get(roomController.fetchToQuery, roomController.index);

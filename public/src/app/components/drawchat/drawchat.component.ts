@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subject } from 'rxjs';
 
-import { SessionService } from '../../services/session.service';
 import { SocketsService } from '../../services/sockets.service';
 import { DrawchatBrushService } from '../../services/drawchat-brush.service';
 
@@ -20,7 +19,6 @@ export class DrawchatComponent implements OnInit, OnDestroy {
 
   constructor(
     private _route: ActivatedRoute,
-    private _sessionService: SessionService,
     private _socket: SocketsService
   ) { }
 

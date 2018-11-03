@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SessionService } from './session.service';
-import { map, last, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,7 +35,8 @@ export class DrawchatService {
   }
 
   fetchLog(id) {
-    return this._http.get(`/rooms/${id}/log`, {responseType: "text"});
+    return this._http.get(`http://localhost:1337/log/latest/${id}`, {responseType: "text"})
+      .pipe(map(data => JSON.parse(data + "]")));
   }
 
   fetchRoomTokenConfig() {

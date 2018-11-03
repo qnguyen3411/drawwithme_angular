@@ -35,15 +35,12 @@ export class DrawchatChatComponent implements OnInit, AfterViewInit {
     this.socket.roomModule.onReceivingPeerInfo()
       .subscribe(this.addToPeerList.bind(this));
 
-
-
     this.socket.roomModule.onPeerLeave()
       .subscribe(this.removeFromPeerList.bind(this));
   }
 
   addToPeerList({ username, id }) {
     this.peerList[id] = username;
-    console.log(this.peerList);
   }
 
   removeFromPeerList({ id }) {
