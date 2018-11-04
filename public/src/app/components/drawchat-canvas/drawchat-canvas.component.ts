@@ -2,7 +2,6 @@ import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { Subject, interval } from 'rxjs';
 import { takeUntil, map, take, single } from 'rxjs/operators';
 
-import { Brush } from 'src/app/draw_modules/brush';
 import { PaintCursor } from 'src/app/draw_modules/paintcursor';
 import { ObservablePaintCursor } from 'src/app/draw_modules/observablepaintcursor';
 
@@ -10,7 +9,6 @@ import { MouseposService } from 'src/app/services/mousepos.service';
 import { DrawchatBrushService } from 'src/app/services/drawchat-brush.service';
 import { SocketsService } from 'src/app/services/sockets.service';
 import { DrawSocketModule } from 'src/app/socket_modules/socket-draw';
-import { DrawchatService } from 'src/app/services/drawchat.service';
 import { WindowService } from 'src/app/services/window.service';
 
 @Component({
@@ -41,7 +39,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     private mouse: MouseposService,
     private socket: SocketsService,
     private brushSettings: DrawchatBrushService,
-    private drawChatService: DrawchatService,
     private window: WindowService
   ) {
     this.drawConnection = this.socket.drawModule;
@@ -180,17 +177,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     img.src = data;
   }
 
-  drawStrokeLog({ id }) {
-    this.drawChatService.fetchLog(id)
-      .subscribe(data => {
-        const strokeLog = data as Array<{ rgba: any[], size: number, x: number[], y: number[] }>
-        const brush = new Brush(this.selfCtx);
-        for (let i = 0; i < strokeLog.length; i++) {
-          brush.setData(strokeLog[i]);
-          brush.draw(this.baseCtx);
-        }
-      })
-  }
 
   subscribeToCanvasEvents() {
     this.drawConnection

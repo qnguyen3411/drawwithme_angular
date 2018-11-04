@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { map, delay, concatMap, tap, windowCount, mergeAll, withLatestFrom } from 'rxjs/operators';
 import { PaintCursor } from '../../draw_modules/paintcursor';
 import { DrawchatService } from '../../services/drawchat.service';
-import { from, zip, of, Observable } from 'rxjs';
+import { from, zip, of, concat } from 'rxjs';
 
 
 interface StrokeData {
@@ -23,12 +23,12 @@ export class PlaybackComponent implements OnInit {
   @ViewChild('lower') lowerRef: ElementRef
   @ViewChild('upper') upperRef: ElementRef
 
-  
+
   baseCtx: CanvasRenderingContext2D;
   topCtx: CanvasRenderingContext2D;
-  
+
   strokeLog = [];
-  
+
   playbackStarted = false;
 
   currPlaySpeed = 50;
@@ -45,49 +45,55 @@ export class PlaybackComponent implements OnInit {
   playClicked() {
     if (this.playbackStarted) { return; }
     this.playbackStarted = true;
-    
+
     this._drawChatService.fetchLog(this.roomId)
-      .pipe(map(data => data as Array<StrokeData>))
-      .subscribe(this.startDrawing.bind(this));
-  }
-
-  startDrawing(strokeLog: StrokeData[]) {
-    const brush = new PaintCursor(this.baseCtx).setUpperLayer(this.topCtx);
-
-    const startNewStroke = (stroke: StrokeData) => {
-      brush.endAction()
-        .setColor(stroke.rgba).setSize(stroke.size)
-        .moveTo(stroke.x[0], stroke.y[0])
-        .startAction();
-    };
-
-    const moveAlongPath = (stroke: StrokeData) => {
-      return zip(from(stroke.x), from(stroke.y)) // Zip x, y together into a point
-        .pipe(
-          windowCount(50),
-          mergeAll(),
-          concatMap(pt => of(pt).pipe(delay(this.currPlaySpeed))), // wait 
-          map(pt => brush.moveTo(pt[0], pt[1])) // move brush to next point
-        )
-    }
-
-    const drawStroke = (stroke: StrokeData) => 
-      of(stroke)
       .pipe(
-        tap(startNewStroke),
-        concatMap(moveAlongPath)
-        );
-
-    // Execute
-    
-    from(strokeLog)
-      .pipe(
-        windowCount(50),
-        mergeAll(),
-        concatMap(drawStroke))
+        map(data => data as Array<StrokeData>),
+        concatMap(this.startDrawing.bind(this))
+      )
       .subscribe();
   }
 
+  startDrawing(strokeLog: StrokeData[]) {
+    // Prepare for crazy ass FP ritual
+    const delayVal = (interval: number) =>
+      (val: [number, number]) => of(val).pipe(delay(interval))
+
+    const startNewStroke = (brush:PaintCursor) => ({rgba, size, x, y}: StrokeData) => {
+      brush.endAction()
+        .setColor(rgba).setSize(size)
+        .moveTo(x[0], y[0])
+        .startAction();
+    };
+
+    const moveAlongPath = (brush:PaintCursor) => ({x, y}: StrokeData) =>
+      zip(from(x), from(y)) // Zip x, y together into a point
+        .pipe(
+          windowCount(50),
+          mergeAll(),
+          concatMap(delayVal(this.currPlaySpeed)),
+          map(([x, y]) => { brush.moveTo(x, y) })
+        );
+
+    const drawStroke = (brush: PaintCursor) => (stroke: StrokeData) =>
+      of(stroke)
+        .pipe(
+          tap(startNewStroke(brush)),
+          concatMap(moveAlongPath(brush))
+        );
+
+    const drawWithBrush = (brush: PaintCursor) => 
+      from(strokeLog)
+        .pipe(
+          windowCount(50),
+          mergeAll(),
+          concatMap(drawStroke(brush))
+        );
+    // Execute
+    return of(new PaintCursor(this.baseCtx).setUpperLayer(this.topCtx))
+      .pipe(concatMap(drawWithBrush))
+
+  }
 
   setPlaySpeed(spd: number) {
     this.currPlaySpeed = spd;
