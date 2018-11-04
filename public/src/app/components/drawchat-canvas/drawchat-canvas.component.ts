@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { Subject, interval } from 'rxjs';
-import { takeUntil, map, filter, take, single } from 'rxjs/operators';
+import { takeUntil, map, take, single } from 'rxjs/operators';
 
 import { Brush } from 'src/app/draw_modules/brush';
 import { PaintCursor } from 'src/app/draw_modules/paintcursor';
