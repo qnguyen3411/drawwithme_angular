@@ -1,9 +1,8 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { map, delay, concatMap, mergeMap, finalize } from 'rxjs/operators';
+import { map, delay, concatMap, tap, windowCount, mergeAll } from 'rxjs/operators';
 import { PaintCursor } from '../../draw_modules/paintcursor';
 import { DrawchatService } from '../../services/drawchat.service';
-import { from, zip, timer, of, Observable } from 'rxjs';
-import { Brush } from 'src/app/draw_modules/brush';
+import { from, zip, of, Observable } from 'rxjs';
 
 
 interface StrokeData {
@@ -52,46 +51,38 @@ export class PlaybackComponent implements OnInit {
 
   startDrawing(strokeLog: StrokeData[]) {
     const brush = new PaintCursor(this.lowCtx).setUpperLayer(this.upCtx);
-    const startStrokeWithBrush = (stroke: StrokeData) => {
+
+    const startNewStroke = (stroke: StrokeData) => {
       brush.endAction()
-        .setColor(stroke.rgba)
-        .setSize(stroke.size)
+        .setColor(stroke.rgba).setSize(stroke.size)
         .moveTo(stroke.x[0], stroke.y[0])
         .startAction();
-      return stroke;
     };
 
-    const drawPath = (stroke: StrokeData): Observable<any> => {
-      return zip(from(stroke.x), from(stroke.y))
+    const moveAlongPath = (stroke: StrokeData) => {
+      return zip(from(stroke.x), from(stroke.y)) // Zip x, y together into a point
         .pipe(
-          concatMap(pt => of(pt).pipe(delay(50))),
-          map(data => brush.moveTo(data[0], data[1]))
+          windowCount(50),
+          mergeAll(),
+          concatMap(pt => of(pt).pipe(delay(50))), // wait 
+          map(pt => brush.moveTo(pt[0], pt[1])) // move brush to next point
         )
     }
 
+    const drawStroke = (stroke: StrokeData) => 
+      of(stroke)
+      .pipe(
+        tap(startNewStroke),
+        concatMap(moveAlongPath)
+        );
 
+    // Execute
+    
     from(strokeLog)
       .pipe(
-        concatMap(stroke => {
-
-          return of(startStrokeWithBrush(stroke)).pipe(
-            concatMap(drawPath)
-          )
-        })
-      )
-      .subscribe()
-
+        windowCount(50),
+        mergeAll(),
+        concatMap(drawStroke))
+      .subscribe();
   }
-
-
-  drawPath(stroke: StrokeData): Observable<[number, number]> {
-    return zip(from(stroke.x), from(stroke.y))
-      .pipe(
-        concatMap(pt => of(pt)
-          .pipe(delay(50))
-        )
-      )
-  }
-
-
 }
