@@ -35,7 +35,7 @@ export class DrawchatService {
   }
 
   fetchLog(id) {
-    return this._http.get(`http://localhost:1337/log/latest/${id}`, {responseType: "text"})
+    return this._http.get(`http://localhost:1337/logs/${id}_0.txt`, {responseType: "text"})
       .pipe(map(data => JSON.parse(data + "]")));
   }
 

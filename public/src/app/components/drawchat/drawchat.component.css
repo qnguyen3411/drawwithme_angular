@@ -116,7 +116,14 @@
   width: 20%;
   height:40px;
   border-radius: 5px;
-  background-color: transparent;
+  padding-top:5px;
+  background-color: rgb(180, 57, 84);
+}
+
+#leaveButton:hover {
+  cursor: pointer;
+  background-color: rgb(216, 83, 111);
+
 }
 
 app-drawchat-timer {
