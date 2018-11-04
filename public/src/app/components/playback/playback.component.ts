@@ -24,12 +24,11 @@ export class PlaybackComponent implements OnInit {
   @ViewChild('upper') upperRef: ElementRef
 
   
-  lowCtx: CanvasRenderingContext2D;
-  upCtx: CanvasRenderingContext2D;
+  baseCtx: CanvasRenderingContext2D;
+  topCtx: CanvasRenderingContext2D;
   
   strokeLog = [];
   
-  playSpeedObs: Observable<number>;
   playbackStarted = false;
 
   currPlaySpeed = 50;
@@ -39,17 +38,13 @@ export class PlaybackComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.lowCtx = this.lowerRef.nativeElement.getContext('2d');
-    this.upCtx = this.upperRef.nativeElement.getContext('2d');
-   
-
+    this.baseCtx = this.lowerRef.nativeElement.getContext('2d');
+    this.topCtx = this.upperRef.nativeElement.getContext('2d');
   }
 
   playClicked() {
     if (this.playbackStarted) { return; }
     this.playbackStarted = true;
-
-    // this.playSpeedObs = of(50, 1000)
     
     this._drawChatService.fetchLog(this.roomId)
       .pipe(map(data => data as Array<StrokeData>))
@@ -57,7 +52,7 @@ export class PlaybackComponent implements OnInit {
   }
 
   startDrawing(strokeLog: StrokeData[]) {
-    const brush = new PaintCursor(this.lowCtx).setUpperLayer(this.upCtx);
+    const brush = new PaintCursor(this.baseCtx).setUpperLayer(this.topCtx);
 
     const startNewStroke = (stroke: StrokeData) => {
       brush.endAction()
