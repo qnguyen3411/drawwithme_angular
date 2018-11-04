@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { map, delay, concatMap, tap, windowCount, mergeAll } from 'rxjs/operators';
+import { map, delay, concatMap, tap, windowCount, mergeAll, withLatestFrom } from 'rxjs/operators';
 import { PaintCursor } from '../../draw_modules/paintcursor';
 import { DrawchatService } from '../../services/drawchat.service';
 import { from, zip, of, Observable } from 'rxjs';
@@ -23,12 +23,16 @@ export class PlaybackComponent implements OnInit {
   @ViewChild('lower') lowerRef: ElementRef
   @ViewChild('upper') upperRef: ElementRef
 
-  playbackStarted = false;
-
+  
   lowCtx: CanvasRenderingContext2D;
   upCtx: CanvasRenderingContext2D;
-
+  
   strokeLog = [];
+  
+  playSpeedObs: Observable<number>;
+  playbackStarted = false;
+
+  currPlaySpeed = 50;
 
   constructor(
     private _drawChatService: DrawchatService,
@@ -37,15 +41,18 @@ export class PlaybackComponent implements OnInit {
   ngOnInit() {
     this.lowCtx = this.lowerRef.nativeElement.getContext('2d');
     this.upCtx = this.upperRef.nativeElement.getContext('2d');
+   
+
   }
 
   playClicked() {
     if (this.playbackStarted) { return; }
     this.playbackStarted = true;
+
+    // this.playSpeedObs = of(50, 1000)
+    
     this._drawChatService.fetchLog(this.roomId)
-      .pipe(map(data =>
-        data as StrokeData[])
-      )
+      .pipe(map(data => data as Array<StrokeData>))
       .subscribe(this.startDrawing.bind(this));
   }
 
@@ -64,7 +71,7 @@ export class PlaybackComponent implements OnInit {
         .pipe(
           windowCount(50),
           mergeAll(),
-          concatMap(pt => of(pt).pipe(delay(50))), // wait 
+          concatMap(pt => of(pt).pipe(delay(this.currPlaySpeed))), // wait 
           map(pt => brush.moveTo(pt[0], pt[1])) // move brush to next point
         )
     }
@@ -84,5 +91,10 @@ export class PlaybackComponent implements OnInit {
         mergeAll(),
         concatMap(drawStroke))
       .subscribe();
+  }
+
+
+  setPlaySpeed(spd: number) {
+    this.currPlaySpeed = spd;
   }
 }

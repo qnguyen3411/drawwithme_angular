@@ -7,3 +7,5 @@
 <div *ngIf="!playbackStarted" id="blackscreen" (click)="playClicked()">
   <img id="playbutton" src="assets/playbutton.png">
 </div>
+<button (click)="setPlaySpeed(200)">1x</button>
+<button (click)="setPlaySpeed(30)">2x</button>
