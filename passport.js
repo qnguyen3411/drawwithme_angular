@@ -3,7 +3,6 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const { ExtractJwt } = require('passport-jwt');
 
 const LocalStrategy = require('passport-local').Strategy;
-const { JWT_SECRET } = require('./configurations');
 
 const bcrypt = require('bcryptjs');
 
@@ -11,7 +10,7 @@ const userModel = require('./models/user');
 
 passport.use(new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-  secretOrKey: JWT_SECRET
+  secretOrKey: process.env.JWT_SECRET
 }, async (payload, done) => {
   try {
     const id = payload.sub.id;

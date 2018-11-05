@@ -6,13 +6,14 @@ import { DrawSocketModule } from '../socket_modules/socket-draw';
 import { RoomSocketModule } from '../socket_modules/socket-room';
 import { ChatSocketModule } from '../socket_modules/socket-chat';
 import { ConnectionSocketModule } from '../socket_modules/socket-connection';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocketsService {
 
-  private url = 'http://localhost:5000';
+  private url = environment.endpoints.drawChatSocket;
   private socket: SocketIOClient.Socket;
   private room: string;
 
@@ -22,11 +23,16 @@ export class SocketsService {
   chatModule: ChatSocketModule;
 
   constructor(private session: SessionService) {
+    console.log(this.url);
     this.socket = io(this.url, { autoConnect: false });
     this.connectionModule = new ConnectionSocketModule(this.session, this.socket);
     this.drawModule = new DrawSocketModule(this.socket);
     this.roomModule = new RoomSocketModule(this.socket);
     this.chatModule = new ChatSocketModule(this.socket);
+  }
+
+  connect() {
+    this.socket = io(this.url);
   }
 
 }

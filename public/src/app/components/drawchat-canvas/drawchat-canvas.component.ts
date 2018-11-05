@@ -73,7 +73,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
   onLeave() {
     if (Object.keys(this.peerList).length === 0) {
-      this.drawConnection.emitSnapshot({ data: this.getCanvasData() })
+      this.drawConnection.emitSnapshot();
     }
   }
 

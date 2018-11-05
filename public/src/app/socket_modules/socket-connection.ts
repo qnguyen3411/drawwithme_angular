@@ -1,6 +1,6 @@
 import { SessionService } from '../services/session.service';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 // Handles room administrative tasks such as
 // Tokens and updating user list
 export class ConnectionSocketModule {
@@ -28,12 +28,17 @@ export class ConnectionSocketModule {
     this.disconnect();
   }
 
-  private connect() {
+  connect() {
+    console.log("CONNECTING")
     this.socket.connect();
   }
 
   private disconnect() {
     this.socket.disconnect();
+  }
+
+  isConnected() {
+    return this.socket.connected;
   }
 
   onForceDisconnect(): Observable<any> {
