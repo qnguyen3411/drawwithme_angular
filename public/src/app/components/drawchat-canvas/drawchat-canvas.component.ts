@@ -73,11 +73,12 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
   onLeave() {
     if (Object.keys(this.peerList).length === 0) {
-      this.drawConnection.emitSnapshot({ data: this.getCanvasData() })
+      this.drawConnection.emitSnapshot()
     }
   }
 
   subscribeToSelfCursorEvents() {
+
     this.myPaintCursor.onStart.subscribe(
       this.drawConnection.emitCanvasActionStart
         .bind(this.drawConnection));
@@ -128,6 +129,11 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .onCanvasDataReceived()
       .pipe(take(1))
       .subscribe(this.receiveCanvasData.bind(this));
+
+    this.socket.roomModule
+      .onSnapshotSignal()
+      .pipe(take(1))
+      .subscribe(this.fetchSnapshot.bind(this));
   }
 
   removeFromPeerList({ id }) {
@@ -177,6 +183,14 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     img.src = data;
   }
 
+  fetchSnapshot({url}) {
+    console.log("FETCHING FROM ", url)
+    const img = new Image();
+    img.onload = () => {
+      this.baseCtx.drawImage(img, 0, 0);
+    }
+    img.src = url;
+  }
 
   subscribeToCanvasEvents() {
     this.drawConnection

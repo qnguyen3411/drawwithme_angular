@@ -49,14 +49,14 @@ export class PaintCursor {
   label = "";
   isVisible = true;
 
-  currTool: IPaintTool;
+  tool: IPaintTool;
   currToolName: string;
 
   constructor(baseCtx: CanvasRenderingContext2D) {
     this.baseCtx = baseCtx;
     this.baseCtx.lineCap = 'round';
     this.baseCtx.lineJoin = 'round';
-    this.currTool = new Brush(this.baseCtx)
+    this.tool = new Brush(this.baseCtx)
       .setCtx(baseCtx);
     this.currToolName = 'BRUSH';
   }
@@ -65,21 +65,20 @@ export class PaintCursor {
     this.topCtx = ctx;
     this.topCtx.lineCap = 'round';
     this.topCtx.lineJoin = 'round';
-    this.currTool.setCtx(ctx);
+    this.tool.setCtx(ctx);
     return this;
   }
 
   startAction() {
-    this.currTool.setColor(this.rgba);
-    this.currTool.setSize(this.size);
-    this.currTool.onActivate(this.x, this.y);
+    this.tool.setColor(this.rgba);
+    this.tool.setSize(this.size);
+    this.tool.onActivate(this.x, this.y);
     return this;
   }
 
   endAction() {
-    //TODO: strokedata resets before we're able to get it
-    if (this.currTool.isActivated()) {
-      this.currTool.onDeactivate();
+    if (this.tool.isActivated()) {
+      this.tool.onDeactivate();
     }
     return this;
   }
@@ -87,28 +86,28 @@ export class PaintCursor {
   moveTo(x: number, y: number) {
     this.x = x;
     this.y = y;
-    if (this.currTool.isActivated()) {
-      this.currTool.onMoveWhileActivated(x, y)
+    if (this.tool.isActivated()) {
+      this.tool.onMoveWhileActivated(x, y)
     }
     return this;
   }
 
   hasOngoingAction() {
-    return this.currTool.isActivated();
+    return this.tool.isActivated();
   }
 
   getActionData() {
-    return this.currTool.getActionData();
+    return this.tool.getActionData();
   }
 
-  setTool(tool: string) {
-    if (tool === this.currToolName) { return this; }
-    if (tool !== 'BRUSH' && tool !== 'ERASER' && tool !== 'RULER') { return this; }
-    this.currToolName = tool;
-    const newTool = PaintCursor.getToolCreator(tool);
-    this.currTool = new newTool(this.baseCtx);
+  setTool(currTool: string) {
+    if (currTool === this.currToolName) { return this; }
+    if (currTool !== 'BRUSH' && currTool !== 'ERASER' && currTool !== 'RULER') { return this; }
+    this.currToolName = currTool;
+    const newTool = PaintCursor.getToolCreator(currTool);
+    this.tool = new newTool(this.baseCtx);
    
-    this.currTool
+    this.tool
       .setCtx(this.topCtx || this.baseCtx)
       .setColor(this.rgba)
       .setSize(this.size);
@@ -117,13 +116,13 @@ export class PaintCursor {
 
   setColor(rgba: any[]) {
     this.rgba = rgba;
-    this.currTool.setColor(rgba)
+    this.tool.setColor(rgba)
     return this;
   }
 
   setSize(size: number) {
     this.size = size;
-    this.currTool.setSize(size);
+    this.tool.setSize(size);
     return this;
   }
 
