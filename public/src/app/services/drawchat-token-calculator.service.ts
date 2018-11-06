@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 })
 export class DrawchatTokenCalculatorService {
   private TOKEN_CAP = environment.roomTimer.tokenCap;
-  private TOKEN_INTERVAL = environment.roomTimer.tokenIntervals;
+  private TOKEN_INTERVAL = environment.roomTimer.tokenInterval;
   private TOKEN_TIME_VALUE = environment.roomTimer.tokenTimeValue;
 
   createdAt: number;

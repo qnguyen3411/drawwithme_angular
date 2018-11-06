@@ -1,10 +1,7 @@
 const JWT = require('jsonwebtoken');
 const userModel = require('../models/user')
 
-<<<<<<< HEAD
-=======
 require('dotenv').config
->>>>>>> dev
 
 signToken = user => {
   console.log("SIGNING TOKEN WITH SECRET ", process.env.JWT_SECRET)

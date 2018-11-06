@@ -5,24 +5,16 @@
 export const environment = {
   production: false,
   endpoints: {
-<<<<<<< HEAD
-    hub: 'http://localhost:9000/',
-    drawChatSocket: 'http://localhost:5000/',
-    strokeLog: 'http://localhost:1337/logs/',
-    snapShot: 'http://localhost:1337/snapshots/'
-  },
-
-  roomTimer: {
-    tokenCap: 5,
-    tokenIntervals: 1000 * 60 * 60 * 2,
-    tokenTimeValue: 1000 * 60 * 60 * 4
-  }
-=======
     socketServer: 'localhost:5000/',
     logs: 'http://localhost:1337/logs/',
     thumb: 'http://localhost:1337/thumbs/'
   },
->>>>>>> dev
+
+  roomTimer: {
+    tokenCap: 5,
+    tokenInterval: 1000 * 60 * 60 * 2,
+    tokenTimeValue: 1000 * 60 * 60 * 4
+  }
 };
 
 /*

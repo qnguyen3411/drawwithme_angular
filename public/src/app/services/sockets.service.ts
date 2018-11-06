@@ -13,7 +13,7 @@ import { environment } from '../../environments/environment';
 })
 export class SocketsService {
 
-  private url = environment.endpoints.drawChatSocket;
+  private url = environment.endpoints.socketServer;
   private socket: SocketIOClient.Socket;
   private room: string;
 
