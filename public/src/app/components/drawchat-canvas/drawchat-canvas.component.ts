@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { Subject, interval } from 'rxjs';
-import { takeUntil, map, take, single } from 'rxjs/operators';
+import { takeUntil, map, take, filter } from 'rxjs/operators';
 
 import { PaintCursor } from 'src/app/draw_modules/paintcursor';
 import { ObservablePaintCursor } from 'src/app/draw_modules/observablepaintcursor';
@@ -156,7 +156,8 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     return interval(intervalInMs)
       .pipe(
         map(() => this.findCanvasWithId(id)),
-        single(found => found !== undefined),
+        filter(found => found !== undefined),
+        take(1),
         map(found => found as HTMLCanvasElement),
       )
   }
@@ -184,11 +185,11 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   fetchSnapshot({url}) {
-    console.log("FETCHING FROM ", url)
     const img = new Image();
     img.onload = () => {
       this.baseCtx.drawImage(img, 0, 0);
     }
+    img.crossOrigin = 'anonymous';
     img.src = url;
   }
 

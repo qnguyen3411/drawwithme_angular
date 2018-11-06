@@ -79,6 +79,7 @@ export class PaintCursor {
   endAction() {
     if (this.tool.isActivated()) {
       this.tool.onDeactivate();
+      
     }
     return this;
   }
