@@ -1,13 +1,12 @@
 <ul class="list-group mx-1">
 
     <li *ngFor="let room of rooms" 
-      class="list-group-item p-0 m-2"
+      class="list-group-item p-0 m-2 bg-dark text-white border-light font-weight-bold"
       (click)="onRoomClicked(room)"
       [ngClass]="{ 'inactive': !room.isActive }"
     >
       <h6 class="small m-2">
         {{room['name']}}
-        <!-- {{roomIsActive(room)}} -->
         <span class="badge badge-pill" 
         [ngClass]="{
           'badge-success': room.isActive,
@@ -16,7 +15,7 @@
         {{ room.isActive ? 'Live!' : 'Done'}}
         </span>
       </h6>
-      <div class="card-img bg-dark" ></div>
+      <img class="card-img bg-white" [src]="room.thumbUrl" alt="">
       <p class="small mx-2 my-1">Created on: {{room['created_at'] | date: 'dd/MM/yyyy'}}</p>
     </li>
 

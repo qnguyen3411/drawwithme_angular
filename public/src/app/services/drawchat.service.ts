@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SessionService } from './session.service';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +36,7 @@ export class DrawchatService {
   }
 
   fetchLog(id) {
-    return this._http.get(`http://localhost:1337/logs/${id}_0.txt`, {responseType: "text"})
+    return this._http.get(environment.endpoints.logs + `${id}_0.txt`, {responseType: "text"})
       .pipe(map(data => JSON.parse(data + "]")));
   }
 

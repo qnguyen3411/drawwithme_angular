@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 require('dotenv').config()
 
+=======
+require('dotenv').config();
+>>>>>>> dev
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');

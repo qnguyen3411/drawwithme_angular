@@ -127,12 +127,13 @@ module.exports = {
       + " (room_id, user_id, created_at, updated_at)"
       + " SELECT ?, ?, NOW(), NOW()"
       + " FROM users_rooms"
-      + " LEFT JOIN rooms ON rooms.id = room_id"
+      + " RIGHT JOIN rooms ON rooms.id = room_id"
       + " WHERE rooms.id  = ? AND expires_at > NOW()"
       + " ON DUPLICATE KEY UPDATE users_rooms.updated_at = NOW()"
       ;
     return db.query(sql, [roomId, joinerId, roomId]);
   },
+
 
   addTag: function (tag) {
     const sql =

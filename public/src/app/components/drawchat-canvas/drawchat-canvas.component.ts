@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { Subject, interval } from 'rxjs';
-import { takeUntil, map, take, single } from 'rxjs/operators';
+import { takeUntil, map, take, filter } from 'rxjs/operators';
 
 import { PaintCursor } from 'src/app/draw_modules/paintcursor';
 import { ObservablePaintCursor } from 'src/app/draw_modules/observablepaintcursor';
@@ -73,11 +73,16 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
   onLeave() {
     if (Object.keys(this.peerList).length === 0) {
+<<<<<<< HEAD
       this.drawConnection.emitSnapshot();
+=======
+      this.drawConnection.emitSnapshot()
+>>>>>>> dev
     }
   }
 
   subscribeToSelfCursorEvents() {
+
     this.myPaintCursor.onStart.subscribe(
       this.drawConnection.emitCanvasActionStart
         .bind(this.drawConnection));
@@ -128,6 +133,11 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .onCanvasDataReceived()
       .pipe(take(1))
       .subscribe(this.receiveCanvasData.bind(this));
+
+    this.socket.roomModule
+      .onSnapshotSignal()
+      .pipe(take(1))
+      .subscribe(this.fetchSnapshot.bind(this));
   }
 
   removeFromPeerList({ id }) {
@@ -150,7 +160,8 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     return interval(intervalInMs)
       .pipe(
         map(() => this.findCanvasWithId(id)),
-        single(found => found !== undefined),
+        filter(found => found !== undefined),
+        take(1),
         map(found => found as HTMLCanvasElement),
       )
   }
@@ -177,6 +188,14 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     img.src = data;
   }
 
+  fetchSnapshot({url}) {
+    const img = new Image();
+    img.onload = () => {
+      this.baseCtx.drawImage(img, 0, 0);
+    }
+    img.crossOrigin = 'anonymous';
+    img.src = url;
+  }
 
   subscribeToCanvasEvents() {
     this.drawConnection

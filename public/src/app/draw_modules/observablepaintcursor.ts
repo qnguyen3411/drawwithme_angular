@@ -24,10 +24,10 @@ export class ObservablePaintCursor extends PaintCursor {
   }
 
   endAction() {
-    if (this.currTool.isActivated()) {
-      const strokeData = this.currTool.getActionData();
+    if (this.tool.isActivated()) {
+      const strokeData = this.tool.getActionData();
       this.onEnd.next(strokeData);
-      this.currTool.onDeactivate();
+      this.tool.onDeactivate();
     }
     return this;
   }

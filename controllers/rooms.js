@@ -1,4 +1,4 @@
-
+require('dotenv').config();
 const roomModel = require('../models/room');
 
 
@@ -38,7 +38,7 @@ module.exports = {
   index: async (req, res, next) => {
     try {
       let rooms = req.index;
-      let roomList = []
+      let roomList = [];
       for (let i = 0; i < rooms.length; i++) {
         let tags = await roomModel.getRoomTags(rooms[i].id);
         let joiners = await roomModel.getRoomJoiners(rooms[i].id)
@@ -82,11 +82,10 @@ module.exports = {
   },
 
   consumeToken: async (req, res, next) => {
-    const MS_PER_HOUR = 1000 * 60 * 60;
     const { tokenCap, tokenInterval, tokenTimeValue } = {
-      tokenCap: 5,
-      tokenInterval: MS_PER_HOUR * 2,
-      tokenTimeValue: MS_PER_HOUR * 4
+      tokenCap: process.env.ROOM_TOKEN_CAP,
+      tokenInterval: process.env.ROOM_TOKEN_INTERVAL,
+      tokenTimeValue: process.env.ROOM_TOKEN_TIME_VALUE
     }
 
     try {

@@ -61,4 +61,6 @@ export class DrawSocketModule {
     this.socket.emit('snapShot');
   }
 
+  
+
 }
