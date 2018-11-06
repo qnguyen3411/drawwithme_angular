@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { DrawchatService } from '../../services/drawchat.service';
-
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-roomlist',
   templateUrl: './roomlist.component.html',
@@ -28,6 +28,8 @@ export class RoomlistComponent implements OnInit, OnChanges {
         const now = new Date();
         for (let i = 0; i < this.rooms.length; i++) {
           this.rooms[i]['isActive'] = new Date(this.rooms[i]['expires_at']) > now;
+          this.rooms[i]['thumbUrl'] = environment.endpoints.thumb + `${this.rooms[i]['id']}_snapshot.png` ;
+          console.log(this.rooms[i]['thumbUrl']);
         }
         this.rooms.reverse()
       })

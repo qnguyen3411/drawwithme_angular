@@ -1,18 +1,18 @@
-<nav class="navbar fixed-top navbar-dark bg-transparent">
+<nav class="navbar fixed-top bg-transparent">
   <ul class="nav nav-pills">
     <li *ngIf="!isLoggedIn()" class="nav-item">
-      <a class="nav-link active"  (click)="showLoginForm()">Log in</a>
+      <a class="nav-link bg-light"  (click)="showLoginForm()">Log in</a>
     </li>
     <li *ngIf="!isLoggedIn()" class="nav-item">
-      <a class="nav-link active ml-2"  (click)="showSignupForm()">Sign up</a>
+      <a class="nav-link bg-light ml-2"  (click)="showSignupForm()">Sign up</a>
     </li>
 
     <li *ngIf="isLoggedIn()" class="nav-item">
-      <a class="nav-link active ml-2" (click)="showCreateRoomForm()">Create room</a>
+      <a class="nav-link bg-light ml-2" (click)="showCreateRoomForm()">Create room</a>
     </li>
 
     <li *ngIf="isLoggedIn()" class="nav-item">
-        <a class="nav-link active ml-2" (click)="logout()">Log out</a>
+        <a class="nav-link bg-light ml-2" (click)="logout()">Log out</a>
       </li>
   </ul>
 </nav>

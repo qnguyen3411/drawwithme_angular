@@ -7,9 +7,8 @@ export const environment = {
   endpoints: {
     socketServer: 'localhost:5000/',
     logs: 'http://localhost:1337/logs/',
+    thumb: 'http://localhost:1337/thumbs/'
   },
-
-
 };
 
 /*

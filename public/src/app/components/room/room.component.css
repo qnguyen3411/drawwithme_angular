@@ -8,6 +8,12 @@ app-playbck {
 
 #greeting {
   position: relative;
-  top: 50vh;
+  top: 10vh;
   left: 30px;
+}
+
+#greeting img {
+  /* margin-top: 30%; */
+  width:90%;
+  height:auto;
 }

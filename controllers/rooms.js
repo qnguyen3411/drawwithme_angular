@@ -38,7 +38,7 @@ module.exports = {
   index: async (req, res, next) => {
     try {
       let rooms = req.index;
-      let roomList = []
+      let roomList = [];
       for (let i = 0; i < rooms.length; i++) {
         let tags = await roomModel.getRoomTags(rooms[i].id);
         let joiners = await roomModel.getRoomJoiners(rooms[i].id)

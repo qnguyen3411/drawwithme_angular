@@ -1,5 +1,5 @@
 #mainContainer {
-  height:99.5vh;
+  height:100vh;
   width: 100vw;
   
 }
@@ -23,4 +23,19 @@ app-room {
 
 .bg-lightgrey {
   background-color: rgb(214, 226, 230)
+}
+
+::-webkit-scrollbar {
+  width: 10px;  /* for vertical scrollbars */
+  height: 0px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  border-bottom: 1px solid rgb(214, 210, 210);
+  border-right: 1px solid rgb(214, 210, 210);
+  background: rgba(0, 0, 0, 0.8);
 }
