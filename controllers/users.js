@@ -1,8 +1,8 @@
 const JWT = require('jsonwebtoken');
-const { JWT_SECRET } = require('../configurations')
+// const { JWT_SECRET } = require('../configurations')
 const userModel = require('../models/user')
 
-
+require('dotenv').config
 
 signToken = user => {
 
@@ -11,7 +11,7 @@ signToken = user => {
     sub: { id: user.id, username: user.username }, // subject
     iat: new Date().getTime(), // issued at
     exp: new Date().setDate(new Date().getDate() + 1) // expiration
-  }, JWT_SECRET);
+  }, process.env.JWT_SECRET);
 }
 
 module.exports = {

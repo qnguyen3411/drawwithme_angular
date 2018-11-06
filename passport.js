@@ -3,7 +3,6 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const { ExtractJwt } = require('passport-jwt');
 require('dotenv').config();
 const LocalStrategy = require('passport-local').Strategy;
-const { JWT_SECRET } = require('./configurations');
 
 const bcrypt = require('bcryptjs');
 
