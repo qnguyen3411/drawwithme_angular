@@ -3,7 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  endpoints: {
+    socketServer: 'localhost:5000/',
+    logs: 'http://localhost:1337/logs/',
+  },
+
+
 };
 
 /*

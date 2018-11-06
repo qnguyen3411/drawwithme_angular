@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
@@ -7,7 +8,12 @@ const { dbConfig } = require('./configurations');
 const { logErrors, clientErrorHandler } = require('./errorhandler');
 
 
-const connection = db.initializeConnection(dbConfig)
+const connection = db.initializeConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE
+})
 
 const app = express();
 
