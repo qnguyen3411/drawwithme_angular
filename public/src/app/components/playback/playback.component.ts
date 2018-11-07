@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { map, delay, concatMap, tap, windowCount, mergeAll } from 'rxjs/operators';
+import { map, delay, concatMap, tap, windowCount, mergeAll, take } from 'rxjs/operators';
 import { PaintCursor } from '../../draw_modules/paintcursor';
 import { DrawchatService } from '../../services/drawchat.service';
 import { from, zip, of } from 'rxjs';
@@ -48,6 +48,7 @@ export class PlaybackComponent implements OnInit {
 
     this._drawChatService.fetchLog(this.roomId)
       .pipe(
+        take(1),
         map(data => data as Array<StrokeData>),
         concatMap(this.startDrawing.bind(this))
       )
@@ -55,7 +56,6 @@ export class PlaybackComponent implements OnInit {
   }
 
   startDrawing(strokeLog: StrokeData[]) {
-
     const delayVal = (interval: number) =>
       (val: [number, number]) => of(val).pipe(delay(interval));
 

@@ -12,4 +12,15 @@ export const environment = {
     tokenInterval: 1000 * 60 * 60 * 2,
     tokenTimeValue: 1000 * 60 * 60 * 4
   }
+  // endpoints: {
+  //   socketServer: 'localhost:5000/',
+  //   logs: 'http://localhost:1337/logs/',
+  //   thumb: 'http://localhost:1337/thumbs/'
+  // },
+
+  // roomTimer: {
+  //   tokenCap: 5,
+  //   tokenInterval: 1000 * 60 * 60 * 2,
+  //   tokenTimeValue: 1000 * 60 * 60 * 4
+  // }
 };
