@@ -4,9 +4,9 @@
 <div *ngIf="currentlyShowingRoom()">
   <div class="row ml-1 mr-3 mt-5 pt-3">
     <div class="col-2 mt-3 small font-weight-bold text-dark">
-      <p class="m-2 border-bottom border-light text-center">Users:</p>
+      <p class="m-2 border-bottom border-light text-center text-light">Users:</p>
 
-      <p *ngFor="let user of roomToShow.users" class="mb-1 ml-2">
+      <p *ngFor="let user of roomToShow.users" class="mb-1 ml-2 text-light">
         <a (click)="userClicked(user.id)">{{user.username}}</a>
       </p>
     </div>
@@ -17,10 +17,10 @@
     </div>
   </div>
   <div class="col-10 ml-auto mb-5">
-    <div class="mx-auto mt-2 border-bottom">
+    <div class="mx-auto mt-2 border-bottom text-light">
       <h2>
         {{ roomToShow.name }}
-        <button *ngIf="roomToShow.isActive" class="btn btn-dark" [routerLink]="['/draw', roomToShow.id ]">Join!</button>
+        <button *ngIf="roomToShow.isActive" class="btn btn-outline-light" [routerLink]="['/draw', roomToShow.id ]">Join!</button>
       </h2>
       <p>
         <span *ngFor="let tag of roomToShow.tags" class="badge badge-secondary mx-1" (click)="tagClicked(tag)">
@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <div class="row mx-auto mt-2">
+    <div class="row mx-auto mt-2 text-light font-weight-bold">
       {{ roomToShow.description }}
     </div>
   </div>
