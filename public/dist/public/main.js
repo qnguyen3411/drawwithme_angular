@@ -626,7 +626,6 @@ var DrawchatCanvasComponent = /** @class */ (function () {
     DrawchatCanvasComponent.prototype.onMouseDown = function (e) {
         if (this.leftMouseIsDown(e)) {
             if (this.brushSettings.tool === 'EYEDROPPER') {
-                console.log("AT EYEDROPPER");
                 var _a = this.trackMouse(e), x = _a.x, y = _a.y;
                 var data = this.baseCtx.getImageData(x, y, 1, 1).data;
                 this.brushSettings.changeColor([data[0], data[1], data[2]]);

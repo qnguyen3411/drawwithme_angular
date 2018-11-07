@@ -259,7 +259,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   onMouseDown(e: MouseEvent) {
     if (this.leftMouseIsDown(e)) {
       if (this.brushSettings.tool === 'EYEDROPPER') {
-        console.log("AT EYEDROPPER")
         const { x, y } = this.trackMouse(e);
         const {data} = this.baseCtx.getImageData(x, y, 1, 1);
         this.brushSettings.changeColor([data[0], data[1], data[2]]);  
