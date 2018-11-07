@@ -624,12 +624,24 @@ var DrawchatCanvasComponent = /** @class */ (function () {
         this.myPaintCursor.show();
     };
     DrawchatCanvasComponent.prototype.onMouseDown = function (e) {
-        if (e.button === 0) {
-            this.myPaintCursor.startAction();
+        if (this.leftMouseIsDown(e)) {
+            if (this.brushSettings.tool === 'EYEDROPPER') {
+                console.log("AT EYEDROPPER");
+                var _a = this.trackMouse(e), x = _a.x, y = _a.y;
+                var data = this.baseCtx.getImageData(x, y, 1, 1).data;
+                this.brushSettings.changeColor([data[0], data[1], data[2]]);
+            }
+            else {
+                this.myPaintCursor.startAction();
+            }
         }
     };
     DrawchatCanvasComponent.prototype.onMouseMove = function (e) {
         var _a = this.trackMouse(e), x = _a.x, y = _a.y;
+        if (this.brushSettings.tool === 'EYEDROPPER' && this.leftMouseIsDown(e)) {
+            var data = this.baseCtx.getImageData(x, y, 1, 1).data;
+            this.brushSettings.changeColor([data[0], data[1], data[2]]);
+        }
         this.myPaintCursor.moveTo(x, y);
     };
     DrawchatCanvasComponent.prototype.onMouseUp = function () {
@@ -643,6 +655,9 @@ var DrawchatCanvasComponent = /** @class */ (function () {
         if (this.myPaintCursor.hasOngoingAction()) {
             this.myPaintCursor.endAction();
         }
+    };
+    DrawchatCanvasComponent.prototype.leftMouseIsDown = function (e) {
+        return e.button === 0 && e.buttons === 1;
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])('container'),

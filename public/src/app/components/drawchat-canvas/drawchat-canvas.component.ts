@@ -257,13 +257,24 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   onMouseDown(e: MouseEvent) {
-    if (e.button === 0) {
-      this.myPaintCursor.startAction();
+    if (this.leftMouseIsDown(e)) {
+      if (this.brushSettings.tool === 'EYEDROPPER') {
+        console.log("AT EYEDROPPER")
+        const { x, y } = this.trackMouse(e);
+        const {data} = this.baseCtx.getImageData(x, y, 1, 1);
+        this.brushSettings.changeColor([data[0], data[1], data[2]]);  
+      } else {
+        this.myPaintCursor.startAction();
+      }
     }
   }
 
   onMouseMove(e: MouseEvent) {
     const { x, y } = this.trackMouse(e);
+    if (this.brushSettings.tool === 'EYEDROPPER' && this.leftMouseIsDown(e)) {
+      const {data} = this.baseCtx.getImageData(x, y, 1, 1);
+      this.brushSettings.changeColor([data[0], data[1], data[2]]);
+    }
     this.myPaintCursor.moveTo(x, y);
   }
 
@@ -282,7 +293,9 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     }
   }
 
-
+  leftMouseIsDown(e: MouseEvent) {
+    return e.button === 0 && e.buttons === 1;
+  }
 
 }
 
