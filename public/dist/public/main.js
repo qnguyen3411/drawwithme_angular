@@ -1270,7 +1270,7 @@ module.exports = "img {\n  width: 50px;\n  height: auto;\n  margin-bottom: 25px;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<img src=\"assets/brush.png\" alt=\"brush\" (click)=\"changeTool('BRUSH')\">\n<img src=\"assets/eraser.png\" alt=\"eraser\" (click)=\"changeTool('ERASER')\">\n<img src=\"assets/eyedropper.png\" alt=\"eyedropper\" (click)=\"changeTool('EYEDROPPER')\">\n<img src=\"assets/ruler.png\" alt=\"ruler\" (click)=\"changeTool('RULER')\">\n"
+module.exports = "<img src=\"assets/brush.png\" alt=\"brush\" [ngClass]=\"{'selected': currTool === 'BRUSH' }\" (click)=\"changeTool('BRUSH')\">\n<img src=\"assets/eraser.png\" alt=\"eraser\" [ngClass]=\"{'selected': currTool === 'ERASER' }\" (click)=\"changeTool('ERASER')\">\n<img src=\"assets/eyedropper.png\" alt=\"eyedropper\" [ngClass]=\"{'selected': currTool === 'EYEDROPPER' }\" (click)=\"changeTool('EYEDROPPER')\">\n<img src=\"assets/ruler.png\" alt=\"ruler\" [ngClass]=\"{'selected': currTool === 'RULER' }\" (click)=\"changeTool('RULER')\">\n"
 
 /***/ }),
 
@@ -1300,10 +1300,12 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 var DrawchatToolsComponent = /** @class */ (function () {
     function DrawchatToolsComponent(brush) {
         this.brush = brush;
+        this.currTool = 'BRUSH';
     }
     DrawchatToolsComponent.prototype.ngOnInit = function () {
     };
     DrawchatToolsComponent.prototype.changeTool = function (tool) {
+        this.currTool = tool;
         this.brush.changeTool(tool);
     };
     DrawchatToolsComponent = __decorate([

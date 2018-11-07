@@ -1,4 +1,4 @@
-<img src="assets/brush.png" alt="brush" (click)="changeTool('BRUSH')">
-<img src="assets/eraser.png" alt="eraser" (click)="changeTool('ERASER')">
-<img src="assets/eyedropper.png" alt="eyedropper" (click)="changeTool('EYEDROPPER')">
-<img src="assets/ruler.png" alt="ruler" (click)="changeTool('RULER')">
+<img src="assets/brush.png" alt="brush" [ngClass]="{'selected': currTool === 'BRUSH' }" (click)="changeTool('BRUSH')">
+<img src="assets/eraser.png" alt="eraser" [ngClass]="{'selected': currTool === 'ERASER' }" (click)="changeTool('ERASER')">
+<img src="assets/eyedropper.png" alt="eyedropper" [ngClass]="{'selected': currTool === 'EYEDROPPER' }" (click)="changeTool('EYEDROPPER')">
+<img src="assets/ruler.png" alt="ruler" [ngClass]="{'selected': currTool === 'RULER' }" (click)="changeTool('RULER')">

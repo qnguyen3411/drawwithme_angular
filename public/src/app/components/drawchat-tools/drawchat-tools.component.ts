@@ -7,7 +7,7 @@ import { DrawchatBrushService } from '../../services/drawchat-brush.service';
   styleUrls: ['./drawchat-tools.component.css'],
 })
 export class DrawchatToolsComponent implements OnInit {
-
+  currTool = 'BRUSH'
   constructor(
     private brush: DrawchatBrushService
   ) { }
@@ -16,6 +16,7 @@ export class DrawchatToolsComponent implements OnInit {
   }
 
   changeTool(tool:string) {
+    this.currTool = tool;
     this.brush.changeTool(tool);
   }
 }
