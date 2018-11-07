@@ -48,6 +48,7 @@ export class DrawchatBrushService {
   } 
 
   changeTool(tool: string) {
+    this.tool = tool;
     this.toolChanged.next(tool);
   }
 }

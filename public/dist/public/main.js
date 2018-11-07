@@ -180,13 +180,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_drawchat_sliders_drawchat_sliders_component__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./components/drawchat-sliders/drawchat-sliders.component */ "./src/app/components/drawchat-sliders/drawchat-sliders.component.ts");
 /* harmony import */ var _components_drawchat_palette_drawchat_palette_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./components/drawchat-palette/drawchat-palette.component */ "./src/app/components/drawchat-palette/drawchat-palette.component.ts");
 /* harmony import */ var _components_drawchat_timer_drawchat_timer_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./components/drawchat-timer/drawchat-timer.component */ "./src/app/components/drawchat-timer/drawchat-timer.component.ts");
-/* harmony import */ var _components_drawchat_userlist_drawchat_userlist_component__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./components/drawchat-userlist/drawchat-userlist.component */ "./src/app/components/drawchat-userlist/drawchat-userlist.component.ts");
-/* harmony import */ var _components_drawchat_chat_drawchat_chat_component__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./components/drawchat-chat/drawchat-chat.component */ "./src/app/components/drawchat-chat/drawchat-chat.component.ts");
-/* harmony import */ var _components_drawchat_disconnect_modal_drawchat_disconnect_modal_component__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./components/drawchat-disconnect-modal/drawchat-disconnect-modal.component */ "./src/app/components/drawchat-disconnect-modal/drawchat-disconnect-modal.component.ts");
-/* harmony import */ var _services_user_service__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./services/user.service */ "./src/app/services/user.service.ts");
-/* harmony import */ var _services_drawchat_service__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./services/drawchat.service */ "./src/app/services/drawchat.service.ts");
-/* harmony import */ var _services_session_service__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./services/session.service */ "./src/app/services/session.service.ts");
-/* harmony import */ var _services_sockets_service__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./services/sockets.service */ "./src/app/services/sockets.service.ts");
+/* harmony import */ var _components_drawchat_tools_drawchat_tools_component__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./components/drawchat-tools/drawchat-tools.component */ "./src/app/components/drawchat-tools/drawchat-tools.component.ts");
+/* harmony import */ var _components_drawchat_userlist_drawchat_userlist_component__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./components/drawchat-userlist/drawchat-userlist.component */ "./src/app/components/drawchat-userlist/drawchat-userlist.component.ts");
+/* harmony import */ var _components_drawchat_chat_drawchat_chat_component__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./components/drawchat-chat/drawchat-chat.component */ "./src/app/components/drawchat-chat/drawchat-chat.component.ts");
+/* harmony import */ var _components_drawchat_disconnect_modal_drawchat_disconnect_modal_component__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./components/drawchat-disconnect-modal/drawchat-disconnect-modal.component */ "./src/app/components/drawchat-disconnect-modal/drawchat-disconnect-modal.component.ts");
+/* harmony import */ var _services_user_service__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./services/user.service */ "./src/app/services/user.service.ts");
+/* harmony import */ var _services_drawchat_service__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./services/drawchat.service */ "./src/app/services/drawchat.service.ts");
+/* harmony import */ var _services_session_service__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./services/session.service */ "./src/app/services/session.service.ts");
+/* harmony import */ var _services_sockets_service__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./services/sockets.service */ "./src/app/services/sockets.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -201,6 +202,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 // COMPONENTS
+
 
 
 
@@ -240,9 +242,10 @@ var AppModule = /** @class */ (function () {
                 _components_drawchat_sliders_drawchat_sliders_component__WEBPACK_IMPORTED_MODULE_16__["DrawchatSlidersComponent"],
                 _components_drawchat_palette_drawchat_palette_component__WEBPACK_IMPORTED_MODULE_17__["DrawchatPaletteComponent"],
                 _components_drawchat_timer_drawchat_timer_component__WEBPACK_IMPORTED_MODULE_18__["DrawchatTimerComponent"],
-                _components_drawchat_userlist_drawchat_userlist_component__WEBPACK_IMPORTED_MODULE_19__["DrawchatUserlistComponent"],
-                _components_drawchat_chat_drawchat_chat_component__WEBPACK_IMPORTED_MODULE_20__["DrawchatChatComponent"],
-                _components_drawchat_disconnect_modal_drawchat_disconnect_modal_component__WEBPACK_IMPORTED_MODULE_21__["DrawchatDisconnectModalComponent"],
+                _components_drawchat_userlist_drawchat_userlist_component__WEBPACK_IMPORTED_MODULE_20__["DrawchatUserlistComponent"],
+                _components_drawchat_chat_drawchat_chat_component__WEBPACK_IMPORTED_MODULE_21__["DrawchatChatComponent"],
+                _components_drawchat_disconnect_modal_drawchat_disconnect_modal_component__WEBPACK_IMPORTED_MODULE_22__["DrawchatDisconnectModalComponent"],
+                _components_drawchat_tools_drawchat_tools_component__WEBPACK_IMPORTED_MODULE_19__["DrawchatToolsComponent"],
             ],
             imports: [
                 ngx_bootstrap_modal__WEBPACK_IMPORTED_MODULE_5__["ModalModule"].forRoot(),
@@ -255,13 +258,13 @@ var AppModule = /** @class */ (function () {
                 _components_loginform_loginform_component__WEBPACK_IMPORTED_MODULE_9__["LoginFormComponent"],
                 _components_signupform_signupform_component__WEBPACK_IMPORTED_MODULE_10__["SignupFormComponent"],
                 _components_createroomform_createroomform_component__WEBPACK_IMPORTED_MODULE_11__["CreateRoomFormComponent"],
-                _components_drawchat_disconnect_modal_drawchat_disconnect_modal_component__WEBPACK_IMPORTED_MODULE_21__["DrawchatDisconnectModalComponent"]
+                _components_drawchat_disconnect_modal_drawchat_disconnect_modal_component__WEBPACK_IMPORTED_MODULE_22__["DrawchatDisconnectModalComponent"]
             ],
             providers: [
-                _services_user_service__WEBPACK_IMPORTED_MODULE_22__["UserService"],
-                _services_drawchat_service__WEBPACK_IMPORTED_MODULE_23__["DrawchatService"],
-                _services_session_service__WEBPACK_IMPORTED_MODULE_24__["SessionService"],
-                _services_sockets_service__WEBPACK_IMPORTED_MODULE_25__["SocketsService"]
+                _services_user_service__WEBPACK_IMPORTED_MODULE_23__["UserService"],
+                _services_drawchat_service__WEBPACK_IMPORTED_MODULE_24__["DrawchatService"],
+                _services_session_service__WEBPACK_IMPORTED_MODULE_25__["SessionService"],
+                _services_sockets_service__WEBPACK_IMPORTED_MODULE_26__["SocketsService"]
             ],
             bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_4__["AppComponent"]]
         })
@@ -480,6 +483,10 @@ var DrawchatCanvasComponent = /** @class */ (function () {
         this.brushSettings.sizeChanged
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["takeUntil"])(this.destroy))
             .subscribe(this.myPaintCursor.setSize
+            .bind(this.myPaintCursor));
+        this.brushSettings.toolChanged
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["takeUntil"])(this.destroy))
+            .subscribe(this.myPaintCursor.setTool
             .bind(this.myPaintCursor));
     };
     DrawchatCanvasComponent.prototype.subscribeToRoomEvents = function () {
@@ -969,7 +976,6 @@ var DrawchatPaletteComponent = /** @class */ (function () {
     DrawchatPaletteComponent.prototype.getColorFromPalette = function (_a) {
         var x = _a.x, y = _a.y;
         var data = this.palCtx.getImageData(x, y, 1, 1).data;
-        this.palCtx.beginPath();
         this.brush.changeColor([data[0], data[1], data[2]]);
     };
     __decorate([
@@ -1246,6 +1252,75 @@ var DrawchatTimerComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/components/drawchat-tools/drawchat-tools.component.css":
+/*!************************************************************************!*\
+  !*** ./src/app/components/drawchat-tools/drawchat-tools.component.css ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "img {\n  width: 50px;\n  height: auto;\n  margin-bottom: 25px; \n  border-radius: 5px; \n}\n\nimg.selected {\n  border: 2px solid whitesmoke;\n}"
+
+/***/ }),
+
+/***/ "./src/app/components/drawchat-tools/drawchat-tools.component.html":
+/*!*************************************************************************!*\
+  !*** ./src/app/components/drawchat-tools/drawchat-tools.component.html ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<img src=\"assets/brush.png\" alt=\"brush\" (click)=\"changeTool('BRUSH')\">\n<img src=\"assets/eraser.png\" alt=\"eraser\" (click)=\"changeTool('ERASER')\">\n<img src=\"assets/eyedropper.png\" alt=\"eyedropper\" (click)=\"changeTool('EYEDROPPER')\">\n<img src=\"assets/ruler.png\" alt=\"ruler\" (click)=\"changeTool('RULER')\">\n"
+
+/***/ }),
+
+/***/ "./src/app/components/drawchat-tools/drawchat-tools.component.ts":
+/*!***********************************************************************!*\
+  !*** ./src/app/components/drawchat-tools/drawchat-tools.component.ts ***!
+  \***********************************************************************/
+/*! exports provided: DrawchatToolsComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DrawchatToolsComponent", function() { return DrawchatToolsComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _services_drawchat_brush_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../services/drawchat-brush.service */ "./src/app/services/drawchat-brush.service.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var DrawchatToolsComponent = /** @class */ (function () {
+    function DrawchatToolsComponent(brush) {
+        this.brush = brush;
+    }
+    DrawchatToolsComponent.prototype.ngOnInit = function () {
+    };
+    DrawchatToolsComponent.prototype.changeTool = function (tool) {
+        this.brush.changeTool(tool);
+    };
+    DrawchatToolsComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-drawchat-tools',
+            template: __webpack_require__(/*! ./drawchat-tools.component.html */ "./src/app/components/drawchat-tools/drawchat-tools.component.html"),
+            styles: [__webpack_require__(/*! ./drawchat-tools.component.css */ "./src/app/components/drawchat-tools/drawchat-tools.component.css")],
+        }),
+        __metadata("design:paramtypes", [_services_drawchat_brush_service__WEBPACK_IMPORTED_MODULE_1__["DrawchatBrushService"]])
+    ], DrawchatToolsComponent);
+    return DrawchatToolsComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/components/drawchat-userlist/drawchat-userlist.component.css":
 /*!******************************************************************************!*\
   !*** ./src/app/components/drawchat-userlist/drawchat-userlist.component.css ***!
@@ -1366,7 +1441,7 @@ var DrawchatUserlistComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "#mainContent {\n  vertical-align: top;\n  display: inline-block;\n  width: calc(100vw - 250px);\n  height: 100vh;\n}\n\n  #canvasFrame {\n    position: relative;\n    width: calc(100% - 80px );\n    height: calc(100% - 150px);\n    display: inline-block;\n    vertical-align: top;\n  }\n\n  #toolbar {\n    vertical-align: top;\n    width: 80px;\n    display: inline-block;\n    background-color: rgb(53, 56, 58);\n    height: calc(100% - 150px);\n    padding: 15px;\n  }\n\n  #toolbar img {\n    width: 50px;\n    height: auto;\n    margin-bottom: 25px; \n    border-radius: 5px; \n  }\n\n  #toolbar img.selected {\n    border: 2px solid whitesmoke;\n  }\n\n  #zoomSlider {\n    vertical-align: top;\n    display: inline-block;\n    width: 70px;\n    padding-top: 10px;\n    height: 100%;\n    background-color: rgb(53, 56, 58);\n  }\n\n  #zoomSlider input {\n      position: relative;\n      top: 30%;\n      left: -30%;\n      -webkit-transform: rotate(270deg);\n              transform: rotate(270deg);\n      -webkit-appearance: none;\n      background-color: #00000000;\n      width: 90px;\n    }\n\n  input[type=range]:focus {\n      outline: none;\n    }\n\n  input[type=range]::-webkit-slider-runnable-track {\n      width: 100%;\n      height: 5px;\n      cursor: pointer;\n      background-color: rgba(255, 255, 255, 0.575);\n      border-radius: 5px;\n      -webkit-appearance: none;\n      border: 1px solid #000000;\n    }\n\n  input[type=range]::-webkit-slider-thumb {\n      border: 1px solid #000000;\n      height: 20px;\n      width: 13px;\n      border-radius: 5px;\n      background: rgba(255, 255, 255, 0.842);\n      cursor: pointer;\n      -webkit-appearance: none;\n      margin-top: -11px;\n    }\n\n  #zoomSlider img {\n      width:13px;\n      height:auto;\n    }\n\n  #zoomSlider {\n      font-weight: bold;\n      color: whitesmoke;\n      font-size: 13px;\n    }\n\n  app-drawchat-palette {\n    vertical-align: top;\n    display: inline-block;\n    width: calc(100% - 470px);\n    height:100%;\n    background-color: rgb(53, 56, 58);\n    border-left: 1px solid rgb(165, 159, 161);\n  }\n\n  #brushSettings {\n    width: 100%;\n    height: 150px;\n  }\n\n  #sideBar {\n  vertical-align: top;\n  display: inline-block;\n  background-color: rgb(53, 56, 58);\n  border-left: 1px solid white;\n  width: 230px;\n  height: 100vh;\n}\n\n  #leaveButton {\n  width: 20%;\n  height:40px;\n  border-radius: 5px;\n  padding-top:5px;\n  background-color: rgb(180, 57, 84);\n}\n\n  #leaveButton:hover {\n  cursor: pointer;\n  background-color: rgb(216, 83, 111);\n\n}\n\n  app-drawchat-timer {\n  display: inline-block;\n  vertical-align: top;\n  width:80%;\n  height:10vh;\n}\n\n  app-drawchat-userlist {\n  display: block;\n  width:100%;\n  height:30vh;\n  margin-top: 2vh;\n  margin-bottom: 2vh;\n  border-top: 1px solid whitesmoke; \n  border-bottom: 1px solid whitesmoke;\n}\n\n  app-drawchat-chat {\n  display: block;\n  width:100%;\n  height:54vh;\n  border-top: 1px solid whitesmoke; \n  border-bottom: 1px solid whitesmoke\n}\n\n"
+module.exports = "#mainContent {\n  vertical-align: top;\n  display: inline-block;\n  width: calc(100vw - 250px);\n  height: 100vh;\n}\n\n  #canvasFrame {\n    position: relative;\n    width: calc(100% - 80px );\n    height: calc(100% - 150px);\n    display: inline-block;\n    vertical-align: top;\n  }\n\n  #toolbar {\n    vertical-align: top;\n    width: 80px;\n    display: inline-block;\n    background-color: rgb(53, 56, 58);\n    height: calc(100% - 150px);\n    padding: 15px;\n  }\n\n  #zoomSlider {\n    vertical-align: top;\n    display: inline-block;\n    width: 70px;\n    padding-top: 10px;\n    height: 100%;\n    background-color: rgb(53, 56, 58);\n  }\n\n  #zoomSlider input {\n      position: relative;\n      top: 30%;\n      left: -30%;\n      -webkit-transform: rotate(270deg);\n              transform: rotate(270deg);\n      -webkit-appearance: none;\n      background-color: #00000000;\n      width: 90px;\n    }\n\n  input[type=range]:focus {\n      outline: none;\n    }\n\n  input[type=range]::-webkit-slider-runnable-track {\n      width: 100%;\n      height: 5px;\n      cursor: pointer;\n      background-color: rgba(255, 255, 255, 0.575);\n      border-radius: 5px;\n      -webkit-appearance: none;\n      border: 1px solid #000000;\n    }\n\n  input[type=range]::-webkit-slider-thumb {\n      border: 1px solid #000000;\n      height: 20px;\n      width: 13px;\n      border-radius: 5px;\n      background: rgba(255, 255, 255, 0.842);\n      cursor: pointer;\n      -webkit-appearance: none;\n      margin-top: -11px;\n    }\n\n  #zoomSlider img {\n      width:13px;\n      height:auto;\n    }\n\n  #zoomSlider {\n      font-weight: bold;\n      color: whitesmoke;\n      font-size: 13px;\n    }\n\n  app-drawchat-palette {\n    vertical-align: top;\n    display: inline-block;\n    width: calc(100% - 470px);\n    height:100%;\n    background-color: rgb(53, 56, 58);\n    border-left: 1px solid rgb(165, 159, 161);\n  }\n\n  #brushSettings {\n    width: 100%;\n    height: 150px;\n  }\n\n  #sideBar {\n  vertical-align: top;\n  display: inline-block;\n  background-color: rgb(53, 56, 58);\n  border-left: 1px solid white;\n  width: 230px;\n  height: 100vh;\n}\n\n  #leaveButton {\n  width: 20%;\n  height:40px;\n  border-radius: 5px;\n  padding-top:5px;\n  background-color: rgb(180, 57, 84);\n}\n\n  #leaveButton:hover {\n  cursor: pointer;\n  background-color: rgb(216, 83, 111);\n\n}\n\n  app-drawchat-timer {\n  display: inline-block;\n  vertical-align: top;\n  width:80%;\n  height:10vh;\n}\n\n  app-drawchat-userlist {\n  display: block;\n  width:100%;\n  height:30vh;\n  margin-top: 2vh;\n  margin-bottom: 2vh;\n  border-top: 1px solid whitesmoke; \n  border-bottom: 1px solid whitesmoke;\n}\n\n  app-drawchat-chat {\n  display: block;\n  width:100%;\n  height:54vh;\n  border-top: 1px solid whitesmoke; \n  border-bottom: 1px solid whitesmoke\n}\n\n"
 
 /***/ }),
 
@@ -1377,7 +1452,7 @@ module.exports = "#mainContent {\n  vertical-align: top;\n  display: inline-bloc
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"mainContent\">\n<div id=\"canvasFrame\">\n  <app-drawchat-canvas \n    [currZoom]=\"zoom\" \n  >\n  </app-drawchat-canvas>\n</div>\n<div id=\"toolbar\">\n  <img src=\"assets/brush.png\" alt=\"brush\" (click)=\"updateTool('brush')\">\n  <img src=\"assets/eraser.png\" alt=\"eraser\" (click)=\"updateTool('eraser')\">\n  <img src=\"assets/eyedropper.png\" alt=\"eyedropper\" (click)=\"updateTool('eyedropper')\">\n  <img src=\"assets/ruler.png\" alt=\"ruler\" (click)=\"updateTool('ruler')\">\n</div>\n\n<div id=\"brushSettings\">\n  <app-drawchat-sliders></app-drawchat-sliders>\n\n  <div id=\"zoomSlider\">\n    <img src=\"assets/zoom.png\" alt=\"zoom\"> {{zoom * 100}}%\n    <input type=\"range\" \n      name=\"zoom\" \n      [(ngModel)]=\"zoom\" \n      min=\"1\" max=\"5\" step=\"0.5\">\n  </div>\n  \n  <app-drawchat-palette></app-drawchat-palette>\n</div>\n</div>\n\n<div id=\"sideBar\">\n  <app-drawchat-timer></app-drawchat-timer>\n  <button [routerLink]=\"['/']\" id=\"leaveButton\"><img src=\"assets/leave.png\" alt=\"\"></button>\n  <app-drawchat-userlist></app-drawchat-userlist>\n  <app-drawchat-chat></app-drawchat-chat>\n</div>"
+module.exports = "<div id=\"mainContent\">\n<div id=\"canvasFrame\">\n  <app-drawchat-canvas \n    [currZoom]=\"zoom\" \n  >\n  </app-drawchat-canvas>\n</div>\n<app-drawchat-tools id=\"toolbar\">\n</app-drawchat-tools>\n\n<div id=\"brushSettings\">\n  <app-drawchat-sliders></app-drawchat-sliders>\n\n  <div id=\"zoomSlider\">\n    <img src=\"assets/zoom.png\" alt=\"zoom\"> {{zoom * 100}}%\n    <input type=\"range\" \n      name=\"zoom\" \n      [(ngModel)]=\"zoom\" \n      min=\"1\" max=\"5\" step=\"0.5\">\n  </div>\n  \n  <app-drawchat-palette></app-drawchat-palette>\n</div>\n</div>\n\n<div id=\"sideBar\">\n  <app-drawchat-timer></app-drawchat-timer>\n  <button [routerLink]=\"['/']\" id=\"leaveButton\"><img src=\"assets/leave.png\" alt=\"\"></button>\n  <app-drawchat-userlist></app-drawchat-userlist>\n  <app-drawchat-chat></app-drawchat-chat>\n</div>"
 
 /***/ }),
 
@@ -2624,6 +2699,7 @@ var DrawchatBrushService = /** @class */ (function () {
         this.colorChanged.next(this.rgba);
     };
     DrawchatBrushService.prototype.changeTool = function (tool) {
+        this.tool = tool;
         this.toolChanged.next(tool);
     };
     DrawchatBrushService = __decorate([
@@ -3038,7 +3114,6 @@ var SocketsService = /** @class */ (function () {
     function SocketsService(session) {
         this.session = session;
         this.url = _environments_environment__WEBPACK_IMPORTED_MODULE_7__["environment"].endpoints.socketServer;
-        console.log(this.url);
         this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_1__(this.url, { autoConnect: false });
         this.connectionModule = new _socket_modules_socket_connection__WEBPACK_IMPORTED_MODULE_6__["ConnectionSocketModule"](this.session, this.socket);
         this.drawModule = new _socket_modules_socket_draw__WEBPACK_IMPORTED_MODULE_3__["DrawSocketModule"](this.socket);
@@ -3496,9 +3571,9 @@ __webpack_require__.r(__webpack_exports__);
 var environment = {
     production: false,
     endpoints: {
-        socketServer: '18.224.96.154:443/',
-        logs: 'http://18.224.96.154:81/logs/',
-        thumb: 'http://18.224.96.154:81/thumbs/'
+        socketServer: 'localhost:5000/',
+        logs: 'http://localhost:1337/logs/',
+        thumb: 'http://localhost:1337/thumbs/'
     },
     roomTimer: {
         tokenCap: 5,

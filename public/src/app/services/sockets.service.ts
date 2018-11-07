@@ -12,7 +12,6 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class SocketsService {
-
   private url = environment.endpoints.socketServer;
   private socket: SocketIOClient.Socket;
   private room: string;
@@ -23,7 +22,6 @@ export class SocketsService {
   chatModule: ChatSocketModule;
 
   constructor(private session: SessionService) {
-    console.log(this.url);
     this.socket = io(this.url, { autoConnect: false });
     this.connectionModule = new ConnectionSocketModule(this.session, this.socket);
     this.drawModule = new DrawSocketModule(this.socket);

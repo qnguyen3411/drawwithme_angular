@@ -22,16 +22,9 @@
     padding: 15px;
   }
 
-  #toolbar img {
-    width: 50px;
-    height: auto;
-    margin-bottom: 25px; 
-    border-radius: 5px; 
-  }
 
-  #toolbar img.selected {
-    border: 2px solid whitesmoke;
-  }
+
+
 
   #zoomSlider {
     vertical-align: top;

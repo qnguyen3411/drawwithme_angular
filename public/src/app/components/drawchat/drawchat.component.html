@@ -5,12 +5,8 @@
   >
   </app-drawchat-canvas>
 </div>
-<div id="toolbar">
-  <img src="assets/brush.png" alt="brush" (click)="updateTool('brush')">
-  <img src="assets/eraser.png" alt="eraser" (click)="updateTool('eraser')">
-  <img src="assets/eyedropper.png" alt="eyedropper" (click)="updateTool('eyedropper')">
-  <img src="assets/ruler.png" alt="ruler" (click)="updateTool('ruler')">
-</div>
+<app-drawchat-tools id="toolbar">
+</app-drawchat-tools>
 
 <div id="brushSettings">
   <app-drawchat-sliders></app-drawchat-sliders>

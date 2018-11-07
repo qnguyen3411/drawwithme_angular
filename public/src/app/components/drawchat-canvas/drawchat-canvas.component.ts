@@ -102,6 +102,12 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy))
       .subscribe(this.myPaintCursor.setSize
         .bind(this.myPaintCursor));
+
+    this.brushSettings.toolChanged
+      .pipe(takeUntil(this.destroy))
+      .subscribe(this.myPaintCursor.setTool
+        .bind(this.myPaintCursor))
+
   }
 
   subscribeToRoomEvents() {

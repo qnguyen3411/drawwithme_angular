@@ -40,7 +40,6 @@ export class DrawchatPaletteComponent implements OnInit {
 
   getColorFromPalette({ x, y }) {
     const {data} = this.palCtx.getImageData(x, y, 1, 1);
-    this.palCtx.beginPath()
     this.brush.changeColor([data[0], data[1], data[2]]);
   }
 
