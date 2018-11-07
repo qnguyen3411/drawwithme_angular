@@ -217,25 +217,30 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   updatePeersCursorSize({ id, data }) {
+    if(this.peerList[id] === undefined) { return; }
     this.getCursorByUserId(id).setSize(data);
   }
 
   updatePeersMousePos({ id, data: { x, y } }) {
+    if(this.peerList[id] === undefined) { return; }
     this.getCursorByUserId(id).moveTo(x, y);
   }
 
   startPeerAction({ id, data }) {
+    if(this.peerList[id] === undefined) { return; }
     this.getCursorByUserId(id)
       .setColor(data['rgba'])
       .startAction();
   }
 
   endPeerAction({ id }) {
+    if(this.peerList[id] === undefined) { return; }
     this.getCursorByUserId(id).endAction();
   }
 
 
   getCursorByUserId(id) {
+    
     return this.peerList[id]['cursor'] as PaintCursor;
   }
 
