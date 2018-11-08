@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { Subject, interval } from 'rxjs';
-import { takeUntil, map, take, filter } from 'rxjs/operators';
+import { takeUntil, map, take, filter, tap } from 'rxjs/operators';
 
 import { PaintCursor } from 'src/app/draw_modules/paintcursor';
 import { ObservablePaintCursor } from 'src/app/draw_modules/observablepaintcursor';
@@ -10,6 +10,7 @@ import { DrawchatBrushService } from 'src/app/services/drawchat-brush.service';
 import { SocketsService } from 'src/app/services/sockets.service';
 import { DrawSocketModule } from 'src/app/socket_modules/socket-draw';
 import { WindowService } from 'src/app/services/window.service';
+import { DrawchatCanvasDataCacheService } from 'src/app/services/drawchat-canvas-data-cache.service';
 
 @Component({
   selector: 'app-drawchat-canvas',
@@ -21,12 +22,12 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   @ViewChild('container') canvasContainerRef;
   @ViewChild('base') baseCanvasRef;
   @ViewChild('self') selfCanvasRef;
+  @Input() currRoom;
+  @Input() currZoom = 1;
 
   container: HTMLElement;
   baseCtx: CanvasRenderingContext2D;
   selfCtx: CanvasRenderingContext2D;
-  
-  @Input() currZoom = 1;
   myPaintCursor: ObservablePaintCursor;
   trackMouse;
   
@@ -34,12 +35,13 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   destroy: Subject<boolean> = new Subject<boolean>();
 
   peerList = {};
-  
+  strokeCounter = 0;  
   constructor(
     private mouse: MouseposService,
     private socket: SocketsService,
     private brushSettings: DrawchatBrushService,
-    private window: WindowService
+    private window: WindowService,
+    private cache: DrawchatCanvasDataCacheService
   ) {
     this.drawConnection = this.socket.drawModule;
   }
@@ -58,6 +60,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.subscribeToBrushChanges();
     this.subscribeToRoomEvents();
     this.subscribeToCanvasEvents();
+
   }
 
   ngOnDestroy() {
@@ -73,7 +76,12 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
   onLeave() {
     if (Object.keys(this.peerList).length === 0) {
-      this.drawConnection.emitSnapshot()
+      // Get data uri
+      const canvasData = this.getCanvasData();
+      // Cache data uri
+      this.cache.setCache(canvasData, this.currRoom);
+      // Snapshot signal
+      this.socket.roomModule.sendSnapshot({ data: canvasData });
     }
   }
 
@@ -87,7 +95,10 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       this.drawConnection.emitMousePosUpdate
         .bind(this.drawConnection));
 
-    this.myPaintCursor.onEnd.subscribe(
+    this.myPaintCursor.onEnd.pipe(
+      tap(() => {this.strokeCounter++})
+    )
+    .subscribe(
       this.drawConnection.emitCanvasActionEnd
         .bind(this.drawConnection));
   }
@@ -137,6 +148,19 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .subscribe(this.receiveCanvasData.bind(this));
 
     this.socket.roomModule
+      .onSnapshotPoll()
+      .pipe(takeUntil(this.destroy))
+      .subscribe(() => {
+        if (this.strokeCounter === 0) { return; }
+        this.socket.roomModule.sendSnapshot({ data: this.getCanvasData()});
+      });
+
+    this.socket.roomModule
+      .onSnapshotPollFinish()
+      .pipe(takeUntil(this.destroy))
+      .subscribe(() => {this.strokeCounter = 0})
+
+    this.socket.roomModule
       .onSnapshotSignal()
       .pipe(take(1))
       .subscribe(this.fetchSnapshot.bind(this));
@@ -173,13 +197,8 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .find(val => val.id == id);
   }
 
-
   shareCanvasWithPeer({ id }) {
     this.socket.roomModule.emitCanvasData({ id, data: this.getCanvasData() });
-  }
-
-  getCanvasData() {
-    return this.baseCtx.canvas.toDataURL('image/png', 0.7);
   }
 
   receiveCanvasData({ data }) {
@@ -191,12 +210,22 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
   }
 
   fetchSnapshot({url}) {
+
+    const cachedData = this.cache.getCachedData(this.currRoom);
     const img = new Image();
     img.onload = () => {
       this.baseCtx.drawImage(img, 0, 0);
     }
     img.crossOrigin = 'anonymous';
-    img.src = url;
+    img.src = cachedData || url;
+  }
+
+  sendSnapshot() {
+    this.socket.roomModule.sendSnapshot({ data: this.getCanvasData()})
+  }
+
+  getCanvasData() {
+    return this.baseCtx.canvas.toDataURL('image/png', 0.7);
   }
 
   subscribeToCanvasEvents() {
@@ -241,6 +270,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
   endPeerAction({ id }) {
     if(this.peerList[id] === undefined) { return; }
+    this.strokeCounter++;
     this.getCursorByUserId(id).endAction();
   }
 

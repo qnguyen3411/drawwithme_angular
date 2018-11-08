@@ -22,6 +22,7 @@ export class DrawchatComponent implements OnInit, OnDestroy {
   destroy: Subject<boolean> = new Subject<boolean>();
 
   bsModalRef: BsModalRef;
+  currRoom;
 
   constructor(
     private _route: ActivatedRoute,
@@ -34,6 +35,7 @@ export class DrawchatComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._route.params.subscribe((params: Params) => {
       const roomId = params['id'];
+      this.currRoom = roomId;
       this._socket.connectionModule.joinRoom(roomId);
     });
 

@@ -70,6 +70,7 @@ export class RoomSocketModule {
     this.socket.emit('canvasDataToPeer',  data );
   }
 
+
   onCanvasDataReceived() {
     return Observable.create((observer) => {
       this.socket.on('canvasDataReceived', (data) => {
@@ -92,6 +93,26 @@ export class RoomSocketModule {
         observer.next(data);
       });
     })
+  }
+
+  onSnapshotPoll() {
+    return Observable.create((observer) => {
+      this.socket.on('snapShotPoll', (data) => {
+        observer.next(data);
+      });
+    })
+  }
+
+  onSnapshotPollFinish() {
+    return Observable.create((observer) => {
+      this.socket.on('snapShotPollFinish', () => {
+        observer.next();
+      });
+    })
+  }
+
+  sendSnapshot(data) {
+    this.socket.emit('snapShot', data);
   }
 
   emitTokenConsumption() {

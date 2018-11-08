@@ -30,6 +30,7 @@ import { UserService } from './services/user.service';
 import { DrawchatService } from './services/drawchat.service';
 import { SessionService } from './services/session.service';
 import { SocketsService } from './services/sockets.service';
+import { DrawchatCanvasDataCacheService } from './services/drawchat-canvas-data-cache.service';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { SocketsService } from './services/sockets.service';
     UserService,
     DrawchatService,
     SessionService,
-    SocketsService
+    SocketsService,
+    DrawchatCanvasDataCacheService
   ],
   bootstrap: [AppComponent]
 })
