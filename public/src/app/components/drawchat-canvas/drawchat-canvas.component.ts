@@ -53,14 +53,12 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
     this.myPaintCursor = new ObservablePaintCursor(this.baseCtx).setUpperLayer(this.selfCtx);
     this.trackMouse = this.mouse.getMousePosTracker(this.baseCtx.canvas);
-
     
     this.subscribeToWindowEvents();
     this.subscribeToSelfCursorEvents();
     this.subscribeToBrushChanges();
     this.subscribeToRoomEvents();
     this.subscribeToCanvasEvents();
-
   }
 
   ngOnDestroy() {
@@ -276,7 +274,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
 
   getCursorByUserId(id) {
-    
     return this.peerList[id]['cursor'] as PaintCursor;
   }
 

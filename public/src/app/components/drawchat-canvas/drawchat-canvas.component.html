@@ -8,10 +8,10 @@
   (mouseleave)="onMouseLeave()"
   >
 
-  <canvas width="1820" height="1024" id="base" [ngStyle]="{zoom: currZoom}" #base></canvas>
-  <canvas width="1820" height="1024" id="self" [ngStyle]="{zoom: currZoom}" #self></canvas>
+  <canvas width="1365" height="768" id="base" [ngStyle]="{zoom: currZoom}" #base></canvas>
+  <canvas width="1365" height="768" id="self" [ngStyle]="{zoom: currZoom}" #self></canvas>
   
-  <svg width="1820" height="1024" xmlns="http://www.w3.org/2000/svg" [ngStyle]="{zoom: currZoom}">
+  <svg width="1365" height="768" xmlns="http://www.w3.org/2000/svg" [ngStyle]="{zoom: currZoom}">
     <circle 
       stroke="black" stroke-width="1" fill="none"
       [attr.cx]="myPaintCursor.x" 
@@ -29,7 +29,7 @@
   
   <canvas *ngFor="let peer of peerList | keyvalue"
     [attr.id]="peer.key"
-    width="1820" height="1024" 
+    width="1365" height="768" 
     [ngStyle]="{zoom: currZoom}" 
   ></canvas>
 </div>
