@@ -72,14 +72,14 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .subscribe(this.onLeave.bind(this));
   }
 
-  onLeave() {
+  async onLeave() {
     if (Object.keys(this.peerList).length === 0) {
       // Get data uri
-      const canvasData = this.getCanvasData();
+      // const canvasData = this.baseCtx.canvas.toDataURL();
       // Cache data uri
-      this.cache.setCache(canvasData, this.currRoom);
+      this.cache.setCache(this.baseCtx.canvas.toDataURL(), this.currRoom);
       // Snapshot signal
-      this.socket.roomModule.sendSnapshot({ data: canvasData });
+      this.socket.roomModule.sendSnapshot({ data: await this.getCanvasData() });
     }
   }
 
@@ -148,9 +148,9 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
     this.socket.roomModule
       .onSnapshotPoll()
       .pipe(takeUntil(this.destroy))
-      .subscribe(() => {
+      .subscribe(async () => {
         if (this.strokeCounter === 0) { return; }
-        this.socket.roomModule.sendSnapshot({ data: this.getCanvasData()});
+        this.socket.roomModule.sendSnapshot({ data: await this.getCanvasData()});
       });
 
     this.socket.roomModule
@@ -195,35 +195,46 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       .find(val => val.id == id);
   }
 
-  shareCanvasWithPeer({ id }) {
-    this.socket.roomModule.emitCanvasData({ id, data: this.getCanvasData() });
+  async shareCanvasWithPeer({ id }) {
+    this.socket.roomModule.emitCanvasData({ id, data: await this.getCanvasData() });
   }
 
   receiveCanvasData({ data }) {
     const img = new Image();
+    const url = URL.createObjectURL(new Blob([data], {type : 'image/png'}));
+
     img.onload = () => {
       this.baseCtx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
     }
-    img.src = data;
+    img.src = url;
   }
 
   fetchSnapshot({url}) {
-
     const cachedData = this.cache.getCachedData(this.currRoom);
     const img = new Image();
     img.onload = () => {
       this.baseCtx.drawImage(img, 0, 0);
     }
     img.crossOrigin = 'anonymous';
-    img.src = cachedData || url;
+    if (cachedData) {
+      console.log("RESTORING FROM CACHED DATA")
+      img.src = cachedData;
+    } else {
+      console.log("GETTING OUTSIDE URL")
+      img.src = url;
+    }
   }
 
-  sendSnapshot() {
-    this.socket.roomModule.sendSnapshot({ data: this.getCanvasData()})
+  async sendSnapshot() {
+    this.socket.roomModule.sendSnapshot({ data: await this.getCanvasData()})
   }
 
   getCanvasData() {
-    return this.baseCtx.canvas.toDataURL('image/png', 0.7);
+    return new Promise((resolve, reject) => {
+      this.baseCtx.canvas.toBlob(blob => { resolve(blob);})
+    })
+     
   }
 
   subscribeToCanvasEvents() {

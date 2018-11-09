@@ -6,23 +6,25 @@ import { Injectable } from '@angular/core';
 export class DrawchatCanvasDataCacheService {
 
   constructor() {
+    console.log(sessionStorage.getItem('canvasCacheRoomId'));
     setTimeout(this.resetCache, 20000); 
   }
 
   setCache(cacheData, roomId) {
-    localStorage.setItem('canvasCacheRoomId', roomId);
-    localStorage.setItem('canvasCache', cacheData);
+    console.log("CACHING FOR ", roomId);
+    sessionStorage.setItem('canvasCacheRoomId', roomId);
+    sessionStorage.setItem('canvasCache', cacheData);
     setTimeout(this.resetCache, 20000);
   }
 
   resetCache() {
-    localStorage.removeItem('canvasCacheRoomId');
-    localStorage.removeItem('canvasCache');
+    sessionStorage.removeItem('canvasCacheRoomId');
+    sessionStorage.removeItem('canvasCache');
   }
 
   getCachedData(roomId) {
-    if(localStorage.getItem('canvasCacheRoomId') === roomId) {
-      return localStorage.getItem('canvasCache');
+    if(sessionStorage.getItem('canvasCacheRoomId') === roomId) {
+      return sessionStorage.getItem('canvasCache');
     } else { 
       return null ;
     }
