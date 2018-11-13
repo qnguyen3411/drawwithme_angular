@@ -89,6 +89,7 @@ module.exports = {
     }
 
     try {
+      // TODO: Move to model method
       // Get room by id
       const found = await roomModel.getById(req.params.id)
       if (!found) {

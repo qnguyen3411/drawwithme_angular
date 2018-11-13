@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const db = require('./db/wrapper');
 const { logErrors, clientErrorHandler } = require('./errorhandler');
 
-
+console.log(process.pid);
 const connection = db.initializeConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USERNAME,

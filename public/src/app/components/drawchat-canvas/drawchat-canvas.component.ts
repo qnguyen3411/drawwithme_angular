@@ -74,8 +74,6 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
 
   async onLeave() {
     if (Object.keys(this.peerList).length === 0) {
-      // Get data uri
-      // const canvasData = this.baseCtx.canvas.toDataURL();
       // Cache data uri
       this.cache.setCache(this.baseCtx.canvas.toDataURL(), this.currRoom);
       // Snapshot signal
@@ -217,13 +215,7 @@ export class DrawchatCanvasComponent implements OnInit, OnDestroy {
       this.baseCtx.drawImage(img, 0, 0);
     }
     img.crossOrigin = 'anonymous';
-    if (cachedData) {
-      console.log("RESTORING FROM CACHED DATA")
-      img.src = cachedData;
-    } else {
-      console.log("GETTING OUTSIDE URL")
-      img.src = url;
-    }
+    img.src = cachedData || url;
   }
 
   async sendSnapshot() {

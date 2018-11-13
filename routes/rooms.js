@@ -1,6 +1,4 @@
 const express = require('express');
-const fs = require('fs')
-const es = require('event-stream');
 const router = require('express-promise-router')();
 const passport = require('passport');
 const passportConf = require('../passport');
@@ -37,8 +35,6 @@ router.route('/token/:id')
   .get(roomController.consumeToken)
 router.route('/:id')
   .get(roomController.getOne);
-
-
 
 module.exports = router;
 
