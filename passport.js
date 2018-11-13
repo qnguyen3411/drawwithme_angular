@@ -1,13 +1,12 @@
+require('dotenv').config();
+const bcrypt = require('bcryptjs');
+
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const { ExtractJwt } = require('passport-jwt');
-require('dotenv').config();
 const LocalStrategy = require('passport-local').Strategy;
 
-const bcrypt = require('bcryptjs');
-
 const userModel = require('./models/user');
-
 
 passport.use(new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
@@ -28,15 +27,12 @@ passport.use(new JwtStrategy({
 passport.use(new LocalStrategy({
   usernameField: 'username'
 }, async (username, password, done) => {
-  // Check if email exist
   try {
     const matches = await userModel.getByUsername(username);
-    // if not, handle it
     if (matches.length === 0) {
       return done(null, false);
     }
     const user = matches[0];
-    // Check if password is correct
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return done(null, false);
