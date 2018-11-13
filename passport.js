@@ -32,7 +32,7 @@ passport.use(new LocalStrategy({
   try {
     const matches = await userModel.getByUsername(username);
     // if not, handle it
-    if (!matches) {
+    if (matches.length === 0) {
       return done(null, false);
     }
     const user = matches[0];
